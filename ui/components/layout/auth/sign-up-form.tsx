@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Mail, Lock, User, Phone } from "lucide-react";
 
@@ -18,26 +18,66 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  RegisterBody,
+  RegisterBodyStepBefore,
+  RegisterBodyStepBeforeType,
+  RegisterBodyType,
+  RegisterResType,
+} from "@/schemas/auth.schema";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { handleErrorApi } from "@/libs/utils";
+import { Form, FormField, FormItem } from "@/components/ui/form";
+import { useAppStore } from "@/stores/app";
+import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
 
 export default function SignUpForm() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const { setRegisterForm } = useAppStore();
+  const checkEmailExitsMutation = useCheckEmailExits();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle sign up logic here
-    console.log({
-      fullName,
-      email,
-      phone,
-      password,
-      confirmPassword,
-      agreeTerms,
-    });
+  const sendOTP = useSendOTP();
+  const form = useForm<RegisterBodyStepBeforeType>({
+    resolver: zodResolver(RegisterBodyStepBefore),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      confirmPassword: "",
+    },
+  });
+  const router = useRouter();
+
+  const onSubmit = async (data: RegisterBodyStepBeforeType) => {
+    try {
+      if (checkEmailExitsMutation.isPending) return;
+      const result = await checkEmailExitsMutation.mutateAsync({
+        email: data.email,
+      });
+      const payload = result.payload as { data: { message: string } };
+      if (Boolean(payload.data.message) === true) {
+        toast("Email đã tồn tại, hãy thử Email khác");
+        return;
+      }
+      if (data) {
+        await sendOTP.mutateAsync({
+          email: data.email,
+          type: "REGISTER",
+        });
+        setRegisterForm(data);
+      }
+      toast("Đã gửi mã xác thực đến email của bạn");
+      router.push("/verify-account?type=REGISTER");
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+      });
+    }
   };
 
   return (
@@ -51,134 +91,172 @@ export default function SignUpForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-zinc-300">
-              Họ và tên
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <User className="h-5 w-5 text-zinc-500" />
-              </div>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Họ và tên"
-                className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-zinc-300">
-              Email
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Mail className="h-5 w-5 text-zinc-500" />
-              </div>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Email"
-                className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="phone" className="text-zinc-300">
-              Số điện thoại
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Phone className="h-5 w-5 text-zinc-500" />
-              </div>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="Số điện thoại"
-                className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-zinc-300">
-              Mật khẩu
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock className="h-5 w-5 text-zinc-500" />
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Mật khẩu"
-                className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-zinc-300">
-              Xác nhận mật khẩu
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock className="h-5 w-5 text-zinc-500" />
-              </div>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Xác nhận mật khẩu"
-                className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="terms"
-              checked={agreeTerms}
-              onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-              className="data-[state=checked]:bg-primary data-[state=checked]:border-primary border-zinc-700"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field, formState: { errors } }) => (
+                <FormItem>
+                  <Label htmlFor="fullName" className="text-zinc-300">
+                    Họ và tên
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <User className="h-5 w-5 text-zinc-500" />
+                    </div>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Họ và tên"
+                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                      {...field}
+                    />
+                  </div>
+                  <div className="text-sm text-red-500">
+                    {errors.name?.message}
+                  </div>
+                </FormItem>
+              )}
             />
-            <Label
-              htmlFor="terms"
-              className="text-sm leading-none font-medium text-zinc-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Tôi đồng ý với{" "}
-              <Link href="/terms" className="text-primary hover:underline">
-                điều khoản
-              </Link>{" "}
-              và{" "}
-              <Link href="/privacy" className="text-primary hover:underline">
-                chính sách bảo mật
-              </Link>
-            </Label>
-          </div>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field, formState: { errors } }) => (
+                <FormItem>
+                  <Label htmlFor="email" className="text-zinc-300">
+                    Email
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <Mail className="h-5 w-5 text-zinc-500" />
+                    </div>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Email"
+                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                      {...field}
+                    />
+                  </div>
+                  <div className="text-sm text-red-500">
+                    {errors.email?.message}
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field, formState: { errors } }) => (
+                <FormItem>
+                  <Label htmlFor="phone" className="text-zinc-300">
+                    Số điện thoại
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <Phone className="h-5 w-5 text-zinc-500" />
+                    </div>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="Số điện thoại"
+                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                      {...field}
+                    />
+                  </div>
+                  <div className="text-sm text-red-500">
+                    {errors.phone?.message}
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field, formState: { errors } }) => (
+                <FormItem>
+                  <Label htmlFor="password" className="text-zinc-300">
+                    Mật khẩu
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <Lock className="h-5 w-5 text-zinc-500" />
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Mật khẩu"
+                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                      {...field}
+                    />
+                  </div>
+                  <div className="text-sm text-red-500">
+                    {errors.password?.message}
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field, formState: { errors } }) => (
+                <FormItem className="">
+                  <Label htmlFor="confirmPassword" className="text-zinc-300">
+                    Xác nhận mật khẩu
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <Lock className="h-5 w-5 text-zinc-500" />
+                    </div>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Xác nhận mật khẩu"
+                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                      {...field}
+                    />
+                  </div>
+                  <div className="text-sm text-red-500">
+                    {errors.confirmPassword?.message}
+                  </div>
+                </FormItem>
+              )}
+            />
 
-          <Button type="submit" className="w-full" disabled={!agreeTerms}>
-            Đăng ký
-          </Button>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="terms"
+                checked={agreeTerms}
+                onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary border-zinc-700"
+              />
+              <Label
+                htmlFor="terms"
+                className="text-sm leading-none font-medium text-zinc-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Tôi đồng ý với{" "}
+                <Link href="/terms">
+                  <span className="text-primary hover:underline">
+                    điều khoản
+                  </span>
+                </Link>{" "}
+                và{" "}
+                <Link href="/privacy" className="text-primary hover:underline">
+                  <span className="text-primary hover:underline">
+                    chính sách bảo mật
+                  </span>
+                </Link>
+              </Label>
+            </div>
 
-          <div className="relative">
+            <Button type="submit" className="w-full" disabled={!agreeTerms}>
+              Đăng ký
+            </Button>
+          </form>
+        </Form>
+        <div className="mt-5 space-y-5">
+          <div className="relative mt-1.5">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-zinc-700" />
             </div>
@@ -188,7 +266,6 @@ export default function SignUpForm() {
               </span>
             </div>
           </div>
-
           <Button
             type="button"
             variant="outline"
@@ -215,12 +292,15 @@ export default function SignUpForm() {
             </svg>
             Google
           </Button>
-        </form>
+        </div>
       </CardContent>
       <CardFooter className="flex justify-center">
         <div className="text-center text-sm text-zinc-400">
           Đã có tài khoản?{" "}
-          <Link href="/" className="text-primary font-medium hover:underline">
+          <Link
+            href="/login"
+            className="text-primary font-medium hover:underline"
+          >
             Đăng nhập
           </Link>
         </div>

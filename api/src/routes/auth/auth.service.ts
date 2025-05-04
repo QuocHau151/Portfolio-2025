@@ -10,7 +10,6 @@ import {
   isUniqueConstraintPrismaError,
 } from 'src/common/helpers';
 import {
-  EmailAlreadyExistsException,
   EmailNotFoundException,
   InvalidTOTPAndCodeException,
   InvalidTOTPException,
@@ -77,16 +76,16 @@ export class AuthService {
     if (!verificationCode) {
       throw new UnprocessableEntityException({
         message: 'Mã xác thực không hợp lệ',
-        path: 'code',
       });
     }
     if (verificationCode.expiresAt < new Date()) {
       throw new UnprocessableEntityException({
         message: 'Mã xác thực đã hết hạn',
-        path: 'code',
       });
     }
-    return verificationCode;
+    return {
+      message: 'Xác Thực Thành Công',
+    };
   }
   async register(body: RegisterBodyType) {
     try {
@@ -101,7 +100,7 @@ export class AuthService {
         this.authRepository.createUser({
           email: body.email,
           name: body.name,
-          phoneNumber: body.phoneNumber,
+          phone: body.phone,
           password: hashedPassword,
           roleId: clientRoleId,
         }),
@@ -117,7 +116,10 @@ export class AuthService {
       return user;
     } catch (error) {
       if (isUniqueConstraintPrismaError(error)) {
-        throw EmailAlreadyExistsException;
+        throw new UnprocessableEntityException({
+          message: 'Email đã tồn tại',
+          path: 'email',
+        });
       }
       throw error;
     }
@@ -127,10 +129,16 @@ export class AuthService {
       email: body.email,
     });
     if (body.type === TypeOfVerificationCode.REGISTER && user) {
-      throw EmailAlreadyExistsException;
+      throw new UnprocessableEntityException({
+        message: 'Email đã tồn tại',
+        path: 'email',
+      });
     }
     if (body.type === TypeOfVerificationCode.FORGOT_PASSWORD && !user) {
-      throw EmailNotFoundException;
+      throw new UnprocessableEntityException({
+        message: 'Không tìm thấy Email',
+        path: 'email',
+      });
     }
     const code = generateOTP();
     const { error } = await this.emailService.sendEmail({
@@ -161,7 +169,10 @@ export class AuthService {
       email: body.email,
     });
     if (!user) {
-      throw EmailNotFoundException;
+      throw new UnprocessableEntityException({
+        message: 'Tài khoản không tồn tại',
+        path: 'email',
+      });
     }
 
     const isPasswordMatch = await this.hashingService.compare(
@@ -225,7 +236,20 @@ export class AuthService {
       roleId: user.roleId,
       roleName: user.role.name,
     });
-    return tokens;
+    const useRes = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role.name,
+      avatar: user.avatar,
+      phone: user.phone,
+      address: user.address,
+    };
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      account: useRes,
+    };
   }
   async generateTokens({
     userId,
@@ -446,5 +470,12 @@ export class AuthService {
     return {
       message: 'Tắt 2FA thành công',
     };
+  }
+  async checkExitEmail(email: string): Promise<object> {
+    const exits = await this.authRepository.checkExitEmail(email);
+    if (exits) {
+      return { message: true };
+    }
+    return { message: false };
   }
 }

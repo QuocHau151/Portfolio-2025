@@ -18,27 +18,64 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormField, FormItem } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
+import { toast } from "sonner";
+import { useAppStore } from "@/stores/app";
+import { handleErrorApi } from "@/libs/utils";
 
 export default function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [activeTab, setActiveTab] = useState("email");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const checkEmailExitsMutation = useCheckEmailExits();
+  const sendOTP = useSendOTP();
+  const { setForgotPasswordForm } = useAppStore();
+  const form = useForm({
+    resolver: zodResolver(
+      z.object({
+        email: z.string().email(),
+      }),
+    ),
+    defaultValues: {
+      email: "",
+    },
+  });
+  const router = useRouter();
+  const onSubmit = async (data: { email: string }) => {
+    try {
+      if (checkEmailExitsMutation.isPending) return;
+      const result = await checkEmailExitsMutation.mutateAsync({
+        email: data.email,
+      });
+      setIsSubmitting(true);
+      const payload = result.payload as { data: { message: string } };
+      if (Boolean(payload.data.message) === true) {
+        if (data) {
+          setForgotPasswordForm(data);
+          await sendOTP.mutateAsync({
+            email: data.email,
+            type: "FORGOT_PASSWORD",
+          });
+          toast("Đã gửi Mã OTP vào Email của bạn");
+          router.push("/verify-account?type=FORGOT_PASSWORD");
+        }
+      } else {
+        toast("Email Không Tồn Tại");
+      }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-      console.log({
-        method: activeTab,
-        value: activeTab === "email" ? email : phone,
+    } catch (error) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
       });
-    }, 1500);
+    }
   };
 
   return (
@@ -48,131 +85,129 @@ export default function ForgotPasswordForm() {
           Quên mật khẩu
         </CardTitle>
         <CardDescription className="text-center text-zinc-400">
-          {!isSubmitted
-            ? "Nhập email hoặc số điện thoại để đặt lại mật khẩu"
-            : "Hướng dẫn đặt lại mật khẩu đã được gửi"}
+          Nhập email hoặc số điện thoại để đặt lại mật khẩu
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
-                <TabsTrigger
-                  value="email"
-                  className="data-[state=active]:bg-zinc-700"
-                >
-                  Email
-                </TabsTrigger>
-                <TabsTrigger
-                  value="phone"
-                  className="data-[state=active]:bg-zinc-700"
-                >
-                  Số điện thoại
-                </TabsTrigger>
-              </TabsList>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
+              <TabsTrigger
+                value="email"
+                className="data-[state=active]:bg-zinc-700"
+              >
+                Email
+              </TabsTrigger>
+              <TabsTrigger
+                value="phone"
+                className="data-[state=active]:bg-zinc-700"
+              >
+                Số điện thoại
+              </TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="email" className="mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-zinc-300">
-                    Email
-                  </Label>
-                  <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Mail className="h-5 w-5 text-zinc-500" />
+            <TabsContent value="email" className="mt-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field, formState: { errors } }) => (
+                  <FormItem>
+                    <Label htmlFor="email" className="text-zinc-300">
+                      Email
+                    </Label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <Mail className="h-5 w-5 text-zinc-500" />
+                      </div>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Email"
+                        className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                        {...field}
+                      />
                     </div>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required={activeTab === "email"}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="phone" className="mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-zinc-300">
-                    Số điện thoại
-                  </Label>
-                  <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Mail className="h-5 w-5 text-zinc-500" />
+                    <div className="text-sm text-red-500">
+                      {errors.email?.message === "invalidEmail"
+                        ? "Sai Định Dạng Email"
+                        : errors.email?.message}
                     </div>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="Số điện thoại"
-                      className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required={activeTab === "phone"}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+                  </FormItem>
+                )}
+              />
+              <div className="space-y-2"></div>
+            </TabsContent>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <svg
-                    className="mr-2 -ml-1 h-4 w-4 animate-spin text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Đang gửi...
-                </>
-              ) : (
-                <>
-                  <Send className="mr-2 h-4 w-4" />
-                  Gửi hướng dẫn đặt lại
-                </>
-              )}
-            </Button>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div className="rounded-lg bg-zinc-800 p-4 text-center">
-              <p className="text-zinc-300">
-                {activeTab === "email"
-                  ? `Chúng tôi đã gửi hướng dẫn đặt lại mật khẩu đến ${email}. Vui lòng kiểm tra hộp thư của bạn.`
-                  : `Chúng tôi đã gửi mã xác nhận đến số điện thoại ${phone}. Vui lòng kiểm tra tin nhắn của bạn.`}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
-              onClick={() => setIsSubmitted(false)}
-            >
-              Gửi lại
-            </Button>
-          </div>
-        )}
+            <TabsContent value="phone" className="mt-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field, formState: { errors } }) => (
+                  <FormItem>
+                    <Label htmlFor="phone" className="text-zinc-300">
+                      Số điện thoại
+                    </Label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <Mail className="h-5 w-5 text-zinc-500" />
+                      </div>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="Số điện thoại"
+                        className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
+                        {...field}
+                        required={activeTab === "phone"}
+                      />
+                    </div>
+                    <div className="text-sm text-red-500">
+                      {errors.email?.message === "invalidEmail"
+                        ? "Sai Định Dạng PhoneNumber"
+                        : errors.email?.message}
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+          </Tabs>
+
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="mr-2 -ml-1 h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Đang gửi...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Gửi
+              </>
+            )}
+          </Button>
+        </form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <Link

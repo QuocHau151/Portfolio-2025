@@ -15,15 +15,17 @@ import {
   RegisterBodyDTO,
   RegisterResDTO,
   SendOPTBodyDTO,
+  SendOTPResDTO,
   TwoFactorSetupResDTO,
 } from './auth.dto';
 import { IsPublic } from 'src/common/decorators/auth.decorator';
 import { UserAgent } from 'src/common/decorators/user-agent.decorator';
-import { MessageResDTO } from 'src/common/dtos/response.dto';
+import { BooleanResDTO, MessageResDTO } from 'src/common/dtos/response.dto';
 import { GoogleService } from './google.service';
 import envConfig from 'src/configs/config';
 import { EmptyBodyDTO } from 'src/common/dtos/request.dto';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
+import { TypeOfVerificationCodeType } from 'src/common/constants/auth.constant';
 
 @Controller('auth')
 export class AuthController {
@@ -40,6 +42,7 @@ export class AuthController {
     return this.authService.register(body);
   }
   @Post('otp')
+  @ZodSerializerDto(SendOTPResDTO)
   @IsPublic()
   sendOTP(@Body() body: SendOPTBodyDTO) {
     return this.authService.sendOTP(body);
@@ -139,5 +142,26 @@ export class AuthController {
       ...body,
       userId,
     });
+  }
+
+  @Post('checkemailexits')
+  @ZodSerializerDto(BooleanResDTO)
+  @IsPublic()
+  checkExitEmail(@Body() body: { email: string }) {
+    return this.authService.checkExitEmail(body.email);
+  }
+
+  @Post('verificationcode')
+  @ZodSerializerDto(MessageResDTO)
+  @IsPublic()
+  verificationcode(
+    @Body()
+    body: {
+      email: string;
+      code: string;
+      type: TypeOfVerificationCodeType;
+    },
+  ) {
+    return this.authService.validateVerificationCode(body);
   }
 }

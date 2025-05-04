@@ -29,7 +29,7 @@ export function ContactInfo() {
             <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">
               <h3 className="mb-1 font-medium">Database</h3>
               <p className="text-muted-foreground text-sm">
-                MongoDB, PostgreSQL, MySQL
+                MongoDB, PostgreSQL
               </p>
             </div>
             <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">

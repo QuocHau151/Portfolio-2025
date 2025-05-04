@@ -5,3 +5,9 @@ export const MessageResSchema = z.object({
 });
 
 export type MessageResType = z.infer<typeof MessageResSchema>;
+
+export const BooleanResSchema = z.object({
+  message: z.boolean(),
+});
+
+export type BooleanResType = z.infer<typeof BooleanResSchema>;

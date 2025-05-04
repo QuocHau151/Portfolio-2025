@@ -10,7 +10,6 @@ import { z } from 'zod';
 export class GetProfileResDTO extends createZodDto(
   z.object({
     data: GetProfileResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 export class UpdateProfileBodyDTO extends createZodDto(
@@ -19,7 +18,6 @@ export class UpdateProfileBodyDTO extends createZodDto(
 export class UpdateUserProfileResDTO extends createZodDto(
   z.object({
     data: UpdateUserProfileResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 export class ChangePasswordBodyDTO extends createZodDto(

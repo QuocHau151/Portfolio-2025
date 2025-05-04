@@ -20,11 +20,11 @@ export class TransformInterceptor<T>
     next: CallHandler,
   ): Observable<Response<T>> {
     return next.handle().pipe(
-      map((data) => {
-        const ctx = context.switchToHttp();
-        const response = ctx.getResponse();
-        const statusCode = response.statusCode;
-        return { data, statusCode };
+      map((data, message) => {
+        // const ctx = context.switchToHttp();
+        // const response = ctx.getResponse();
+        // const statusCode = response.statusCode;
+        return { data, message };
       }),
     );
   }

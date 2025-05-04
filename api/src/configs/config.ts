@@ -35,6 +35,7 @@ const configSchema = z.object({
   MINIO_ACCESS_KEY: z.string(),
   MINIO_SECRET_KEY: z.string(),
   MINIO_BUCKET_NAME: z.string(),
+  PORT: z.string(),
 });
 
 const configServer = configSchema.safeParse(process.env);

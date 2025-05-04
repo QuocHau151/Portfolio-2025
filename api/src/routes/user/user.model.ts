@@ -33,7 +33,7 @@ export const GetUserParamsSchema = z
 export const CreateUserBodySchema = UserSchema.pick({
   email: true,
   name: true,
-  phoneNumber: true,
+  phone: true,
   avatar: true,
   status: true,
   password: true,

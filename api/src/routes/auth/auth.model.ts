@@ -1,4 +1,5 @@
 import { TypeOfVerificationCode } from 'src/common/constants/auth.constant';
+import { RoleName } from 'src/common/constants/role.constant';
 import { UserSchema } from 'src/common/models/common-user.model';
 import { z } from 'zod';
 
@@ -6,7 +7,7 @@ export const RegisterBodySchema = UserSchema.pick({
   email: true,
   password: true,
   name: true,
-  phoneNumber: true,
+  phone: true,
 })
   .extend({
     confirmPassword: z.string().min(6).max(100),
@@ -41,6 +42,15 @@ export const LoginBodySchema = UserSchema.pick({
 export const LoginResSchema = z.object({
   refreshToken: z.string(),
   accessToken: z.string(),
+  account: z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string(),
+    role: z.enum([RoleName.Admin, RoleName.Client, RoleName.Seller]),
+    avatar: z.string().nullable(),
+    phone: z.string().nullable(),
+    address: z.string().nullable(),
+  }),
 });
 
 export const DeviceSchema = z.object({
@@ -90,7 +100,10 @@ export const SendOPTBodySchema = VerificationCode.pick({
   email: true,
   type: true,
 }).strict();
-
+export const SendOTPResSchema = z.object({
+  message: z.string(),
+  code: z.string(),
+});
 export const LogoutBodySchema = z.object({
   refreshToken: z.string(),
 });

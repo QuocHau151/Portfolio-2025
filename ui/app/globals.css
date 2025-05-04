@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin 'tailwind-scrollbar';
+
 @theme {
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -16,14 +18,23 @@
 @utility border-primary {
   border-color: #28ec8d;
 }
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+  }
+}
 html {
   scroll-behavior: smooth;
   overscroll-behavior: none; /* Prevent double scrolling */
   height: 100%;
+  background-color: #000;
 }
 body {
   overflow-x: hidden;
-  background-color: #000;
+
   color: #fff;
   overflow-y: auto;
   height: 100%;
@@ -34,10 +45,11 @@ body {
 
 * {
   box-sizing: border-box;
-  -ms-overflow-style: none; /* IE và Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
+*::-webkit-scrollbar {
+  display: none; /* Safari và Chrome */
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -53,7 +65,7 @@ a {
   margin-left: auto;
   margin-right: auto;
 }
-::-webkit-scrollbar {
+body::-webkit-scrollbar {
   display: none;
 }
 @media (min-width: 768px) {
@@ -86,16 +98,7 @@ a {
     padding-right: 200px;
   }
 }
-.scroll-container {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-}
 
-.scroll-section {
-  scroll-snap-align: start;
-  min-height: 100vh;
-}
 @theme inline {
   --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
   @keyframes orbit {

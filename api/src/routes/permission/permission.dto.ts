@@ -12,7 +12,6 @@ import { z } from 'zod';
 export class GetPermissionsResDTO extends createZodDto(
   z.object({
     data: GetPermissionsResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 
@@ -23,7 +22,6 @@ export class GetPermissionParamsDTO extends createZodDto(
 export class GetPermissionDetailResDTO extends createZodDto(
   z.object({
     data: GetPermissionDetailResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 

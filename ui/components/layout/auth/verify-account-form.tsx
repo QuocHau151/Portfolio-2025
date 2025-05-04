@@ -1,5 +1,4 @@
 "use client";
-
 import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
@@ -18,6 +17,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAppStore } from "@/stores/app";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useSendOTP,
+  useVerificationCode,
+} from "@/queries/useAuth";
+import { RegisterBodyType } from "@/schemas/auth.schema";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
+import { generateSocketInstace } from "@/libs/utils";
+import { TypeOfVerificationCodeType } from "@/constants/type";
 
 export default function VerifyAccountForm() {
   const [activeTab, setActiveTab] = useState("email");
@@ -25,7 +36,9 @@ export default function VerifyAccountForm() {
   const [isVerified, setIsVerified] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(0);
-
+  const sendOTP = useSendOTP();
+  const seachParam = useSearchParams();
+  const query = seachParam.get("type");
   // For email verification
   const [emailCode, setEmailCode] = useState(["", "", "", "", "", ""]);
   const emailInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -33,8 +46,22 @@ export default function VerifyAccountForm() {
   // For phone verification
   const [phoneCode, setPhoneCode] = useState(["", "", "", "", "", ""]);
   const phoneInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [email, setEmail] = useState("");
 
-  // Handle countdown for resend code
+  const {
+    registerForm,
+    setAccount,
+    setRole,
+    setSocket,
+    setRegisterForm,
+    forgotPasswordForm,
+    setCode,
+  } = useAppStore();
+  const registerMutation = useRegisterMutation();
+  const loginMutation = useLoginMutation();
+  const verificationCode = useVerificationCode();
+  const router = useRouter();
+
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -108,25 +135,69 @@ export default function VerifyAccountForm() {
       }
     }
   };
-
-  const handleVerify = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (query === "REGISTER") {
+      setEmail(registerForm?.email as string);
+    }
+    if (query === "FORGOT_PASSWORD") {
+      setEmail(forgotPasswordForm?.email as string);
+    }
+  }, [query]);
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsVerifying(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsVerifying(false);
-      setIsVerified(true);
-      console.log({
-        method: activeTab,
+    try {
+      const form = {
+        ...registerForm,
         code: activeTab === "email" ? emailCode.join("") : phoneCode.join(""),
-      });
-    }, 1500);
+      };
+      if (query === "REGISTER") {
+        const result = await registerMutation.mutateAsync(
+          form as RegisterBodyType,
+        );
+        setIsVerified(true);
+        toast.success("Xác thực tài khoản thành công!");
+
+        if (result.status === 200) {
+          const login = await loginMutation.mutateAsync({
+            email: form.email as string,
+            password: form.password as string,
+          });
+          toast("Đăng nhập thành công");
+          setRole(login.payload.data.account.role);
+          setAccount(login.payload.data.account);
+          setSocket(generateSocketInstace(login.payload.data.accessToken));
+          setRegisterForm();
+          router.push("/");
+        }
+      }
+      if (query === "FORGOT_PASSWORD") {
+        const result = await verificationCode.mutateAsync({
+          email: email,
+          code: activeTab === "email" ? emailCode.join("") : phoneCode.join(""),
+          type: query as TypeOfVerificationCodeType,
+        });
+        const payload = result.payload as { data: { message: string } };
+        toast(payload.data.message);
+        setCode({
+          code: activeTab === "email" ? emailCode.join("") : phoneCode.join(""),
+        });
+        router.push("/reset-password");
+      }
+    } catch (error: any) {
+      toast(error.payload.message);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     setIsResending(true);
-
+    await sendOTP.mutateAsync({
+      email: email,
+      type: query as string,
+    });
     // Simulate API call
     setTimeout(() => {
       setIsResending(false);
@@ -171,11 +242,11 @@ export default function VerifyAccountForm() {
               </TabsList>
 
               <TabsContent value="email" className="mt-4">
-                <div className="space-y-2">
+                <div className="">
                   <Label htmlFor="email-code" className="text-zinc-300">
                     Mã xác thực Email
                   </Label>
-                  <div className="flex justify-between gap-2">
+                  <div className="mt-2 flex justify-between gap-2">
                     {emailCode.map((digit, index) => (
                       <Input
                         key={`email-${index}`}
@@ -204,7 +275,7 @@ export default function VerifyAccountForm() {
                   <Label htmlFor="phone-code" className="text-zinc-300">
                     Mã xác thực SMS
                   </Label>
-                  <div className="flex justify-between gap-2">
+                  <div className="mt-2 flex justify-between gap-2">
                     {phoneCode.map((digit, index) => (
                       <Input
                         key={`phone-${index}`}
@@ -285,11 +356,11 @@ export default function VerifyAccountForm() {
             <div className="flex justify-center">
               <CheckCircle2 className="h-16 w-16 text-green-500" />
             </div>
-            <p className="text-lg text-white">
-              Tài khoản của bạn đã được xác thực thành công!
-            </p>
+
             <Button className="w-full" asChild>
-              <Link href="/">Đăng nhập</Link>
+              <Link href="/">
+                <p className="text-black">Về trang chủ</p>
+              </Link>
             </Button>
           </div>
         )}

@@ -5,6 +5,8 @@ import "./globals.css";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import ScrollLinked from "@/components/ui/scroll-linked";
+import AppProvider from "@/components/feature/app-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "../public/fonts/GeistVF.woff",
@@ -26,15 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
-      <body className={`${geistSans.variable} ${geistMono.variable} relative`}>
-        <ScrollLinked />
-        <Header />
-        <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[100px]">
+    <AppProvider>
+      <html lang="vi">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} relative`}
+        >
           {children}
-        </div>
-        <Footer />
-      </body>
-    </html>
+          <Toaster />
+        </body>
+      </html>
+    </AppProvider>
   );
 }

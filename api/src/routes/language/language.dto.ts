@@ -11,7 +11,6 @@ import { z } from 'zod';
 export class GetLanguagesResDTO extends createZodDto(
   z.object({
     data: GetLanguagesResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 
@@ -22,7 +21,6 @@ export class GetLanguageParamsDTO extends createZodDto(
 export class GetLanguageDetailResDTO extends createZodDto(
   z.object({
     data: GetLanguageDetailResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 

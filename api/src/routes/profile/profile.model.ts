@@ -10,13 +10,13 @@ export const GetProfileResSchema = z.object({
 
 export const UpdateProfileBodySchema = UserSchema.pick({
   name: true,
-  phoneNumber: true,
+  phone: true,
   avatar: true,
 }).strict();
 export const UpdateUserProfileResSchema = UserSchema.pick({
   email: true,
   name: true,
-  phoneNumber: true,
+  phone: true,
   avatar: true,
 });
 export const ChangePasswordBodySchema = UserSchema.pick({

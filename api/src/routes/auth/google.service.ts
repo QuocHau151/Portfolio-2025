@@ -89,7 +89,7 @@ export class GoogleService {
           name: data.name ?? '',
           password: hashedPassword,
           roleId: clientRoleId,
-          phoneNumber: '',
+          phone: '',
           avatar: data.picture ?? null,
         });
       }

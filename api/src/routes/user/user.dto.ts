@@ -12,7 +12,6 @@ import { z } from 'zod';
 export class GetUsersResDTO extends createZodDto(
   z.object({
     data: GetUsersResSchema,
-    statusCode: z.number(),
   }),
 ) {}
 

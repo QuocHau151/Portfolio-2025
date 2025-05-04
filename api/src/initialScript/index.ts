@@ -38,7 +38,7 @@ const main = async () => {
       email: envConfig.ADMIN_EMAIL,
       password: hashedPassword,
       name: envConfig.ADMIN_NAME,
-      phoneNumber: envConfig.ADMIN_PHONE_NUMBER,
+      phone: envConfig.ADMIN_PHONE_NUMBER,
       roleId: adminRole.id,
     },
   });

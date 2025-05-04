@@ -15,6 +15,7 @@ import { LanguageModule } from './routes/language/language.module';
 import { ProfileModule } from './routes/profile/profile.module';
 import { UserModule } from './routes/user/user.module';
 import { MediaModule } from './routes/media/media.module';
+import { WebsocketModule } from './websocket/websocket.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MediaModule } from './routes/media/media.module';
     ProfileModule,
     UserModule,
     MediaModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,6 +11,7 @@ import { AuthenticationGuard } from './guards/authentication.guard';
 import { EmailService } from './services/email.service';
 import { CommonRoleRepository } from './repositories/common-role.repo';
 import { TwoFactorService } from './services/2fa.service';
+import { CommonWebsocketRepository } from './repositories/common-websocket';
 
 const commonServices = [
   PrismaService,
@@ -20,6 +21,7 @@ const commonServices = [
   CommonRoleRepository,
   EmailService,
   TwoFactorService,
+  CommonWebsocketRepository,
 ];
 
 @Global()

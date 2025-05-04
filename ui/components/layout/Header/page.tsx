@@ -18,6 +18,9 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { Input } from "@/components/ui/input";
 import { BsSearch } from "react-icons/bs";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAppStore } from "@/stores/app";
+import DropdownAvatar from "@/components/feature/dropdown-avatar";
+
 interface LogoProps {
   theme: string;
   isScroll?: boolean;
@@ -110,9 +113,8 @@ export const Header = () => {
           <Link href={"/contact"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Contact</span>
           </Link>
-          <Link href={"/signin"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">Sign In</span>
-          </Link>
+
+          <DropdownAvatar />
           <div className="relative flex items-center">
             <Input
               id="search"
@@ -154,7 +156,7 @@ export const Header = () => {
                 <Link href={"/contact"}>Contact</Link>
               </li>
               <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/signin"}>Sign In</Link>
+                <Link href={"/login"}>Sign In</Link>
               </li>
             </ul>
 

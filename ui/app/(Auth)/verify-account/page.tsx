@@ -1,9 +1,14 @@
+"use client";
+
+import { Suspense } from "react";
 import VerifyAccountForm from "@/components/layout/auth/verify-account-form";
 
-export default function VerifyAccount() {
+export default function VerifyAccountPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black p-4 md:p-8">
-      <VerifyAccountForm />
-    </main>
+    <div className="container flex h-screen items-center justify-center">
+      <Suspense fallback={<div>Đang tải...</div>}>
+        <VerifyAccountForm />
+      </Suspense>
+    </div>
   );
 }
