@@ -27,7 +27,7 @@ export class MediaService {
   async uploadFile(
     file: Express.Multer.File,
     bucketName: string,
-  ): Promise<string> {
+  ): Promise<object> {
     try {
       const ext = path.extname(file.originalname);
       const objectName = `${uuidv4()}${ext}`;
@@ -68,10 +68,12 @@ export class MediaService {
         },
       );
       const fileUrl = `https://${envConfig.MINIO_ENDPOINT}/${bucketName}/${objectName}`;
-      return fileUrl;
+      return {
+        url: fileUrl,
+      };
     } catch (error) {
       this.logger.error(`Failed to upload file: ${error.message}`);
-      throw error;
+      throw new UnauthorizedException('Đã Xảy Ra Lỗi');
     }
   }
 

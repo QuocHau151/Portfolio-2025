@@ -1,4 +1,8 @@
 "use client";
+import { DotButton, useDotButton } from "@/hooks/useDotCarousel";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Autoplay from "embla-carousel-autoplay";
+import useEmblaCarousel from "embla-carousel-react";
 import {
   ArrowDownToLine,
   Facebook,
@@ -9,30 +13,22 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { SiZalo } from "react-icons/si";
 import StackIcon from "tech-stack-icons";
-import Autoplay from "embla-carousel-autoplay";
-import useEmblaCarousel from "embla-carousel-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { DotButton, useDotButton } from "@/hooks/useDotCarousel";
-import { useForm } from "react-hook-form";
 
+import BlurText from "@/components/ui/blurText";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import * as z from "zod";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import BlurText from "@/components/ui/blurText";
+import * as z from "zod";
 export default function CV() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, startIndex: 0 }, [
     Autoplay({ delay: 3000, stopOnInteraction: false }),

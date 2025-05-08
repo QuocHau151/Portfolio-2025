@@ -1,23 +1,16 @@
 "use client";
-import * as React from "react";
 import {
-  ArrowUpCircleIcon,
   BarChartIcon,
-  CameraIcon,
   ClipboardListIcon,
   DatabaseIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
   FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   ListIcon,
   PlusCircleIcon,
-  SearchIcon,
   SettingsIcon,
-  UsersIcon,
 } from "lucide-react";
+import * as React from "react";
 
 import {
   Sidebar,
@@ -32,12 +25,12 @@ import {
 } from "@/components/ui/sidebar";
 import { NavDocuments } from "./nav-documents";
 
-import { NavSecondary } from "./nav-secondary";
-import { NavUser } from "./nav-user";
-import Image from "next/image";
 import { useAppStore } from "@/stores/app";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
 
 const data = {
   navMain: [

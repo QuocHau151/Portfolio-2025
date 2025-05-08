@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
+import { GoogleUserInfoError } from 'src/routes/auth/auth.error';
 import { GoogleAuthStateType } from 'src/routes/auth/auth.model';
 import { AuthRepository } from 'src/routes/auth/auth.repo';
 import { AuthService } from 'src/routes/auth/auth.service';
-import { GoogleUserInfoError } from 'src/routes/auth/auth.error';
 
-import { v4 as uuidv4 } from 'uuid';
+import { CommonRoleRepository } from 'src/common/repositories/common-role.repo';
 import { HashingService } from 'src/common/services/hasing.service';
 import envConfig from 'src/configs/config';
-import { CommonRoleRepository } from 'src/common/repositories/common-role.repo';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class GoogleService {
@@ -75,6 +75,7 @@ export class GoogleService {
       if (!data.email) {
         throw GoogleUserInfoError;
       }
+      console.log(data);
 
       let user = await this.authRepository.findUniqueUserIncludeRole({
         email: data.email,
@@ -104,7 +105,19 @@ export class GoogleService {
         roleId: user.roleId,
         roleName: user.role.name,
       });
-      return authTokens;
+      return {
+        accessToken: authTokens.accessToken,
+        refreshToken: authTokens.refreshToken,
+        account: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          role: user.role.name,
+          phone: user.phone,
+          address: user.address,
+        },
+      };
     } catch (error) {
       console.error('Error in googleCallback', error);
       throw error;

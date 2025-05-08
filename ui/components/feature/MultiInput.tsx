@@ -46,7 +46,7 @@ export function MultiInput({ values, onChange, placeholder }: MultiInputProps) {
         type="button"
         variant="default"
         onClick={handleAdd}
-        className="w-full"
+        className="w-full border bg-black text-white"
       >
         <Plus className="mr-2 h-4 w-4" />
         Thêm mới

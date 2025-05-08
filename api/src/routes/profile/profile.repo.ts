@@ -24,6 +24,21 @@ export class ProfileRepo {
     });
     return profile;
   }
+  async findUniqueIncludeRolePermissions(id: number) {
+    const profile = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        role: {
+          include: {
+            permissions: true,
+          },
+        },
+      },
+    });
+    return profile;
+  }
 
   async update(userId: number, body: UpdateProfileBodyType) {
     const profile = await this.prisma.user.update({

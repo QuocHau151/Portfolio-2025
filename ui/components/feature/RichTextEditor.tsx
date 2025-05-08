@@ -1,42 +1,44 @@
-// @ts-nocheck
 "use client";
-import React from "react";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import TextEditorMenuBar from "./TextEditorMenuBar";
-import TextAlign from "@tiptap/extension-text-align";
-import ImageResize from "tiptap-extension-resize-image";
-import Image from "@tiptap/extension-image";
 import FileHandler from "@tiptap-pro/extension-file-handler";
-import { CustomImageExtension } from "./CustomImageExtension";
-import { useEffect } from "react";
-import { FontSizeExtension } from "./FontSize";
-import TextStyle from "@tiptap/extension-text-style";
-import Link from "@tiptap/extension-link";
-import OrderedList from "@tiptap/extension-ordered-list";
-import ListItem from "@tiptap/extension-list-item";
 import BulletList from "@tiptap/extension-bullet-list";
-import Paragraph from "@tiptap/extension-paragraph";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { Color } from "@tiptap/extension-color";
 import Heading from "@tiptap/extension-heading";
+import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Paragraph from "@tiptap/extension-paragraph";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
+import TextAlign from "@tiptap/extension-text-align";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
 import Youtube from "@tiptap/extension-youtube";
-import { Color } from "@tiptap/extension-color";
-import Highlight from "@tiptap/extension-highlight";
-import {
-  getHierarchicalIndexes,
-  TableOfContents,
-} from "@tiptap-pro/extension-table-of-contents";
-// import { TableOfContent } from "./TableOfContents";
-
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import css from "highlight.js/lib/languages/css";
+import js from "highlight.js/lib/languages/javascript";
+import ts from "highlight.js/lib/languages/typescript";
+import html from "highlight.js/lib/languages/xml";
+import { all, createLowlight } from "lowlight";
+import { useEffect } from "react";
+import ImageResize from "tiptap-extension-resize-image";
+import { CustomImageExtension } from "./CustomImageExtension";
+import { FontSizeExtension } from "./FontSize";
+import TextEditorMenuBar from "./TextEditorMenuBar";
 type TextEditorProps = {
   onChange: (content: string) => void;
-  initialContent?: string; // Add this line
+  initialContent?: string;
 };
-
+const lowlight = createLowlight(all);
+lowlight.register("html", html);
+lowlight.register("css", css);
+lowlight.register("js", js);
+lowlight.register("ts", ts);
 export default function RichTextEditor({
   onChange,
   initialContent,
@@ -113,6 +115,12 @@ export default function RichTextEditor({
           class: "border-[1px] px-4 py-2",
         },
       }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        HTMLAttributes: {
+          class: "bg-neutral-800 overflow-auto p-4 text-primary my-2",
+        },
+      }),
       Youtube.configure({
         controls: false,
         nocookie: true,
@@ -123,9 +131,6 @@ export default function RichTextEditor({
       }),
       ImageResize.configure({
         allowBase64: true,
-      }),
-      TableOfContents.configure({
-        getIndex: getHierarchicalIndexes,
       }),
       FileHandler.configure({
         allowedMimeTypes: [
@@ -188,7 +193,7 @@ export default function RichTextEditor({
       },
     },
     immediatelyRender: false,
-    autofocus: false,
+    autofocus: "start",
     content: initialContent,
     onUpdate: ({ editor }) => {
       const content = editor.getHTML();
@@ -232,9 +237,6 @@ export default function RichTextEditor({
   return (
     <div>
       <TextEditorMenuBar editor={editor} addImage={addImage} />
-      {/* <div className="w-1/4">
-        <TableOfContent editor={editor} />
-      </div> */}
       <EditorContent
         className="prose prose-h1:my-0 prose-p:my-3 prose-a:no-underline prose-hr:my-0 max-w-none"
         editor={editor}

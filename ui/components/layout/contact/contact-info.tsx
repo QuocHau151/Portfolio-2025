@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function ContactInfo() {
   return (
-    <Card className="border-none bg-transparent shadow-none">
+    <Card className="border-none bg-transparent shadow-none lg:py-20">
       <CardContent className="p-0">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="mb-4 text-2xl font-bold md:text-3xl">

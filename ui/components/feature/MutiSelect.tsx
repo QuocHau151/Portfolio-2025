@@ -38,7 +38,7 @@ export function MultiSelect({
               : placeholder}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-black">
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

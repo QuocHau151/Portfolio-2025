@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Extension } from "@tiptap/core";
 import "@tiptap/extension-text-style";
 declare module "@tiptap/core" {
@@ -28,6 +27,7 @@ export const FontSizeExtension = Extension.create({
   addGlobalAttributes() {
     return [
       {
+        types: this.options.types,
         attributes: {
           fontSize: {
             default: null,

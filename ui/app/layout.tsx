@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-import Footer from "@/components/layout/Footer/page";
-import { Header } from "@/components/layout/Header/page";
-import ScrollLinked from "@/components/ui/scroll-linked";
 import AppProvider from "@/components/feature/app-provider";
 import { Toaster } from "@/components/ui/sonner";
 

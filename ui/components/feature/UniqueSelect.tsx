@@ -27,14 +27,10 @@ export function UniqueSelect({
           onChange(value);
         }}
       >
-        <SelectTrigger>
-          <SelectValue placeholder={placeholder}>
-            {selected
-              ? options.find((opt) => opt.value === selected)?.label
-              : placeholder}
-          </SelectValue>
+        <SelectTrigger className="text-whtie w-40">
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-black">
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

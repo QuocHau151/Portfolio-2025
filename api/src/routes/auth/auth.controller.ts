@@ -1,7 +1,14 @@
 import { Body, Controller, Get, Ip, Post, Query, Res } from '@nestjs/common';
-import { ZodSerializerDto } from 'nestjs-zod';
 import { Response } from 'express';
+import { ZodSerializerDto } from 'nestjs-zod';
 
+import { TypeOfVerificationCodeType } from 'src/common/constants/auth.constant';
+import { ActiveUser } from 'src/common/decorators/active-user.decorator';
+import { IsPublic } from 'src/common/decorators/auth.decorator';
+import { UserAgent } from 'src/common/decorators/user-agent.decorator';
+import { EmptyBodyDTO } from 'src/common/dtos/request.dto';
+import { BooleanResDTO, MessageResDTO } from 'src/common/dtos/response.dto';
+import envConfig from 'src/configs/config';
 import { AuthService } from 'src/routes/auth/auth.service';
 import {
   DisableTwoFactorBodyDTO,
@@ -18,14 +25,7 @@ import {
   SendOTPResDTO,
   TwoFactorSetupResDTO,
 } from './auth.dto';
-import { IsPublic } from 'src/common/decorators/auth.decorator';
-import { UserAgent } from 'src/common/decorators/user-agent.decorator';
-import { BooleanResDTO, MessageResDTO } from 'src/common/dtos/response.dto';
 import { GoogleService } from './google.service';
-import envConfig from 'src/configs/config';
-import { EmptyBodyDTO } from 'src/common/dtos/request.dto';
-import { ActiveUser } from 'src/common/decorators/active-user.decorator';
-import { TypeOfVerificationCodeType } from 'src/common/constants/auth.constant';
 
 @Controller('auth')
 export class AuthController {
@@ -104,7 +104,7 @@ export class AuthController {
         state,
       });
       return res.redirect(
-        `${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?accessToken=${data.accessToken}&refreshToken=${data.refreshToken}`,
+        `${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?accessToken=${data.accessToken}&refreshToken=${data.refreshToken}&account=${encodeURIComponent(JSON.stringify(data.account))}`,
       );
     } catch (error) {
       const message =

@@ -1,19 +1,28 @@
 import React from "react";
 
-import { Clock } from "lucide-react";
-import { BlogPost } from "@/types/blogTypes";
+import {
+  GetAuthorBlogMutation,
+  useGetCategoryBlogMutation,
+} from "@/queries/useBlog";
+import { BlogType } from "@/schemas/blog.schema";
+import { Clock, User } from "lucide-react";
 
 interface FeaturedPostProps {
-  post: BlogPost;
+  post: BlogType;
 }
 
 const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
+  const getCategory = useGetCategoryBlogMutation(post.categoryId);
+  const getAuthor = GetAuthorBlogMutation(post.authorId);
+  const category = getCategory.data?.payload.data.name;
+  const author = getAuthor.data?.payload.data.name;
+
   return (
     <div className="group relative mb-12 h-[400px] w-full overflow-hidden rounded-xl md:h-[500px]">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 bg-black">
         <img
-          src={post.coverImage}
+          src={post.image}
           alt={post.title}
           className="h-full w-full object-cover opacity-60 transition-all duration-500 group-hover:scale-105 group-hover:opacity-40"
         />
@@ -24,7 +33,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
       <div className="absolute right-0 bottom-0 left-0 flex flex-col p-6 md:p-8">
         <div className="mb-4">
           <span className="bg-primary rounded-full px-3 py-1 text-xs font-medium text-black">
-            {post.category}
+            {category}
           </span>
         </div>
 
@@ -32,24 +41,36 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
           {post.title}
         </h2>
 
-        <p className="mb-4 max-w-3xl text-neutral-300">{post.excerpt}</p>
+        <p className="mb-4 max-w-3xl text-neutral-300">{post.description}</p>
 
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center">
-            <img
-              src={post.author.avatar}
-              alt={post.author.name}
-              className="border-primary h-10 w-10 rounded-full border-2 object-cover"
-            />
+            <div className="border-primary flex h-10 w-10 items-center justify-center rounded-full border-2 object-cover">
+              <User />
+            </div>
+
             <div className="ml-3">
-              <p className="font-medium text-white">{post.author.name}</p>
-              <p className="text-sm text-neutral-400">{post.publishedDate}</p>
+              <p className="font-medium text-white">{author}</p>
+              <p className="text-sm text-neutral-400">
+                {(() => {
+                  try {
+                    const date = new Date(post.createdAt);
+                    return date.toLocaleDateString("vi-VN", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    });
+                  } catch (error) {
+                    return "Không có ngày";
+                  }
+                })()}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center text-neutral-400">
             <Clock size={16} className="mr-1" />
-            <span className="text-sm">{post.readTime} min read</span>
+            <span className="text-sm">5 min read</span>
           </div>
         </div>
       </div>

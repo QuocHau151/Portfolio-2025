@@ -4,22 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useRef } from "react";
 
+import DropdownAvatar from "@/components/feature/dropdown-avatar";
+import { Input } from "@/components/ui/input";
 import {
-  SheetTrigger,
+  Sheet,
+  SheetClose,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
-  SheetClose,
-  Sheet,
+  SheetTrigger,
 } from "@/components/ui/sheet";
-import { AlignRight } from "lucide-react";
-import { IoMdArrowDropdown } from "react-icons/io";
-import { Input } from "@/components/ui/input";
-import { BsSearch } from "react-icons/bs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAppStore } from "@/stores/app";
-import DropdownAvatar from "@/components/feature/dropdown-avatar";
+import { AlignRight } from "lucide-react";
+import { BsSearch } from "react-icons/bs";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 interface LogoProps {
   theme: string;

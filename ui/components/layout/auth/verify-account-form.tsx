@@ -1,9 +1,9 @@
 "use client";
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAppStore } from "@/stores/app";
+import { TypeOfVerificationCodeType } from "@/constants/type";
+import { generateSocketInstace } from "@/libs/utils";
 import {
   useLoginMutation,
   useRegisterMutation,
@@ -25,10 +26,9 @@ import {
   useVerificationCode,
 } from "@/queries/useAuth";
 import { RegisterBodyType } from "@/schemas/auth.schema";
-import { toast } from "sonner";
+import { useAppStore } from "@/stores/app";
 import { useRouter, useSearchParams } from "next/navigation";
-import { generateSocketInstace } from "@/libs/utils";
-import { TypeOfVerificationCodeType } from "@/constants/type";
+import { toast } from "sonner";
 
 export default function VerifyAccountForm() {
   const [activeTab, setActiveTab] = useState("email");

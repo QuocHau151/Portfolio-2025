@@ -3,19 +3,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 
-import { useLogoutMutation } from "@/queries/useAuth";
 import { handleErrorApi } from "@/libs/utils";
+import { useLogoutMutation } from "@/queries/useAuth";
 
-import { useRouter } from "next/navigation";
 import { useAppStore } from "@/stores/app";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function DropdownAvatar() {
@@ -44,11 +41,21 @@ export default function DropdownAvatar() {
       <DropdownMenuTrigger asChild>
         {isAuth === true && account ? (
           <div className="bg-primary flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-black uppercase">
-            {account.name
-              .split(" ")
-              .slice(0, 2) // lấy 2 từ đầu tiên
-              .map((word) => word[0]) // lấy chữ cái đầu
-              .join("")}
+            {account.avatar ? (
+              <Image
+                src={account.avatar}
+                alt="avatar"
+                className="h-full w-full rounded-full object-cover"
+                width={40}
+                height={40}
+              />
+            ) : (
+              account.name
+                .split(" ")
+                .slice(0, 2) // lấy 2 từ đầu tiên
+                .map((word) => word[0]) // lấy chữ cái đầu
+                .join("")
+            )}
           </div>
         ) : (
           <Link href={"/login"} className="flex items-center">

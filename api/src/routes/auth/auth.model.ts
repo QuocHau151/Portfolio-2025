@@ -121,7 +121,7 @@ export const GoogleAuthStateSchema = DeviceSchema.pick({
   ip: true,
 });
 export const GetAuthorizationUrlResSchema = z.object({
-  url: z.string().url(),
+  data: z.object({ url: z.string().url() }),
 });
 export const ForgotPasswordBodySchema = z
   .object({

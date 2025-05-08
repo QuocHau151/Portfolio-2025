@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +25,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { AccountType } from "@/constants/type";
-import { useLogoutMutation } from "@/queries/useAuth";
-import { useRouter } from "next/navigation";
-import { useAppStore } from "@/stores/app";
-import { toast } from "sonner";
 import { handleErrorApi } from "@/libs/utils";
+import { useLogoutMutation } from "@/queries/useAuth";
+import { useAppStore } from "@/stores/app";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function NavUser({ account }: { account?: AccountType }) {
   const { setRole, disconnectSocket } = useAppStore();

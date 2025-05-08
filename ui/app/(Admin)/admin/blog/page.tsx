@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,49 +34,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { BlogAdminType } from "@/constants/type";
+import { formatDateTimeToDateString } from "@/libs/utils";
+import {
+  GetAuthorBlogMutation,
+  useDeleteBlogMutation,
+  useGetBlogsMutation,
+  useGetCategoryBlogMutation,
+} from "@/queries/useBlog";
+import { useDeleteImage } from "@/queries/useMedia";
+import { BlogType, GetBlogsResType } from "@/schemas/blog.schema";
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
-const data: BlogAdminType[] = [
-  {
-    id: "m5gr84i9",
-    image: "",
-    name: "",
-    catrgory: "",
-    tag: "",
-  },
-  {
-    id: "3u1reuv4",
-
-    image: "",
-    name: "",
-    catrgory: "",
-    tag: "",
-  },
-  {
-    id: "derv1ws0",
-    image: "",
-    name: "",
-    catrgory: "",
-    tag: "",
-  },
-  {
-    id: "5kma53ae",
-    image: "",
-    name: "",
-    catrgory: "",
-    tag: "",
-  },
-  {
-    id: "bhqecj4p",
-    image: "",
-    name: "",
-    catrgory: "",
-    tag: "",
-  },
-];
-
-const columns: ColumnDef<BlogAdminType>[] = [
+const columns: ColumnDef<BlogType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -100,14 +72,21 @@ const columns: ColumnDef<BlogAdminType>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "id",
+    header: () => <div className="text-left">Id</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+  },
+  {
     accessorKey: "image",
     header: () => <div className="text-left">Image</div>,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("image")}</div>
+      <div className="capitalize">
+        <Image src={row.getValue("image")} width={100} height={100} alt="" />
+      </div>
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "title",
     header: ({ column }) => {
       return (
         <Button
@@ -119,26 +98,56 @@ const columns: ColumnDef<BlogAdminType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "category",
+    accessorKey: "categoryId",
     header: () => <div className="text-left">Danh Mục</div>,
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("category")}</div>
-    ),
+    cell: ({ row }) => {
+      const categoryId = row.getValue("categoryId");
+      const getCategoryBlog = useGetCategoryBlogMutation(categoryId as number);
+      const category = getCategoryBlog.data?.payload.data.name;
+      return <div className="capitalize">{category}</div>;
+    },
   },
   {
-    accessorKey: "tag",
-    header: () => <div className="text-left">Tag</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("tag")}</div>,
+    accessorKey: "authorId",
+    header: () => <div className="text-left">Tác Giả</div>,
+    cell: ({ row }) => {
+      const authorId = row.getValue("authorId");
+      const getAuthorBlog = GetAuthorBlogMutation(authorId as number);
+      const author = getAuthorBlog.data?.payload.data.name;
+      return <div className="capitalize">{author}</div>;
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: () => <div className="text-left">Ngày Tạo</div>,
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt");
+      const formatted = formatDateTimeToDateString(createdAt as string);
+      return <div className="capitalize">{formatted}</div>;
+    },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const blog = row.original;
+      const deleteBlog = useDeleteBlogMutation(blog.id);
+      const deleteImage = useDeleteImage();
+      const handleDeleteBlog = async () => {
+        try {
+          const base = "https://s3.quochau.com/portfolio/";
+          const fileName = blog.image.replace(base, "");
+          await deleteImage.mutateAsync(fileName);
+          const result = await deleteBlog.mutateAsync();
 
+          toast((result.payload as { data: { message: string } }).data.message);
+        } catch (error) {
+          toast("Xoá Blog Thất Bại");
+        }
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -150,13 +159,17 @@ const columns: ColumnDef<BlogAdminType>[] = [
           <DropdownMenuContent align="end" className="bg-black">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(String(blog.id))}
             >
-              Copy payment ID
+              Copy Blog ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/admin/blog/${blog.id}`}>Chỉnh Sửa</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDeleteBlog()}>
+              Xoá
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -164,7 +177,15 @@ const columns: ColumnDef<BlogAdminType>[] = [
   },
 ];
 
-export default function DataTableDemo() {
+export default function Blog() {
+  const getBlogs = useGetBlogsMutation();
+  const [data, setData] = React.useState<GetBlogsResType[]>([]);
+
+  useEffect(() => {
+    if (getBlogs.isSuccess) {
+      setData(getBlogs.data?.payload.data as unknown as GetBlogsResType[]);
+    }
+  }, [getBlogs]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -175,7 +196,7 @@ export default function DataTableDemo() {
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columns as ColumnDef<GetBlogsResType>[],
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -197,13 +218,16 @@ export default function DataTableDemo() {
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter names..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm rounded-lg"
         />
         <div className="ml-auto space-x-2">
+          <Link href={"/admin/blog/category"}>
+            <Button variant="outline">Category Blog</Button>
+          </Link>
           <Link href={"/admin/blog/create"}>
             <Button variant="outline">Creat Blog</Button>
           </Link>

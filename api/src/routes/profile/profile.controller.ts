@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
 import { ZodSerializerDto } from 'nestjs-zod';
@@ -20,6 +20,11 @@ export class ProfileController {
     return this.profileService.getProfile(userId);
   }
 
+  @Get(':id')
+  @ZodSerializerDto(GetUserProfileResDTO)
+  getUserProfileById(@Param('id') id: number) {
+    return this.profileService.getUserProfileById(id);
+  }
   @Put()
   @ZodSerializerDto(UpdateUserProfileResDTO)
   updateProfile(

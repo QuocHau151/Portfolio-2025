@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function SocialLinks() {
   return (
-    <Card className="border-none bg-transparent shadow-none">
+    <Card className="border-none bg-transparent shadow-none lg:pb-20">
       <CardContent className="p-0">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="mb-4 text-2xl font-bold">Kết nối với tôi</h2>

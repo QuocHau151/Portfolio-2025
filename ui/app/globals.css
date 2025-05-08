@@ -126,3 +126,6 @@ body::-webkit-scrollbar {
   animation: animate-progress-bar 3s linear;
   width: 0%;
 }
+.my-custom-class {
+  display: hidden;
+}

@@ -1,25 +1,41 @@
 "use client";
+
 import CategoryFilter from "@/components/layout/blog/CategoryFilter";
 import FeaturedPost from "@/components/layout/blog/FeaturedPost";
 import Newsletter from "@/components/layout/blog/Newsletter";
 import PostCard from "@/components/layout/blog/PostCard";
 import SearchBar from "@/components/layout/blog/SearchBar";
-import { blogPosts, categories } from "@/data/blogData";
-import { BlogPost } from "@/types/blogTypes";
-import React, { useState, useEffect } from "react";
+import {
+  useGetBlogsMutation,
+  useGetListCategoryBlogMutation,
+} from "@/queries/useBlog";
+import { BlogType } from "@/schemas/blog.schema";
+
+import React, { useEffect, useState } from "react";
 
 const BlogList: React.FC = () => {
+  const getCategory = useGetListCategoryBlogMutation();
+  const getPosts = useGetBlogsMutation();
+  const categories = getCategory.data?.payload.data || [];
+  const blogPosts = getPosts.data?.payload.data || [];
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
-  const featuredPosts = blogPosts.filter((post) => post.isFeatured);
+  const [filteredPosts, setFilteredPosts] = useState<BlogType[]>([]);
+  const latestPost =
+    blogPosts.length > 0 ? blogPosts[blogPosts.length - 1] : null;
 
   useEffect(() => {
+    if (!blogPosts.length) return;
+
     let result = [...blogPosts];
 
     // Filter by category if selected
     if (selectedCategory) {
-      result = result.filter((post) => post.category === selectedCategory);
+      result = result.filter((post) => {
+        // Find category name by ID
+        const category = categories.find((c) => c.id === post.categoryId);
+        return category?.name === selectedCategory;
+      });
     }
 
     // Filter by search query
@@ -28,20 +44,28 @@ const BlogList: React.FC = () => {
       result = result.filter(
         (post) =>
           post.title.toLowerCase().includes(query) ||
-          post.excerpt.toLowerCase().includes(query) ||
-          post.tags.some((tag) => tag.toLowerCase().includes(query)),
+          post.description.toLowerCase().includes(query) ||
+          (post.keyword &&
+            post.keyword.some((tag) => tag.toLowerCase().includes(query))),
       );
     }
 
+    // Sắp xếp theo ngày tạo mới nhất
+    result.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA; // Sắp xếp giảm dần (mới nhất lên đầu)
+    });
+
     setFilteredPosts(result);
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, blogPosts, categories]);
 
   return (
     <div className="pt-24 pb-16">
       <div className="container mx-auto px-4">
         {/* Featured Post */}
-        {featuredPosts.length > 0 && !searchQuery && !selectedCategory && (
-          <FeaturedPost post={featuredPosts[0]} />
+        {latestPost && !searchQuery && !selectedCategory && (
+          <FeaturedPost post={latestPost} />
         )}
 
         {/* Search and Filter */}
@@ -57,8 +81,8 @@ const BlogList: React.FC = () => {
           <SearchBar onSearch={setSearchQuery} />
           <CategoryFilter
             categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
+            activeCategory={selectedCategory}
+            onCategoryClick={setSelectedCategory}
           />
         </div>
 

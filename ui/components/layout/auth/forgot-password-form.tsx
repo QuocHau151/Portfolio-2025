@@ -1,10 +1,8 @@
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
+import { ArrowLeft, Mail, Send } from "lucide-react";
 import Link from "next/link";
-import { Mail, ArrowLeft, Send } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,23 +13,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormField, FormItem } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
-import { toast } from "sonner";
-import { useAppStore } from "@/stores/app";
 import { handleErrorApi } from "@/libs/utils";
+import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
+import { useAppStore } from "@/stores/app";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function ForgotPasswordForm() {
   const [activeTab, setActiveTab] = useState("email");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const checkEmailExitsMutation = useCheckEmailExits();
   const sendOTP = useSendOTP();
   const { setForgotPasswordForm } = useAppStore();
@@ -69,7 +66,6 @@ export default function ForgotPasswordForm() {
       }
 
       setIsSubmitting(false);
-      setIsSubmitted(true);
     } catch (error) {
       handleErrorApi({
         error,

@@ -1,10 +1,8 @@
 "use client";
 
-import type React from "react";
-
-import { useEffect, useState } from "react";
+import { Lock, Mail, Phone, User } from "lucide-react";
 import Link from "next/link";
-import { Mail, Lock, User, Phone } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,23 +14,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleLoginUrl, handleErrorApi } from "@/libs/utils";
+import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
 import {
-  RegisterBody,
   RegisterBodyStepBefore,
   RegisterBodyStepBeforeType,
-  RegisterBodyType,
-  RegisterResType,
 } from "@/schemas/auth.schema";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { handleErrorApi } from "@/libs/utils";
-import { Form, FormField, FormItem } from "@/components/ui/form";
 import { useAppStore } from "@/stores/app";
-import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function SignUpForm() {
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -266,32 +261,34 @@ export default function SignUpForm() {
               </span>
             </div>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
-            onClick={() => {
-              // Handle Google sign-up
-              console.log("Google sign-up");
-            }}
-          >
-            <svg
-              className="mr-2 h-4 w-4"
-              aria-hidden="true"
-              focusable="false"
-              data-prefix="fab"
-              data-icon="google"
-              role="img"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 488 512"
+          <Link href={GoogleLoginUrl}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
+              onClick={() => {
+                // Handle Google sign-in
+                console.log("Google sign-in");
+              }}
             >
-              <path
-                fill="currentColor"
-                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-              ></path>
-            </svg>
-            Google
-          </Button>
+              <svg
+                className="mr-2 h-4 w-4"
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fab"
+                data-icon="google"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 488 512"
+              >
+                <path
+                  fill="currentColor"
+                  d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                ></path>
+              </svg>
+              Google
+            </Button>
+          </Link>
         </div>
       </CardContent>
       <CardFooter className="flex justify-center">

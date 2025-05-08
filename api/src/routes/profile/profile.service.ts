@@ -24,7 +24,13 @@ export class ProfileService {
 
     return user;
   }
-
+  async getUserProfileById(id: number) {
+    const user = await this.profileRepo.findUniqueIncludeRolePermissions(id);
+    if (!user) {
+      throw NotFoundRecordException;
+    }
+    return user;
+  }
   async updateProfile(userId: number, body: UpdateProfileBodyType) {
     const user = await this.profileRepo.update(userId, body);
     return user;

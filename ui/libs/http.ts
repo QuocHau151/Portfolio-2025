@@ -7,7 +7,6 @@ import {
   setRefreshTokenToLocalStorage,
 } from "@/libs/utils";
 import { LoginResType } from "@/schemas/auth.schema";
-import Cookies from "js-cookie";
 type CustomOptions = Omit<RequestInit, "method"> & {
   baseUrl?: string | undefined;
 };
@@ -162,6 +161,7 @@ const request = async <Response>(
   // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
   if (isClient) {
     const normalizeUrl = normalizePath(url);
+    console.log("normalizeUrl", normalizeUrl);
     if (["api/auth/login", "api/guest/auth/login"].includes(normalizeUrl)) {
       const { accessToken, refreshToken } = (payload as LoginResType).data;
       setAccessTokenToLocalStorage(accessToken);

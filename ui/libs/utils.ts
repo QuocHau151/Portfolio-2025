@@ -1,18 +1,18 @@
-import { EntityError } from "@/libs/http";
-import { type ClassValue, clsx } from "clsx";
-import { UseFormSetError } from "react-hook-form";
-import { twMerge } from "tailwind-merge";
-import { jwtDecode } from "jwt-decode";
 import authApiRequest from "@/actions/auth";
 import clientApiRequest from "@/actions/clientAuth";
-import { Role } from "@/constants/type";
 import envConfig from "@/configs/config";
+import { Role } from "@/constants/type";
+import { EntityError } from "@/libs/http";
 import { TokenPayload } from "@/types/jwt.types";
+import { type ClassValue, clsx } from "clsx";
+import { jwtDecode } from "jwt-decode";
+import { UseFormSetError } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 
 import { format } from "date-fns";
-import { BookX, CookingPot, HandCoins, Loader, Truck } from "lucide-react";
-import { io } from "socket.io-client";
+
 import slugify from "slugify";
+import { io } from "socket.io-client";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -188,3 +188,8 @@ export const generateSlugUrl = ({ name, id }: { name: string; id: number }) => {
 export const getIdFromSlugUrl = (slug: string) => {
   return Number(slug.split("-i.")[1]);
 };
+export const formatDateTimeToDateString = (date: string | Date) => {
+  return format(date instanceof Date ? date : new Date(date), "dd/MM/yyyy");
+};
+export const GoogleLoginUrl =
+  "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&include_granted_scopes=true&state=eyJ1c2VyQWdlbnQiOiJQb3N0bWFuUnVudGltZS83LjQzLjMiLCJpcCI6Ijo6MSJ9&response_type=code&client_id=1080194740749-vqoi81hhqpeg59a7qh6fve3kbaribccs.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fgoogle%2Fcallback";

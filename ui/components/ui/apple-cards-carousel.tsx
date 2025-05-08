@@ -1,18 +1,18 @@
 "use client";
 import React, {
+  createContext,
+  JSX,
+  useContext,
   useEffect,
   useRef,
   useState,
-  createContext,
-  useContext,
-  JSX,
 } from "react";
 
+import { useOutsideClick } from "@/hooks/use-outside-click";
 import { cn } from "@/libs/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import Image, { ImageProps } from "next/image";
-import { useOutsideClick } from "@/hooks/use-outside-click";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import Image, { ImageProps } from "next/image";
 
 interface CarouselProps {
   items: JSX.Element[];
@@ -205,7 +205,6 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null!);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onCardClose, currentIndex } = useContext(CarouselContext);
 
   useEffect(() => {

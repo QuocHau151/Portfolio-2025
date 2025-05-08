@@ -1,30 +1,31 @@
-// @ts-nocheck
-import {
-  RiBold,
-  RiItalic,
-  RiCodeSSlashLine,
-  RiListOrdered2,
-} from "react-icons/ri";
-import { FiLink } from "react-icons/fi";
-import { BubbleMenu, Editor } from "@tiptap/react";
-import { AiOutlineRedo, AiOutlineUndo } from "react-icons/ai";
-import { BsTypeUnderline } from "react-icons/bs";
-import { IoListOutline } from "react-icons/io5";
-import { FiAlignLeft } from "react-icons/fi";
-import { FiAlignCenter } from "react-icons/fi";
-import { FiAlignRight } from "react-icons/fi";
-import { FiAlignJustify } from "react-icons/fi";
-import { FiImage } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import { Level } from "@tiptap/extension-heading";
-import { type ColorResult, SketchPicker } from "react-color";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { Level } from "@tiptap/extension-heading";
+import { Editor } from "@tiptap/react";
 import { Highlighter, YoutubeIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { type ColorResult, SketchPicker } from "react-color";
+import { AiOutlineRedo, AiOutlineUndo } from "react-icons/ai";
+import { BsTypeUnderline } from "react-icons/bs";
+import {
+  FiAlignCenter,
+  FiAlignJustify,
+  FiAlignLeft,
+  FiAlignRight,
+  FiImage,
+  FiLink,
+} from "react-icons/fi";
+import { IoListOutline } from "react-icons/io5";
+import {
+  RiBold,
+  RiCodeSSlashLine,
+  RiItalic,
+  RiListOrdered2,
+} from "react-icons/ri";
 
 const ButtonMenu = ({
   onClick,
@@ -126,9 +127,7 @@ export default function TextEditorMenuBar({
     }
   };
   const colorValue = editor?.getAttributes("textStyle")?.color || "#000000";
-  const onChangeColor = (color: ColorResult) => {
-    editor?.chain().focus().setColor(color.hex).run();
-  };
+
   const onChangeHighlight = (color: ColorResult) => {
     editor?.chain().focus().setHighlight({ color: color.hex }).run();
   };
@@ -284,24 +283,23 @@ export default function TextEditorMenuBar({
     },
     {
       icon: (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="cursor-pointer">
-            <div className="flex flex-col">
-              <div>A</div>
-              <div
-                className="h-0.5"
-                style={{ backgroundColor: colorValue }}
-              ></div>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="z-[9999] rounded-lg p-2">
-            <div className="bg-white px-2">
-              <SketchPicker color={colorValue} onChange={onChangeColor} />
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div onClick={(e) => e.stopPropagation()}>
+          <input
+            type="color"
+            onInput={(event) => {
+              event.stopPropagation();
+              editor
+                .chain()
+                .focus()
+                .setColor((event.target as HTMLInputElement).value)
+                .run();
+            }}
+            value={editor.getAttributes("textStyle")?.color || colorValue}
+            data-testid="setColor"
+            style={{ width: "20px", height: "20px", cursor: "pointer" }}
+          />
+        </div>
       ),
-      onClick: () => {}, // Required for button interface
     },
     {
       icon: (
@@ -422,7 +420,7 @@ export default function TextEditorMenuBar({
           </ButtonMenu>
         ))}
       </div>
-      {editor && (
+      {/* {editor && (
         <BubbleMenu
           className="relative flex w-full flex-wrap gap-2 rounded-md border border-gray-200 bg-black shadow-sm"
           tippyOptions={{
@@ -443,7 +441,7 @@ export default function TextEditorMenuBar({
             </ButtonMenu>
           ))}
         </BubbleMenu>
-      )}
+      )} */}
     </>
   );
 }

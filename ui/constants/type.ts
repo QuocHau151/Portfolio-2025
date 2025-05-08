@@ -79,13 +79,8 @@ export type UserAdminType = {
   phone: string;
   status: "pending" | "processing" | "success" | "failed";
 };
-export type BlogAdminType = {
-  id: string;
-  image: string;
-  name: string;
-  catrgory: string;
-  tag: string;
-};
+
+
 export type ContactAdminType = {
   id: string;
   email: string;
@@ -94,3 +89,7 @@ export type ContactAdminType = {
   note: string;
   status: "pending" | "processing" | "success" | "failed";
 };
+export const BlogTag = {
+  NOI_BAT: "NOI_BAT",
+  NORMAL: "NORMAL",
+} as const;

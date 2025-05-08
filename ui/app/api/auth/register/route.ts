@@ -1,8 +1,6 @@
 import authApiRequest from "@/actions/auth";
-import { LoginBodyType, RegisterBodyType } from "@/schemas/auth.schema";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { HttpError } from "@/libs/http";
+import { RegisterBodyType } from "@/schemas/auth.schema";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as RegisterBodyType;

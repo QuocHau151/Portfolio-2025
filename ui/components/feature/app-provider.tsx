@@ -1,13 +1,12 @@
 "use client";
 import {
-  decodeToken,
   generateSocketInstace,
   getAccessTokenFromLocalStorage,
 } from "@/libs/utils";
 import { useAppStore } from "@/stores/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useEffect, useRef } from "react";
 import ListenLogoutSocket from "./listen-logout-socket";
 import RefreshToken from "./refresh-token";
 const queryClient = new QueryClient({

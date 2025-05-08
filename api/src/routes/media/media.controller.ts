@@ -42,9 +42,9 @@ export class MediaController {
     );
     return urls;
   }
-  @Delete('delete/:filename')
+  @Delete(':filename')
   async deleteFile(@Param('filename') filename: string) {
     await this.mediaService.deleteFile(filename, envConfig.MINIO_BUCKET_NAME);
-    return { message: 'File deleted successfully' };
+    return { message: 'Xoá File Thành Công' };
   }
 }

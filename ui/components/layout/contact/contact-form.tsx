@@ -77,7 +77,7 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border p-3">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Gửi tin nhắn</CardTitle>
         <CardDescription>
