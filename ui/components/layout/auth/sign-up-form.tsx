@@ -267,8 +267,7 @@ export default function SignUpForm() {
               variant="outline"
               className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
               onClick={() => {
-                // Handle Google sign-in
-                console.log("Google sign-in");
+               
               }}
             >
               <svg

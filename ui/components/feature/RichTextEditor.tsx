@@ -118,7 +118,8 @@ export default function RichTextEditor({
       CodeBlockLowlight.configure({
         lowlight,
         HTMLAttributes: {
-          class: "bg-neutral-800 overflow-auto p-4 text-primary my-2",
+          class:
+            "bg-neutral-800 overflow-auto p-4 text-primary my-2 rounded-lg",
         },
       }),
       Youtube.configure({

@@ -61,7 +61,7 @@ const BlogList: React.FC = () => {
   }, [selectedCategory, searchQuery, blogPosts, categories]);
 
   return (
-    <div className="pt-24 pb-16">
+    <div className="pt-10 pb-10">
       <div className="container mx-auto px-4">
         {/* Featured Post */}
         {latestPost && !searchQuery && !selectedCategory && (

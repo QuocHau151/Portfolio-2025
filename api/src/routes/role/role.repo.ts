@@ -91,7 +91,7 @@ export class RoleRepo {
       const deletedPermission = permissions.filter(
         (permission) => permission.deletedAt,
       );
-      console.log(deletedPermission);
+
       if (deletedPermission.length > 0) {
         const deletedIds = deletedPermission
           .map((permission) => permission.id)

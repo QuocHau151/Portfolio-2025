@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,9 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { MultiInput } from "@/components/feature/MultiInput";
 import RichTextEditor from "@/components/feature/RichTextEditor";
-import { UniqueSelect } from "@/components/feature/UniqueSelect";
 import {
   Select,
   SelectContent,
@@ -35,99 +33,82 @@ import {
 } from "@/components/ui/select";
 import { FileState, MultiFileDropzone } from "@/components/ui/upLoadFile";
 import {
-  useCreateBlogMutation,
-  useGetListCategoryBlogMutation,
-} from "@/queries/useBlog";
+  useCreateComponentMutation,
+  useGetTypeComponentQuery,
+} from "@/queries/useComponent";
 import { useUploadImage } from "@/queries/useMedia";
-import { BlogBodySchema, BlogBodyType } from "@/schemas/blog.schema";
-import { useAppStore } from "@/stores/app";
+import {
+  CreateComponentBodySchema,
+  CreateComponentBodyType,
+} from "@/schemas/component.schema";
+import { toast } from "sonner";
 
-// Mock category options
-
-const SORT_OPTIONS = [
-  { value: "NOI_BAT", label: "Nổi Bật" },
-  { value: "NORMAL", label: "Bình Thường" },
-];
-
-export default function AddBlog() {
+export default function CreateComponent() {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isUploading, setIsUploading] = useState(false);
-  const getCategoryBlog = useGetListCategoryBlogMutation();
-  const [author, setAuthor] = useState<number>(0);
-  const createBlog = useCreateBlogMutation();
-  const category = getCategoryBlog.data?.payload.data;
-  const CATEGORY_OPTIONS = (Array.isArray(category) ? category : [])?.map(
-    (item) => ({
-      value: item?.id.toString(),
-      label: item?.name,
-    }),
-  );
-  const { account } = useAppStore();
-  useEffect(() => {
-    if (account) {
-      setAuthor(account.id);
-    }
-  }, [account]);
+  const createComponent = useCreateComponentMutation();
+  const getTypeComponent = useGetTypeComponentQuery();
+  const componentType = getTypeComponent.data?.payload.data;
+  const CATEGORY_OPTIONS = (
+    Array.isArray(componentType) ? componentType : []
+  )?.map((item) => ({
+    value: item?.id.toString(),
+    label: item?.name,
+  }));
 
   const uploadImage = useUploadImage();
-  const form = useForm<BlogBodyType>({
-    resolver: zodResolver(BlogBodySchema),
+
+  const form = useForm<CreateComponentBodyType>({
+    resolver: zodResolver(CreateComponentBodySchema),
     defaultValues: {
-      categoryId: 0,
-      authorId: 0,
-      title: "",
+      name: "",
       description: "",
-      tag: "NORMAL",
-      keyword: [],
+      typeId: 0,
       content: "",
       image: "",
     },
   });
-
-  async function onSubmit(values: BlogBodyType) {
-    setError("");
-    setSuccess("");
-    setIsUploading(true);
+  async function onSubmit(values: CreateComponentBodyType) {
+    console.log(values);
     try {
-      if (fileStates.length === 0) {
-        setError("Vui lòng chọn ảnh để tải lên.");
+      setIsUploading(true);
+
+      if (fileStates.length === 0 && !values.image) {
+        toast.error("Vui lòng chọn ảnh bìa.");
         setIsUploading(false);
         return;
       }
       if (fileStates.length > 1) {
-        setError("Vui lòng chỉ chọn một ảnh để tải lên.");
+        toast.error("Vui lòng chỉ chọn một ảnh để tải lên.");
         setIsUploading(false);
         return;
       }
-      const formData = new FormData();
-      fileStates.forEach((state) => {
-        if (state.file) {
-          formData.append("files", state.file);
-        }
-      });
-      if (uploadImage.isPending) return;
-      const uploadResult = await uploadImage.mutateAsync(formData);
+      let imageUrl = values.image;
 
-      const imageUrl = uploadResult?.payload.data.map((item) => item.url);
+      // Chỉ tải lên ảnh mới nếu có chọn file
+      if (fileStates.length > 0) {
+        const formData = new FormData();
+        fileStates.forEach((state) => {
+          if (state.file) {
+            formData.append("files", state.file);
+          }
+        });
+        if (uploadImage.isPending) return; // Hàm return nhưng không reset isUploading
+        const uploadResult = await uploadImage.mutateAsync(formData);
+        imageUrl = uploadResult?.payload.data.map((item) => item.url)[0];
+      }
+
       const data = {
         ...values,
-        image: imageUrl[0],
-        authorId: author,
+        image: imageUrl,
       };
-      if (createBlog.isPending) return;
-      const result = await createBlog.mutateAsync(data);
-      if (!result) {
-        setError("Đã có lỗi xảy ra khi tạo bài viết.");
-        return;
-      } else {
-        setSuccess("Bài viết đã được tạo thành công!");
-        form.reset();
-        setFileStates([]);
-      }
+      await createComponent.mutateAsync(data);
+      toast.success("Bài viết đã được tạo thành công!");
+
+      window.location.reload();
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Đã có lỗi xảy ra.");
+      toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
+      console.error(error); // Thiếu log lỗi để debug
     } finally {
       setIsUploading(false);
     }
@@ -148,7 +129,7 @@ export default function AddBlog() {
               >
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tên Bài Viết</FormLabel>
@@ -161,7 +142,7 @@ export default function AddBlog() {
                 />
                 <FormField
                   control={form.control}
-                  name="categoryId"
+                  name="typeId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Danh Mục Bài Viết</FormLabel>
@@ -208,41 +189,7 @@ export default function AddBlog() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="tag"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Sắp Xếp Theo</FormLabel>
-                      <FormControl>
-                        <UniqueSelect
-                          selected={field.value}
-                          options={SORT_OPTIONS}
-                          onChange={(val) => field.onChange(val)}
-                          placeholder="Chọn danh mục..."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="keyword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel> Từ Khoá</FormLabel>
-                      <FormControl>
-                        <MultiInput
-                          values={Array.isArray(field.value) ? field.value : []}
-                          onChange={field.onChange}
-                          placeholder="Nhập từ khóa..."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <FormField
                   control={form.control}
                   name="content"
@@ -250,11 +197,7 @@ export default function AddBlog() {
                     <FormItem>
                       <FormLabel>Nội Dung Bài Viết</FormLabel>
                       <FormControl>
-                        <RichTextEditor 
-                          // không được để field.value ở initialContent vì sẽ bị loop focus() với field.onChange
-                          initialContent={""}
-                          onChange={field.onChange}
-                        />
+                        <RichTextEditor onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -267,18 +210,27 @@ export default function AddBlog() {
                       Hình ảnh đầu tiên sẽ là ảnh bìa.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="px-0">
+
+                  <CardContent className="flex gap-2">
                     <MultiFileDropzone
                       value={fileStates}
-                      onChange={setFileStates}
-                      onFilesAdded={(added) =>
-                        setFileStates([...fileStates, ...added])
-                      }
+                      onChange={(files) => {
+                        setFileStates(files);
+                      }}
+                      onFilesAdded={async (addedFiles) => {
+                        setFileStates([...fileStates, ...addedFiles]);
+                      }}
+                      dropzoneOptions={{
+                        accept: {
+                          "image/*": [], // Chấp nhận tất cả các file ảnh
+                          "video/*": [], // Chấp nhận tất cả các file video
+                        },
+                        maxFiles: 5, // Giới hạn số lượng file
+                        maxSize: 10 * 1024 * 1024, // Giới hạn kích thước (10MB)
+                      }}
                     />
                   </CardContent>
                 </Card>
-                {error && <p className="text-red-500">{error}</p>}
-                {success && <p className="text-green-500">{success}</p>}
                 <Button type="submit">
                   {isUploading ? "Đang tải..." : "Lưu Thay Đổi"}
                 </Button>

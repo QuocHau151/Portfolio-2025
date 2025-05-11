@@ -34,16 +34,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateTimeToDateString } from "@/libs/utils";
 import {
-  useDeleteCategoryBlogMutation,
-  useGetListCategoryBlogMutation,
-} from "@/queries/useBlog";
-import { GetListCategoryType } from "@/schemas/blog.schema";
+  useComponentQuery,
+  useDeleteComponentMutation,
+} from "@/queries/useComponent";
+import { useDeleteImage } from "@/queries/useMedia";
+import {
+  ComponentType,
+  GetListComponentsResType,
+} from "@/schemas/component.schema";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const columns: ColumnDef<GetListCategoryType>[] = [
+const columns: ColumnDef<GetListComponentsResType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -72,6 +78,15 @@ const columns: ColumnDef<GetListCategoryType>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
   },
   {
+    accessorKey: "image",
+    header: () => <div className="text-left">Image</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">
+        <Image src={row.getValue("image")} width={100} height={100} alt="" />
+      </div>
+    ),
+  },
+  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -84,35 +99,42 @@ const columns: ColumnDef<GetListCategoryType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: () => <div className="text-left">Danh Mục</div>,
+    cell: ({ row }) => {
+      const type = row.getValue("type") as { name: string };
+      return <div className="capitalize">{type.name}</div>;
+    },
   },
   {
     accessorKey: "createdAt",
-    header: () => <div className="text-left">CreatedAt</div>,
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("createdAt")}</div>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: () => <div className="text-left">UpdatedAt</div>,
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("updatedAt")}</div>
-    ),
+    header: () => <div className="text-left">Ngày Tạo</div>,
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt");
+      const formatted = formatDateTimeToDateString(createdAt as string);
+      return <div className="capitalize">{formatted}</div>;
+    },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const category = row.original;
-      const { mutateAsync } = useDeleteCategoryBlogMutation(category.id);
-      const handleDeleteCategoryBlog = async () => {
+      const component = row.original as unknown as ComponentType;
+      const deleteComponent = useDeleteComponentMutation();
+      const deleteImage = useDeleteImage();
+      const handleDeleteComponent = async () => {
         try {
-          await mutateAsync();
-          toast.success("Xóa danh mục thành công");
+          const base = "https://s3.quochau.com/portfolio/";
+          const fileName = component.image.replace(base, "");
+          await deleteImage.mutateAsync(fileName);
+          const result = await deleteComponent.mutateAsync(component.id);
+
+          toast((result.payload as { data: { message: string } }).data.message);
         } catch (error) {
-          console.log(error);
-          toast.error("Xóa danh mục thất bại");
+          toast("Xoá Component Thất Bại");
         }
       };
       return (
@@ -127,16 +149,16 @@ const columns: ColumnDef<GetListCategoryType>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(category.id.toString())
+                navigator.clipboard.writeText(String(component.id))
               }
             >
-              Copy payment ID
+              Copy Component ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/admin/category/${category.id}`}>Chỉnh sửa</Link>
+              <Link href={`/admin/component/${component.id}`}>Chỉnh Sửa</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDeleteCategoryBlog()}>
+            <DropdownMenuItem onClick={() => handleDeleteComponent()}>
               Xoá
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -146,19 +168,20 @@ const columns: ColumnDef<GetListCategoryType>[] = [
   },
 ];
 
-export default function DataTableDemo() {
-  const getListCategoryBlog = useGetListCategoryBlogMutation();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [data, setData] = React.useState<GetListCategoryType[]>([]);
+export default function Blog() {
+  const getComponents = useComponentQuery();
 
+  const [data, setData] = React.useState<GetListComponentsResType[]>([]);
+  console.log(data);
   useEffect(() => {
-    if (getListCategoryBlog.isSuccess) {
+    if (getComponents.isSuccess) {
       setData(
-        getListCategoryBlog.data?.payload
-          .data as unknown as GetListCategoryType[],
+        getComponents.data?.payload
+          .data as unknown as GetListComponentsResType[],
       );
     }
-  }, [getListCategoryBlog]);
+  }, [getComponents]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
@@ -168,7 +191,7 @@ export default function DataTableDemo() {
 
   const table = useReactTable({
     data,
-    columns: columns as ColumnDef<GetListCategoryType>[],
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -197,6 +220,12 @@ export default function DataTableDemo() {
           className="max-w-sm rounded-lg"
         />
         <div className="ml-auto space-x-2">
+          <Link href={"/admin/component/type"}>
+            <Button variant="outline">Type Component</Button>
+          </Link>
+          <Link href={"/admin/component/create"}>
+            <Button variant="outline">Create Component</Button>
+          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">

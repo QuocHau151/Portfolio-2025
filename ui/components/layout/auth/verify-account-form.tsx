@@ -202,7 +202,6 @@ export default function VerifyAccountForm() {
     setTimeout(() => {
       setIsResending(false);
       setCountdown(60); // Start 60 second countdown
-      console.log("Resending verification code");
     }, 1500);
   };
 

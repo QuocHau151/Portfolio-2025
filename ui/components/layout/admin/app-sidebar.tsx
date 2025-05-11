@@ -60,6 +60,11 @@ const data = {
       icon: BarChartIcon,
     },
     {
+      title: "Component",
+      url: "/component",
+      icon: BarChartIcon,
+    },
+    {
       title: "Blog",
       url: "/blog",
       icon: BarChartIcon,

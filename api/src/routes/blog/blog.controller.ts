@@ -8,17 +8,18 @@ import {
   Put,
 } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
-import { MessageResDTO } from 'src/common/dtos/response.dto';
-import { BlogService } from './blog.service';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
-import { CreateBlogBodyDTO, CreateCategoryBlogDTO } from './blog.dto';
 import { IsPublic } from 'src/common/decorators/auth.decorator';
+import { MessageResDTO } from 'src/common/dtos/response.dto';
+import { CreateBlogBodyDTO, CreateCategoryBlogDTO } from './blog.dto';
 import { UpdateBlogCategoryBodyType, UpdateBlogType } from './blog.model';
+import { BlogService } from './blog.service';
 
 @Controller('blogs')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
   @Get('category')
+  @IsPublic()
   getCategoryBlogs() {
     return this.blogService.getCategoryBlogs();
   }
@@ -68,6 +69,7 @@ export class BlogController {
   }
 
   @Get('category/:id')
+  @IsPublic()
   getCategoryBlogById(@Param('id') id: number) {
     return this.blogService.getCategoryBlogById(id);
   }
@@ -86,6 +88,7 @@ export class BlogController {
     return this.blogService.deleteBlogCategory(id);
   }
   @Get('author/:id')
+  @IsPublic()
   getAuthorBlogById(@Param('id') id: number) {
     return this.blogService.getAuthorBlogById(id);
   }

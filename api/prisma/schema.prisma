@@ -174,6 +174,26 @@ model Blog {
   category    CategoryBlog @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model Component {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(500)
+  description String
+  typeId      Int
+  content     String
+  image       String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  type        ComponentType @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ComponentType {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(500)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  components Component[]
+}
+
 model VerificationCode {
   id    Int                  @id @default(autoincrement())
   email String               @unique @db.VarChar(500)

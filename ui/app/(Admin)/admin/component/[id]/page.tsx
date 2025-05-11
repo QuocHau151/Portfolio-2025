@@ -24,9 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { MultiInput } from "@/components/feature/MultiInput";
 import RichTextEditor from "@/components/feature/RichTextEditor";
-import { UniqueSelect } from "@/components/feature/UniqueSelect";
 import {
   Select,
   SelectContent,
@@ -36,23 +34,20 @@ import {
 } from "@/components/ui/select";
 import { FileState, MultiFileDropzone } from "@/components/ui/upLoadFile";
 import {
-  useGetBlogByIdMutation,
-  useGetListCategoryBlogMutation,
-  useUpdateBlogMutation,
-} from "@/queries/useBlog";
+  useComponentByIdQuery,
+  useGetTypeComponentQuery,
+  useUpdateComponentMutation,
+} from "@/queries/useComponent";
 import { useDeleteImage, useUploadImage } from "@/queries/useMedia";
-import { BlogBodySchema, BlogBodyType } from "@/schemas/blog.schema";
+import {
+  ComponentType,
+  UpdateComponentBodySchema,
+  UpdateComponentBodyType,
+} from "@/schemas/component.schema";
 import Image from "next/image";
 import { toast } from "sonner";
 
-// Mock category options
-
-const SORT_OPTIONS = [
-  { value: "NOI_BAT", label: "Nổi Bật" },
-  { value: "NORMAL", label: "Bình Thường" },
-];
-
-export default function EditBlog({
+export default function EditComponent({
   params,
 }: {
   params: Promise<{ id: number }>;
@@ -60,20 +55,20 @@ export default function EditBlog({
   const { id } = use(params);
   const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const getCategoryBlog = useGetListCategoryBlogMutation();
-  const updateBlog = useUpdateBlogMutation();
-  const getBlogById = useGetBlogByIdMutation(id);
+  const getComponent = useComponentByIdQuery(id);
+
+  const updateComponent = useUpdateComponentMutation();
+  const getTypeComponent = useGetTypeComponentQuery();
   const deleteImage = useDeleteImage();
-  const category = getCategoryBlog.data?.payload.data;
-  const CATEGORY_OPTIONS = (Array.isArray(category) ? category : [])?.map(
-    (item) => ({
-      value: item?.id.toString(),
-      label: item?.name,
-    }),
-  );
+  const componentType = getTypeComponent.data?.payload.data;
+  const CATEGORY_OPTIONS = (
+    Array.isArray(componentType) ? componentType : []
+  )?.map((item) => ({
+    value: item?.id.toString(),
+    label: item?.name,
+  }));
 
-  const blog = getBlogById.data?.payload.data;
-
+  const component = getComponent.data?.payload.data as unknown as ComponentType;
   const uploadImage = useUploadImage();
 
   const handleDeleteImage = async (imageUrl: string) => {
@@ -82,8 +77,8 @@ export default function EditBlog({
       const base = "https://s3.quochau.com/portfolio/";
       const fileName = imageUrl.replace(base, "");
       await deleteImage.mutateAsync(fileName);
-      if (blog) {
-        blog.image = "";
+      if (component) {
+        component.image = "";
       }
       form.setValue("image", "");
       toast.success("Đã xóa ảnh thành công!");
@@ -92,35 +87,30 @@ export default function EditBlog({
     }
   };
 
-  const form = useForm<BlogBodyType>({
-    resolver: zodResolver(BlogBodySchema),
+  const form = useForm<UpdateComponentBodyType>({
+    resolver: zodResolver(UpdateComponentBodySchema),
     defaultValues: {
-      categoryId: 0,
-      authorId: 0,
-      title: "",
+      name: "",
       description: "",
-      tag: "NORMAL",
-      keyword: [],
+      typeId: 0,
       content: "",
       image: "",
     },
   });
   useEffect(() => {
-    if (blog) {
+    if (component) {
       form.reset({
-        categoryId: blog.categoryId,
-        authorId: blog.authorId,
-        title: blog?.title,
-        description: blog?.description,
-        tag: blog?.tag,
-        keyword: blog?.keyword,
-        content: blog?.content,
-        image: blog?.image,
+        name: component?.name,
+        typeId: component?.typeId,
+        description: component?.description,
+        content: component?.content,
+        image: component?.image,
       });
     }
-  }, [blog]);
+  }, [component]);
 
-  async function onSubmit(values: BlogBodyType) {
+  async function onSubmit(values: UpdateComponentBodyType) {
+    console.log(values);
     try {
       setIsUploading(true);
 
@@ -153,8 +143,11 @@ export default function EditBlog({
         ...values,
         image: imageUrl,
       };
-      if (updateBlog.isPending) return; // Tương tự như trên
-      await updateBlog.mutateAsync({ id: Number(blog?.id), body: data });
+      if (updateComponent.isPending) return; // Tương tự như trên
+      await updateComponent.mutateAsync({
+        id: Number(component?.id),
+        data: data,
+      });
 
       toast.success("Bài viết đã được sửa thành công!");
 
@@ -183,7 +176,7 @@ export default function EditBlog({
               >
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tên Bài Viết</FormLabel>
@@ -196,7 +189,7 @@ export default function EditBlog({
                 />
                 <FormField
                   control={form.control}
-                  name="categoryId"
+                  name="typeId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Danh Mục Bài Viết</FormLabel>
@@ -242,41 +235,7 @@ export default function EditBlog({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="tag"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Sắp Xếp Theo</FormLabel>
-                      <FormControl>
-                        <UniqueSelect
-                          selected={field.value}
-                          options={SORT_OPTIONS}
-                          onChange={(val) => field.onChange(val)}
-                          placeholder="Chọn danh mục..."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="keyword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel> Từ Khoá</FormLabel>
-                      <FormControl>
-                        <MultiInput
-                          values={Array.isArray(field.value) ? field.value : []}
-                          onChange={field.onChange}
-                          placeholder="Nhập từ khóa..."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <FormField
                   control={form.control}
                   name="content"
@@ -285,7 +244,7 @@ export default function EditBlog({
                       <FormLabel>Nội Dung Bài Viết</FormLabel>
                       <FormControl>
                         <RichTextEditor
-                          initialContent={blog?.content || ""}
+                          initialContent={component?.content || ""}
                           onChange={field.onChange}
                         />
                       </FormControl>
@@ -303,13 +262,13 @@ export default function EditBlog({
                   <CardContent className="flex gap-2">
                     <div className="space-y-2">
                       <div className="mb-5 flex flex-wrap items-center gap-2">
-                        {blog?.image && (
+                        {component?.image && (
                           <div className="group relative">
                             <div className="h-40 max-w-[400px] overflow-hidden rounded-lg">
                               <Image
                                 width={1000}
                                 height={1000}
-                                src={blog?.image}
+                                src={component?.image}
                                 alt=""
                                 className="h-full w-full object-cover"
                               />
@@ -317,7 +276,8 @@ export default function EditBlog({
                             <div
                               onClick={(e) => {
                                 e.preventDefault();
-                                if (blog?.image) handleDeleteImage(blog?.image);
+                                if (component?.image)
+                                  handleDeleteImage(component?.image);
                               }}
                               className="absolute -top-2 -right-2 cursor-pointer rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
                             >

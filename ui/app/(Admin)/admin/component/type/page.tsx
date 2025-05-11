@@ -34,16 +34,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateTimeToDateString } from "@/libs/utils";
 import {
-  useDeleteCategoryBlogMutation,
-  useGetListCategoryBlogMutation,
-} from "@/queries/useBlog";
+  useDeleteTypeComponentMutation,
+  useGetTypeComponentQuery,
+} from "@/queries/useComponent";
 import { GetListCategoryType } from "@/schemas/blog.schema";
+import {
+  GetListTypeComponentResType,
+  TypeComponentType,
+} from "@/schemas/component.schema";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const columns: ColumnDef<GetListCategoryType>[] = [
+const columns: ColumnDef<GetListTypeComponentResType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -89,26 +94,30 @@ const columns: ColumnDef<GetListCategoryType>[] = [
   {
     accessorKey: "createdAt",
     header: () => <div className="text-left">CreatedAt</div>,
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("createdAt")}</div>
-    ),
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt");
+      const formatted = formatDateTimeToDateString(createdAt as string);
+      return <div className="capitalize">{formatted}</div>;
+    },
   },
   {
     accessorKey: "updatedAt",
     header: () => <div className="text-left">UpdatedAt</div>,
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("updatedAt")}</div>
-    ),
+    cell: ({ row }) => {
+      const createdAt = row.getValue("updatedAt");
+      const formatted = formatDateTimeToDateString(createdAt as string);
+      return <div className="capitalize">{formatted}</div>;
+    },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const category = row.original;
-      const { mutateAsync } = useDeleteCategoryBlogMutation(category.id);
-      const handleDeleteCategoryBlog = async () => {
+      const component = row.original as unknown as TypeComponentType;
+      const { mutateAsync } = useDeleteTypeComponentMutation();
+      const handleDeleteTypeComponent = async () => {
         try {
-          await mutateAsync();
+          await mutateAsync(component.id);
           toast.success("Xóa danh mục thành công");
         } catch (error) {
           console.log(error);
@@ -127,16 +136,18 @@ const columns: ColumnDef<GetListCategoryType>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(category.id.toString())
+                navigator.clipboard.writeText(component.id.toString())
               }
             >
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/admin/category/${category.id}`}>Chỉnh sửa</Link>
+              <Link href={`/admin/component/type/${component.id}`}>
+                Chỉnh sửa
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDeleteCategoryBlog()}>
+            <DropdownMenuItem onClick={() => handleDeleteTypeComponent()}>
               Xoá
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -147,18 +158,18 @@ const columns: ColumnDef<GetListCategoryType>[] = [
 ];
 
 export default function DataTableDemo() {
-  const getListCategoryBlog = useGetListCategoryBlogMutation();
+  const getListTypeComponent = useGetTypeComponentQuery();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [data, setData] = React.useState<GetListCategoryType[]>([]);
 
   useEffect(() => {
-    if (getListCategoryBlog.isSuccess) {
+    if (getListTypeComponent.isSuccess) {
       setData(
-        getListCategoryBlog.data?.payload
+        getListTypeComponent.data?.payload
           .data as unknown as GetListCategoryType[],
       );
     }
-  }, [getListCategoryBlog]);
+  }, [getListTypeComponent]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
@@ -168,7 +179,7 @@ export default function DataTableDemo() {
 
   const table = useReactTable({
     data,
-    columns: columns as ColumnDef<GetListCategoryType>[],
+    columns: columns as ColumnDef<TypeComponentType>[],
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -197,6 +208,9 @@ export default function DataTableDemo() {
           className="max-w-sm rounded-lg"
         />
         <div className="ml-auto space-x-2">
+          <Link href="/admin/component/type/create">
+            <Button variant="outline">Create</Button>
+          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">

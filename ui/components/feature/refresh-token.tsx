@@ -44,7 +44,6 @@ export default function RefreshToken() {
     }
 
     function onConnect() {
-      console.log(socket?.id);
       console.log("connected", socket?.connected);
     }
 

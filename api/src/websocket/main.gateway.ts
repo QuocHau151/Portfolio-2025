@@ -16,7 +16,7 @@ export class Gateway {
     this.server.emit('', {
       data: `${data}`,
     });
-    console.log('vào socket');
+
     return data;
   }
 }

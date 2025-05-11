@@ -75,7 +75,6 @@ export class GoogleService {
       if (!data.email) {
         throw GoogleUserInfoError;
       }
-      console.log(data);
 
       let user = await this.authRepository.findUniqueUserIncludeRole({
         email: data.email,

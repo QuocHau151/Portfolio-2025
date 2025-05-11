@@ -1,7 +1,7 @@
 import { AuthRepository } from 'src/routes/auth/auth.repo';
 
-import { HashingService } from 'src/common/services/hasing.service';
 import { CommonUserRepository } from 'src/common/repositories/common-user.repo';
+import { HashingService } from 'src/common/services/hasing.service';
 import { TokenService } from 'src/common/services/token.service';
 
 import {
@@ -27,22 +27,22 @@ import {
   SendOPTBodyType,
 } from './auth.model';
 
-import { addMilliseconds } from 'date-fns';
-import envConfig from 'src/configs/config';
-import ms from 'ms';
 import {
   HttpException,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { addMilliseconds } from 'date-fns';
+import ms from 'ms';
 import {
   TypeOfVerificationCode,
   TypeOfVerificationCodeType,
 } from 'src/common/constants/auth.constant';
-import { EmailService } from 'src/common/services/email.service';
-import { AccessTokenPayloadCreate } from 'src/common/types/jwt.types';
 import { CommonRoleRepository } from 'src/common/repositories/common-role.repo';
 import { TwoFactorService } from 'src/common/services/2fa.service';
+import { EmailService } from 'src/common/services/email.service';
+import { AccessTokenPayloadCreate } from 'src/common/types/jwt.types';
+import envConfig from 'src/configs/config';
 
 @Injectable()
 export class AuthService {
@@ -297,7 +297,6 @@ export class AuthService {
         // refresh token của họ đã bị đánh cắp
         throw RefreshTokenAlreadyUsedException;
       }
-      console.log(refreshTokenInDb);
       const {
         deviceId,
         user: {

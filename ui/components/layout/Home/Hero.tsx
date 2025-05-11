@@ -4,7 +4,6 @@ import { CobeDraggableAuto } from "@/components/ui/cobeglobeautodraggable";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { SpotlightButton } from "@/components/ui/Spotlightbutton";
 import { motion } from "framer-motion";
-import React from "react";
 
 export default function Hero() {
   return (
@@ -49,7 +48,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <div className="relative z-10 h-[400px] w-full overflow-hidden rounded-lg md:h-[930px] lg:h-[630px] xl:h-[860px] 2xl:h-[1100px]">
+      <div className="relative z-10 h-[400px] w-full overflow-hidden rounded-lg md:h-[930px] lg:h-[700px] xl:h-[860px] 2xl:h-[1100px]">
         <CobeDraggableAuto />
       </div>
     </div>

@@ -8,7 +8,7 @@ import { Level } from "@tiptap/extension-heading";
 import { Editor } from "@tiptap/react";
 import { Highlighter, YoutubeIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type ColorResult, SketchPicker } from "react-color";
+import { SketchPicker } from "react-color";
 import { AiOutlineRedo, AiOutlineUndo } from "react-icons/ai";
 import { BsTypeUnderline } from "react-icons/bs";
 import {
@@ -128,8 +128,8 @@ export default function TextEditorMenuBar({
   };
   const colorValue = editor?.getAttributes("textStyle")?.color || "#000000";
 
-  const onChangeHighlight = (color: ColorResult) => {
-    editor?.chain().focus().setHighlight({ color: color.hex }).run();
+  const onChangeHighlight = () => {
+    editor?.chain().focus().setHighlight({ color: colorValue }).run();
   };
   useEffect(() => {
     setInputValue(currentFontSize);
@@ -286,8 +286,11 @@ export default function TextEditorMenuBar({
         <div onClick={(e) => e.stopPropagation()}>
           <input
             type="color"
-            onInput={(event) => {
+            // Thay onInput bằng onChange
+            onChange={(event) => {
+              event.preventDefault();
               event.stopPropagation();
+
               editor
                 .chain()
                 .focus()
@@ -321,7 +324,7 @@ export default function TextEditorMenuBar({
     {
       icon: <RiCodeSSlashLine className="size-5" />,
       onClick: () => editor.chain().focus().toggleCode().run(),
-      isActive: editor.isActive("code"),
+      isActive: editor.isActive("codeBlock"),
       disabled: !editor.can().chain().focus().toggleCode().run(),
     },
     {
@@ -412,7 +415,7 @@ export default function TextEditorMenuBar({
         {buttons.map(({ icon, onClick, isActive, disabled }, index) => (
           <ButtonMenu
             key={index}
-            onClick={() => onClick?.() ?? undefined}
+            onClick={() => onClick?.()}
             isActive={!!isActive}
             disabled={disabled}
           >

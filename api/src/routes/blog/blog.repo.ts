@@ -14,6 +14,18 @@ export class BlogRepo {
       where: {
         id: Number(id),
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
     if (!result) {
       throw new UnprocessableEntityException({
