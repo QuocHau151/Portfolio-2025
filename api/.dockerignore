@@ -3,5 +3,4 @@ dist
 *.log
 *.md
 .git
-
-# tại sao lại không có .env
+.env
