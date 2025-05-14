@@ -1,14 +1,3 @@
-// // import {
-// //   DEFAULT_LOGIN_REDIRECT,
-// //   adminRoutes,
-// //   apiAuthPrefix,
-// //   authRoutes,
-// //   salesRoutes,
-// // } from "@/routes";
-// // import NextAuth from "next-auth";
-// // import { NextRequest, NextResponse } from "next/server";
-// // import authConfig from "./auth.config";
-
 import { NextRequest } from "next/server";
 
 // // const { auth } = NextAuth(authConfig);
