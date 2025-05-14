@@ -34,13 +34,22 @@ export const CreateUserBodySchema = UserSchema.pick({
   email: true,
   name: true,
   phone: true,
+  address: true,
   avatar: true,
   status: true,
   password: true,
   roleId: true,
 }).strict();
 
-export const UpdateUserBodySchema = CreateUserBodySchema;
+export const UpdateUserBodySchema = UserSchema.pick({
+  email: true,
+  name: true,
+  phone: true,
+  address: true,
+  avatar: true,
+  status: true,
+  roleId: true,
+}).strict();
 
 export type GetUsersResType = z.infer<typeof GetUsersResSchema>;
 export type GetUsersQueryType = z.infer<typeof GetUsersQuerySchema>;

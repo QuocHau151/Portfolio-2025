@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/common/services/prisma.service';
-import { ChangePasswordBodyType, UpdateProfileBodyType } from './profile.model';
 import { NotFoundRecordException } from 'src/common/error';
 import { isUniqueConstraintPrismaError } from 'src/common/helpers';
 import { CommonUserRepository } from 'src/common/repositories/common-user.repo';
 import { HashingService } from 'src/common/services/hasing.service';
+import { PrismaService } from 'src/common/services/prisma.service';
 import { InvalidPasswordException } from './profile.error';
+import { ChangePasswordBodyType, UpdateProfileBodyType } from './profile.model';
 
 @Injectable()
 export class ProfileRepo {

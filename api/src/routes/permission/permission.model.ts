@@ -2,7 +2,7 @@ import { PermissionSchema } from 'src/common/models/common-permission';
 import { z } from 'zod';
 
 export const GetPermissionsResSchema = z.object({
-  data: z.array(PermissionSchema),
+  permissions: z.array(PermissionSchema),
   totalItems: z.number(), // Tổng số item
   page: z.number(), // Số trang hiện tại
   limit: z.number(), // Số item trên 1 trang
@@ -12,7 +12,7 @@ export const GetPermissionsResSchema = z.object({
 export const GetPermissionsQuerySchema = z
   .object({
     page: z.coerce.number().int().positive().default(1), // Phải thêm coerce để chuyển từ string sang number
-    limit: z.coerce.number().int().positive().default(10), // Phải thêm coerce để chuyển từ string sang number
+    limit: z.coerce.number().int().positive().default(100), // Phải thêm coerce để chuyển từ string sang number
   })
   .strict();
 

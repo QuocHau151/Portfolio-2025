@@ -32,7 +32,7 @@ export class PermissionRepo {
       }),
     ]);
     return {
-      data,
+      permissions: data,
       totalItems,
       page: pagination.page,
       limit: pagination.limit,

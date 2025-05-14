@@ -69,3 +69,9 @@ export const useDeleteTypeComponentMutation = () => {
     },
   });
 };
+export const useGetComponentByAuthorQuery = () => {
+  return useQuery({
+    queryKey: ["components", "author"],
+    queryFn: apiComponentRequst.getComponentByAuthor,
+  });
+};

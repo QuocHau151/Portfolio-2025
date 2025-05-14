@@ -80,7 +80,18 @@ export default function DropdownAvatar() {
             )}
           </DropdownMenuItem>
           <DropdownMenuItem className="h cursor-pointer border-b py-2">
-            Hồ Sơ Cá Nhân
+            {role === "ADMIN" ? (
+              <Link href={"/admin/setting"} className="w-full cursor-pointer">
+                <p className="">Hồ sơ cá nhân</p>
+              </Link>
+            ) : (
+              <Link
+                href={"/dashboard/setting"}
+                className="w-full cursor-pointer text-black"
+              >
+                Hồ sơ cá nhân
+              </Link>
+            )}
           </DropdownMenuItem>
           <DropdownMenuItem className="h cursor-pointer py-2" onClick={logout}>
             Đăng xuất

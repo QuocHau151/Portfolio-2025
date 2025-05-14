@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
+import { ActiveUser } from 'src/common/decorators/active-user.decorator';
 import { IsPublic } from 'src/common/decorators/auth.decorator';
 import { MessageResDTO } from 'src/common/dtos/response.dto';
 import {
@@ -33,6 +34,11 @@ export class ComponentController {
   getComponent() {
     return this.componentService.getComponent();
   }
+  @Get('author')
+  getComponentByAuthor(@ActiveUser('userId') userId: number) {
+    return this.componentService.getComponentByAuthor(userId);
+  }
+
   @Get('type')
   @IsPublic()
   @ZodSerializerDto(ComponentTypeDto)
@@ -48,8 +54,11 @@ export class ComponentController {
 
   @Post()
   @ZodSerializerDto(MessageResDTO)
-  createComponent(@Body() data: ComponentCreateBodyType) {
-    return this.componentService.createComponent(data);
+  createComponent(
+    @ActiveUser('userId') userId: number,
+    @Body() data: ComponentCreateBodyType,
+  ) {
+    return this.componentService.createComponent(userId, data);
   }
   @Put(':id')
   @ZodSerializerDto(MessageResDTO)

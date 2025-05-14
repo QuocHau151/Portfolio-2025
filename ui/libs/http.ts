@@ -24,21 +24,28 @@ type EntityErrorPayload = {
 
 export class HttpError extends Error {
   status: number;
-  payload: {
-    message: string;
-    [key: string]: any;
-  };
+  error?: string;
+  payload: any;
+
   constructor({
     status,
+    error,
+    message,
     payload,
-    message = "Lỗi HTTP",
   }: {
     status: number;
-    payload: any;
+    error?: string;
     message?: string;
+    payload?: any;
   }) {
+    // Đảm bảo luôn có message
+
     super(message);
+
+    // Lưu các thông tin lỗi
     this.status = status;
+    this.error = error;
+
     this.payload = payload;
   }
 }
@@ -84,6 +91,7 @@ const request = async <Response>(
           "Content-Type": "application/json",
         };
   if (isClient) {
+    // Lưu access token vào request header.Authorization
     const accessToken = getAccessTokenFromLocalStorage();
     if (accessToken) {
       baseHeaders.Authorization = `Bearer ${accessToken}`;

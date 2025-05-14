@@ -36,4 +36,7 @@ export const blogApiRequest = {
   deleteCategoryBlog: (categoryid: number) => {
     return http.delete(`/blogs/category/${categoryid}`);
   },
+  getBlogsByAuthor: () => {
+    return http.get<GetBlogsResType>(`/blogs/author`);
+  },
 };

@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"; // Cần import useQuery
 import { blogApiRequest } from "@/actions/blog"; // Import từ file đã có
 import { BlogBodyType } from "@/schemas/blog.schema";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"; // Cần import useQuery
 
 export const useGetBlogsMutation = () => {
   return useQuery({
@@ -75,5 +75,11 @@ export const useCreateBlogMutation = () => {
         queryKey: ["blogs"],
       });
     },
+  });
+};
+export const useGetBlogsByAythorQuery = () => {
+  return useQuery({
+    queryKey: ["blog-by-author"],
+    queryFn: () => blogApiRequest.getBlogsByAuthor(),
   });
 };

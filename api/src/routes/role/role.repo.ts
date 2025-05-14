@@ -31,7 +31,7 @@ export class RoleRepo {
       }),
     ]);
     return {
-      data,
+      roles: data,
       totalItems,
       page: pagination.page,
       limit: pagination.limit,

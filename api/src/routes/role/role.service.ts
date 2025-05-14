@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { RoleName } from 'src/common/constants/role.constant';
 import { NotFoundRecordException } from 'src/common/error';
 import {
-  isUniqueConstraintPrismaError,
   isNotFoundPrismaError,
+  isUniqueConstraintPrismaError,
 } from 'src/common/helpers';
 import {
-  RoleAlreadyExistsException,
   ProhibitedActionOnBaseRoleException,
+  RoleAlreadyExistsException,
 } from './role.error';
 import {
-  GetRolesQueryType,
   CreateRoleBodyType,
+  GetRolesQueryType,
   UpdateRoleBodyType,
 } from './role.model';
 import { RoleRepo } from './role.repo';
@@ -62,11 +62,7 @@ export class RoleService {
     if (!role) {
       throw NotFoundRecordException;
     }
-    const baseRoles: string[] = [
-      RoleName.Admin,
-      RoleName.Client,
-      RoleName.Seller,
-    ];
+    const baseRoles: string[] = [RoleName.Admin];
 
     if (baseRoles.includes(role.name)) {
       throw ProhibitedActionOnBaseRoleException;

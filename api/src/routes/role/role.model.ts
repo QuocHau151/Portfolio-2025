@@ -1,13 +1,13 @@
+import { PermissionSchema } from 'src/common/models/common-permission';
 import { z } from 'zod';
 import { RoleSchema } from '../auth/auth.model';
-import { PermissionSchema } from 'src/common/models/common-permission';
 
 export const RoleWithPermissionsSchema = RoleSchema.extend({
   permissions: z.array(PermissionSchema),
 });
 
 export const GetRolesResSchema = z.object({
-  data: z.array(RoleSchema),
+  roles: z.array(RoleSchema),
   totalItems: z.number(),
   page: z.number(),
   limit: z.number(),

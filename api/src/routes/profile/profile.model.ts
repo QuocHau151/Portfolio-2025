@@ -12,6 +12,7 @@ export const UpdateProfileBodySchema = UserSchema.pick({
   name: true,
   phone: true,
   avatar: true,
+  address: true,
 }).strict();
 export const UpdateUserProfileResSchema = UserSchema.pick({
   email: true,

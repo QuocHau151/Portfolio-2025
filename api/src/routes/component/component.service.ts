@@ -17,8 +17,8 @@ export class ComponentService {
     const result = await this.componentRepo.getComponentById(Number(id));
     return result;
   }
-  async createComponent(data: ComponentCreateBodyType) {
-    await this.componentRepo.createComponent(data);
+  async createComponent(userId: number, data: ComponentCreateBodyType) {
+    await this.componentRepo.createComponent(userId, data);
     return {
       message: 'Component created successfully',
     };
@@ -58,5 +58,8 @@ export class ComponentService {
     return {
       message: 'Component type deleted successfully',
     };
+  }
+  getComponentByAuthor(userId: number) {
+    return this.componentRepo.getComponentByAuthor(userId);
   }
 }

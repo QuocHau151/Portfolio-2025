@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -255,7 +255,7 @@ const Sidebar = React.forwardRef<
         />
         <div
           className={cn(
-            "fixed inset-y-0 z-[999] hidden h-svh bg-neutral-800 transition-[left,right,width] duration-200 ease-linear md:flex",
+            "fixed inset-y-0 z-[999] hidden h-svh bg-neutral-900 transition-[left,right,width] duration-200 ease-linear md:flex",
             state === "collapsed"
               ? "w-[var(--sidebar-width-icon)]"
               : "w-[var(--sidebar-width)]",

@@ -1,14 +1,19 @@
 "use client";
 import {
   BarChartIcon,
+  BookPlus,
   ClipboardListIcon,
+  Component,
   DatabaseIcon,
+  DollarSign,
   FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  ListIcon,
+  NotebookTabs,
   PlusCircleIcon,
   SettingsIcon,
+  SquareActivity,
+  SquareUser,
 } from "lucide-react";
 import * as React from "react";
 
@@ -42,7 +47,7 @@ const data = {
     {
       title: "Quản lý khách hàng",
       url: "/user",
-      icon: ListIcon,
+      icon: SquareUser,
     },
     {
       title: "Dịch vụ",
@@ -52,27 +57,27 @@ const data = {
     {
       title: "Thanh Toán",
       url: "/payment",
-      icon: FolderIcon,
+      icon: DollarSign,
     },
     {
       title: "Thống Kê",
       url: "/analytic",
-      icon: BarChartIcon,
+      icon: SquareActivity,
     },
     {
       title: "Component",
       url: "/component",
-      icon: BarChartIcon,
+      icon: Component,
     },
     {
       title: "Blog",
       url: "/blog",
-      icon: BarChartIcon,
+      icon: BookPlus,
     },
     {
       title: "Contact",
       url: "/contact",
-      icon: BarChartIcon,
+      icon: NotebookTabs,
     },
   ],
   documents: [
@@ -141,12 +146,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu className="mt-2 space-y-1">
               {data.navMain.map((item) => (
                 <Link
-                  href={`/admin/${item.url}`}
+                  href={`/admin${item.url}`}
                   key={item.title}
                   className="cursor-pointer"
                 >
                   <SidebarMenuItem
-                    className={`${secondSegment === `${item.url}` ? "rounded-lg bg-white text-black" : ""} `}
+                    className={`${
+                      (item.url === "" &&
+                        (secondSegment === "/" || !segments[2])) ||
+                      secondSegment === `${item.url}`
+                        ? "rounded-lg bg-white text-black"
+                        : ""
+                    }`}
                   >
                     <SidebarMenuButton tooltip={item.title}>
                       {item.icon && <item.icon />}

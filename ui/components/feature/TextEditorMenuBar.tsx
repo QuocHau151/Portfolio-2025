@@ -8,7 +8,6 @@ import { Level } from "@tiptap/extension-heading";
 import { Editor } from "@tiptap/react";
 import { Highlighter, YoutubeIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { SketchPicker } from "react-color";
 import { AiOutlineRedo, AiOutlineUndo } from "react-icons/ai";
 import { BsTypeUnderline } from "react-icons/bs";
 import {
@@ -283,41 +282,74 @@ export default function TextEditorMenuBar({
     },
     {
       icon: (
-        <div onClick={(e) => e.stopPropagation()}>
-          <input
-            type="color"
-            // Thay onInput bằng onChange
-            onChange={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-
-              editor
-                .chain()
-                .focus()
-                .setColor((event.target as HTMLInputElement).value)
-                .run();
-            }}
-            value={editor.getAttributes("textStyle")?.color || colorValue}
-            data-testid="setColor"
-            style={{ width: "20px", height: "20px", cursor: "pointer" }}
-          />
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="group relative flex flex-col items-center"
+        >
+          <div className="flex items-center gap-1">
+            <span className="mr-1 text-sm">A</span>
+            <div
+              className="relative h-5 w-5 rounded-md border border-gray-300 shadow-sm"
+              style={{
+                backgroundColor:
+                  editor.getAttributes("textStyle")?.color || colorValue,
+              }}
+            >
+              <input
+                type="color"
+                onChange={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  editor
+                    .chain()
+                    .focus()
+                    .setColor((event.target as HTMLInputElement).value)
+                    .run();
+                }}
+                value={editor.getAttributes("textStyle")?.color || colorValue}
+                data-testid="setColor"
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              />
+            </div>
+          </div>
         </div>
       ),
     },
     {
       icon: (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="cursor-pointer">
-            <div className="flex flex-col gap-1.5">
-              <Highlighter size={15} />
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="group relative flex flex-col items-center"
+        >
+          <div className="flex items-center gap-1">
+            <Highlighter size={15} className="mr-1" />
+            <div
+              className="relative h-5 w-5 rounded-md border border-gray-300 shadow-sm"
+              style={{
+                backgroundColor:
+                  editor.getAttributes("highLight")?.color || "#FFFF00",
+              }}
+            >
+              <input
+                type="color"
+                onChange={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  editor
+                    .chain()
+                    .focus()
+                    .setHighlight({
+                      color: (event.target as HTMLInputElement).value,
+                    })
+                    .run();
+                }}
+                value={editor.getAttributes("highLight")?.color || colorValue}
+                data-testid="setHighlightColor"
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              />
             </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="z-[9999] rounded-lg p-2">
-            <div className="bg-white px-2">
-              <SketchPicker onChange={onChangeHighlight} />
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </div>
+        </div>
       ),
       onClick: () => {}, // Required for button interface
     },

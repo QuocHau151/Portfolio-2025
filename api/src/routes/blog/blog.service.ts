@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { BlogRepo } from './blog.repo';
 import {
   CreateBlogBodyType,
   CreateCategoryBodyBlogType,
   UpdateBlogType,
 } from './blog.model';
+import { BlogRepo } from './blog.repo';
 
 @Injectable()
 export class BlogService {
@@ -45,5 +45,8 @@ export class BlogService {
   }
   deleteBlogCategory(id: number) {
     return this.blogRepo.deleteBlogCategory(id);
+  }
+  getBlogsByAuthor(id: number) {
+    return this.blogRepo.getBlogsByAuthor(id);
   }
 }

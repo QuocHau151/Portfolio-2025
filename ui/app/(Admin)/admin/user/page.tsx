@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,42 +34,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserAdminType } from "@/constants/type";
-
-const data: UserAdminType[] = [
-  {
-    id: "m5gr84i9",
-    phone: "",
-    status: "success",
-    email: "ken99@example.com",
-  },
-  {
-    id: "3u1reuv4",
-    phone: "",
-    status: "success",
-    email: "Abe45@example.com",
-  },
-  {
-    id: "derv1ws0",
-    phone: "",
-    status: "processing",
-    email: "Monserrat44@example.com",
-  },
-  {
-    id: "5kma53ae",
-    phone: "",
-    status: "success",
-    email: "Silas22@example.com",
-  },
-  {
-    id: "bhqecj4p",
-    phone: "1234567890",
-    status: "failed",
-    email: "carmella@example.com",
-  },
+import { formatDateTimeToDateString } from "@/libs/utils";
+import { useDeleteUserMutation, useGetUserQuery } from "@/queries/useUser";
+import { UserType } from "@/schemas/auth.schema";
+import { GetUsersResType } from "@/schemas/user.schema";
+import Link from "next/link";
+import { useEffect } from "react";
+import { toast } from "sonner";
+const ROLE = [
+  { id: 1, name: "Admin" },
+  { id: 2, name: "Client" },
+  { id: 3, name: "Seller" },
 ];
-
-const columns: ColumnDef<UserAdminType>[] = [
+const columns: ColumnDef<UserType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -92,7 +69,21 @@ const columns: ColumnDef<UserAdminType>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-
+  {
+    accessorKey: "id",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          ID
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="">{row.getValue("id")}</div>,
+  },
   {
     accessorKey: "email",
     header: ({ column }) => {
@@ -106,7 +97,45 @@ const columns: ColumnDef<UserAdminType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "roleId",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Role
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="">
+        {ROLE.map((item) => {
+          if (item.id === row.getValue("roleId")) {
+            return item.name;
+          }
+        })}
+      </div>
+    ),
   },
   {
     accessorKey: "phone",
@@ -123,11 +152,39 @@ const columns: ColumnDef<UserAdminType>[] = [
     ),
   },
   {
+    accessorKey: "updatedAt",
+    header: () => <div className="text-left">UpadteAt</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {formatDateTimeToDateString(row.getValue("updatedAt"))}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: () => <div className="text-left">CreateAt</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {formatDateTimeToDateString(row.getValue("createdAt"))}
+      </div>
+    ),
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
+      const user = row.original;
+      const deleteUser = useDeleteUserMutation();
+      const handleDelete = () => {
+        deleteUser.mutate(user.id, {
+          onSuccess: () => {
+            toast.success("User deleted successfully");
+          },
+          onError: (error) => {
+            toast.error((error as any).response?.data?.message);
+          },
+        });
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -139,13 +196,17 @@ const columns: ColumnDef<UserAdminType>[] = [
           <DropdownMenuContent align="end" className="bg-black">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(user.id.toString())}
             >
-              Copy payment ID
+              Copy user ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/admin/user/${user.id}`}>Chỉnh Sửa</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDelete()}>
+              Xoá
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -154,6 +215,18 @@ const columns: ColumnDef<UserAdminType>[] = [
 ];
 
 export default function DataTableDemo() {
+  const [data, setData] = React.useState<GetUsersResType[]>([]);
+  const getUsers = useGetUserQuery();
+
+  useEffect(() => {
+    if (getUsers.isSuccess) {
+      setData(
+        (getUsers.data?.payload as any).data
+          .result as unknown as GetUsersResType[],
+      );
+    }
+  }, [getUsers]);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -164,7 +237,7 @@ export default function DataTableDemo() {
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columns as ColumnDef<GetUsersResType>[],
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

@@ -17,11 +17,11 @@ import {
 } from 'src/common/dtos/common-user.dto';
 import { MessageResDTO } from 'src/common/dtos/response.dto';
 import {
-  GetUsersResDTO,
-  GetUsersQueryDTO,
-  GetUserParamsDTO,
-  CreateUserResDTO,
   CreateUserBodyDTO,
+  CreateUserResDTO,
+  GetUserParamsDTO,
+  GetUsersQueryDTO,
+  GetUsersResDTO,
   UpdateUserBodyDTO,
 } from './user.dto';
 import { UserService } from './user.service';

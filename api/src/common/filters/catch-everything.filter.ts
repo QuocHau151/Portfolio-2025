@@ -1,7 +1,7 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -32,7 +32,7 @@ export class CatchEverythingFilter implements ExceptionFilter {
       message = 'Record đã tồn tại';
     }
     const responseBody = {
-      statusCode: httpStatus,
+      status: httpStatus,
       message,
     };
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

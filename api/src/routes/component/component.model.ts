@@ -5,6 +5,7 @@ export const componentSchema = z.object({
   name: z.string(),
   description: z.string(),
   typeId: z.number(),
+  authorId: z.number(),
   content: z.string(),
   image: z.string(),
   createdAt: z.date(),
@@ -33,6 +34,7 @@ export const componentCreateBodySchema = componentSchema
 export const componentUpdateBodySchema = componentSchema
   .omit({
     id: true,
+    authorId: true,
     createdAt: true,
     updatedAt: true,
   })

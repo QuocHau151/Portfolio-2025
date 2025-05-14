@@ -16,8 +16,6 @@ import {
 } from 'src/routes/auth/auth.model';
 import { z } from 'zod';
 
-// Các DTO RESPONSE trả về phải là { data: any, statusCode: number }
-// Còn Các Request DTO thì không cần phải có trả về 1 object như vậy
 export class RegisterBodyDTO extends createZodDto(RegisterBodySchema) {}
 
 export class RegisterResDTO extends createZodDto(

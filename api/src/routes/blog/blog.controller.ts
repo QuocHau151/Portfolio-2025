@@ -18,11 +18,18 @@ import { BlogService } from './blog.service';
 @Controller('blogs')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
+  @Get('author')
+  getBlogsByAuthor(@ActiveUser('userId') userId: number) {
+    console.log(userId);
+    return this.blogService.getBlogsByAuthor(userId);
+  }
+
   @Get('category')
   @IsPublic()
   getCategoryBlogs() {
     return this.blogService.getCategoryBlogs();
   }
+
   @Get()
   @IsPublic()
   getBlogs() {

@@ -33,9 +33,26 @@ export class ComponentRepo {
       },
     });
   }
-  async createComponent(data: ComponentCreateBodyType) {
+  async getComponentByAuthor(userId: number) {
+    return await this.prismaService.component.findMany({
+      where: {
+        authorId: userId,
+      },
+      include: {
+        type: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }
+  async createComponent(userId: number, data: ComponentCreateBodyType) {
     return await this.prismaService.component.create({
-      data,
+      data: {
+        ...data,
+        authorId: userId,
+      },
     });
   }
   async updateComponent(id: number, data: ComponentUpdateBodyType) {

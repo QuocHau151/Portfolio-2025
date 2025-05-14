@@ -15,6 +15,9 @@ export const apiComponentRequst = {
   getComponentById: (id: number) => {
     return http.get<GetListComponentsResType>(`/components/${id}`);
   },
+  getComponentByAuthor: () => {
+    return http.get<GetListComponentsResType>(`/components/author`);
+  },
   createComponent: (data: CreateComponentBodyType) => {
     return http.post<CreateComponentResType>("/components", data);
   },

@@ -140,4 +140,12 @@ export class BlogRepo {
       name: result?.name,
     };
   }
+  async getBlogsByAuthor(id: number) {
+    const result = await this.prismaService.blog.findMany({
+      where: {
+        authorId: Number(id),
+      },
+    });
+    return result;
+  }
 }

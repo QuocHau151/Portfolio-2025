@@ -119,11 +119,7 @@ export default function EditComponent({
         setIsUploading(false);
         return;
       }
-      if (fileStates.length > 1) {
-        toast.error("Vui lòng chỉ chọn một ảnh để tải lên.");
-        setIsUploading(false);
-        return;
-      }
+   
       let imageUrl = values.image;
 
       // Chỉ tải lên ảnh mới nếu có chọn file

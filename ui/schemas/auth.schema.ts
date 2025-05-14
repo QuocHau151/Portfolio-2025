@@ -1,5 +1,6 @@
 import { Role, UserStatus } from "@/constants/type";
 import z from "zod";
+import { RoleSchema } from "./role.schema";
 
 export const UserSchema = z.object({
   id: z.number(),
@@ -21,6 +22,7 @@ export const UserSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
+
 
 export const LoginBody = z
   .object({
@@ -145,4 +147,6 @@ export type RegisterResType = z.TypeOf<typeof RegisterRes>;
 export type RegisterBodyType = z.TypeOf<typeof RegisterBody>;
 export type RegisterBodyStepBeforeType = z.TypeOf<
   typeof RegisterBodyStepBefore
->;
+>;;
+
+export type UserType = z.infer<typeof UserSchema>;

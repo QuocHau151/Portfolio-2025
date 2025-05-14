@@ -9,6 +9,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
+import { ActiveUser } from 'src/common/decorators/active-user.decorator';
+import { MessageResDTO } from 'src/common/dtos/response.dto';
 import {
   CreatePermissionBodyDTO,
   GetPermissionDetailResDTO,
@@ -18,8 +20,6 @@ import {
   UpdatePermissionBodyDTO,
 } from 'src/routes/permission/permission.dto';
 import { PermissionService } from 'src/routes/permission/permission.service';
-import { ActiveUser } from 'src/common/decorators/active-user.decorator';
-import { MessageResDTO } from 'src/common/dtos/response.dto';
 
 @Controller('permissions')
 export class PermissionController {

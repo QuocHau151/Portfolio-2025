@@ -80,7 +80,6 @@ export type UserAdminType = {
   status: "pending" | "processing" | "success" | "failed";
 };
 
-
 export type ContactAdminType = {
   id: string;
   email: string;
@@ -92,4 +91,14 @@ export type ContactAdminType = {
 export const BlogTag = {
   NOI_BAT: "NOI_BAT",
   NORMAL: "NORMAL",
+} as const;
+
+export const HTTPMethod = {
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  DELETE: "DELETE",
+  PATCH: "PATCH",
+  OPTIONS: "OPTIONS",
+  HEAD: "HEAD",
 } as const;

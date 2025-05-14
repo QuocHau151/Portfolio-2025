@@ -95,9 +95,6 @@ model User {
   receivedMessages            Message[]             @relation("ToUser")
   webSockets                  Websocket[]
 
-  // 1 user có thể tạo ra nhiều user khác
-  // 1 user chỉ có thể được tạo ra bởi 1 user khác
-  // Tự quan hệ 1-n
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   createdUsers User[] @relation("CreatorUsers")
@@ -178,6 +175,7 @@ model Component {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(500)
   description String
+  authorId    Int
   typeId      Int
   content     String
   image       String

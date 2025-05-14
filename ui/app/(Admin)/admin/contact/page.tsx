@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,48 +36,7 @@ import {
 } from "@/components/ui/table";
 import { ContactAdminType } from "@/constants/type";
 
-const data: ContactAdminType[] = [
-  {
-    id: "m5gr84i9",
-    note: "",
-    name: "",
-    email: "",
-    phone: "",
-    status: "success",
-  },
-  {
-    id: "3u1reuv4",
-    note: "",
-    name: "",
-    email: "",
-    phone: "",
-    status: "success",
-  },
-  {
-    id: "derv1ws0",
-    note: "",
-    name: "",
-    email: "",
-    phone: "",
-    status: "success",
-  },
-  {
-    id: "5kma53ae",
-    note: "",
-    name: "",
-    email: "",
-    phone: "",
-    status: "success",
-  },
-  {
-    id: "bhqecj4p",
-    note: "",
-    name: "",
-    email: "",
-    phone: "",
-    status: "success",
-  },
-];
+const data: ContactAdminType[] = [];
 
 const columns: ColumnDef<ContactAdminType>[] = [
   {
