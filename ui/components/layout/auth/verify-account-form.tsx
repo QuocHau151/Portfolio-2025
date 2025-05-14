@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypeOfVerificationCodeType } from "@/constants/type";
-import { generateSocketInstace } from "@/libs/utils";
 import {
   useLoginMutation,
   useRegisterMutation,
@@ -29,6 +28,7 @@ import { RegisterBodyType } from "@/schemas/auth.schema";
 import { useAppStore } from "@/stores/app";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { generateSocketInstace } from "@/libs/socket";
 
 export default function VerifyAccountForm() {
   const [activeTab, setActiveTab] = useState("email");

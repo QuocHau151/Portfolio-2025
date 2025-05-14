@@ -1,7 +1,7 @@
 "use client";
 
+import { generateSocketInstace } from "@/libs/socket";
 import {
-  generateSocketInstace,
   setAccessTokenToLocalStorage,
   setRefreshTokenToLocalStorage,
 } from "@/libs/utils";

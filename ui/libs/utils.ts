@@ -1,6 +1,5 @@
 import authApiRequest from "@/actions/auth";
 import clientApiRequest from "@/actions/clientAuth";
-import envConfig from "@/configs/config";
 import { Role } from "@/constants/type";
 import { EntityError } from "@/libs/http";
 import { TokenPayload } from "@/types/jwt.types";
@@ -12,7 +11,6 @@ import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
 
 import slugify from "slugify";
-import { io } from "socket.io-client";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -157,16 +155,6 @@ export const toObject = (str: string) => {
   }
   const [key, value] = parts;
   return { [key.toLowerCase()]: value };
-};
-export const generateSocketInstace = (accessToken: string) => {
-  const socket = io(envConfig.NEXT_PUBLIC_API_ENDPOINT, {
-    auth: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    transports: ["websocket"],
-  });
-
-  return socket;
 };
 
 export const wrapServerApi = async <T>(fn: () => Promise<T>) => {

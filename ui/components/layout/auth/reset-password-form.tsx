@@ -24,12 +24,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { generateSocketInstace } from "@/libs/utils";
+
 import { useForgotPassword, useLoginMutation } from "@/queries/useAuth";
 import { resetPasswordSchema } from "@/schemas/auth.schema";
 import { useAppStore } from "@/stores/app";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { generateSocketInstace } from "@/libs/socket";
 
 export function ResetPasswordForm() {
   const [showNewPassword, setShowNewPassword] = useState(false);

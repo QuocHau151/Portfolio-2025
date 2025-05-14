@@ -1,8 +1,6 @@
 "use client";
-import {
-  generateSocketInstace,
-  getAccessTokenFromLocalStorage,
-} from "@/libs/utils";
+import { generateSocketInstace } from "@/libs/socket";
+import { getAccessTokenFromLocalStorage } from "@/libs/utils";
 import { useAppStore } from "@/stores/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
