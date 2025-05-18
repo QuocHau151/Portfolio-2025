@@ -89,7 +89,7 @@ export const Header = () => {
             <span className="text-[16px] font-light text-white">CV</span>
             <IoMdArrowDropdown size={22} />
           </Link>
-          <Link href={"/vps"} className="flex items-center">
+          <Link href={"/product"} className="flex items-center">
             <span className="text-[16px] font-light text-white">VPS</span>
             <IoMdArrowDropdown size={22} />
           </Link>
@@ -140,7 +140,7 @@ export const Header = () => {
                 <Link href={"/cv"}>CV</Link>
               </li>
               <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/vps"}>VPS</Link>
+                <Link href={"/product"}>VPS</Link>
               </li>
               <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
                 <Link href={"/proxy"}>Proxy</Link>

@@ -2,18 +2,22 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
 import { AuthModule } from './routes/auth/auth.module';
 import { BlogModule } from './routes/blog/blog.module';
+import { BrandModule } from './routes/brand/brand.module';
+import { CategoryModule } from './routes/category/category.module';
 import { ComponentModule } from './routes/component/component.module';
-import { LanguageModule } from './routes/language/language.module';
 import { MediaModule } from './routes/media/media.module';
 import { PermissionModule } from './routes/permission/permission.module';
+import { ProductModule } from './routes/product/product.module';
 import { ProfileModule } from './routes/profile/profile.module';
 import { RoleModule } from './routes/role/role.module';
 import { UserModule } from './routes/user/user.module';
@@ -25,13 +29,29 @@ import { WebsocketModule } from './websocket/websocket.module';
     AuthModule,
     PermissionModule,
     RoleModule,
-    LanguageModule,
     ProfileModule,
     UserModule,
     MediaModule,
     WebsocketModule,
     BlogModule,
+    BrandModule,
+    ProductModule,
+    CategoryModule,
     ComponentModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'short',
+          ttl: 60000, // 1 minute
+          limit: 10,
+        },
+        {
+          name: 'long',
+          ttl: 120000, // 2 minutes
+          limit: 20,
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -45,6 +65,10 @@ import { WebsocketModule } from './websocket/websocket.module';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard,
     },
   ],
 })

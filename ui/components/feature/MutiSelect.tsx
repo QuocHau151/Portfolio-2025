@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -6,10 +5,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { X } from "lucide-react";
 
 interface MultiSelectProps {
   selected: string[];
-  options: { value: string; label: string }[];
+  options: { id: number; name: string }[];
   onChange: (value: string[]) => void;
   placeholder?: string;
 }
@@ -39,9 +39,9 @@ export function MultiSelect({
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="bg-black">
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
+          {options?.map((option) => (
+            <SelectItem key={option.id} value={option.name}>
+              {option.name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -53,7 +53,7 @@ export function MultiSelect({
               key={value}
               className="bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800"
             >
-              {options.find((opt) => opt.value === value)?.label}
+              {options?.find((opt) => opt.name === value)?.name}
               <button
                 onClick={() => {
                   onChange(selected.filter((v) => v !== value));

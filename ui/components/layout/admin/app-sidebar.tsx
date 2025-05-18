@@ -1,15 +1,14 @@
 "use client";
 import {
-  BarChartIcon,
   BookPlus,
   ClipboardListIcon,
   Component,
   DatabaseIcon,
   DollarSign,
-  FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   NotebookTabs,
+  Package,
   PlusCircleIcon,
   SettingsIcon,
   SquareActivity,
@@ -50,9 +49,9 @@ const data = {
       icon: SquareUser,
     },
     {
-      title: "Dịch vụ",
-      url: "/service",
-      icon: BarChartIcon,
+      title: "Sản Phẩm",
+      url: "/product",
+      icon: Package,
     },
     {
       title: "Thanh Toán",

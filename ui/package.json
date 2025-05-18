@@ -85,6 +85,7 @@
     "postcss": "^8.5.3",
     "react": "^19.1.0",
     "react-color": "^2.10.2",
+    "react-day-picker": "^8.10.1",
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.56.1",
