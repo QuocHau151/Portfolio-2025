@@ -93,7 +93,6 @@ export class PaymentRepo {
       }
       const userId = payment.orders[0].userId;
       const { orders } = payment;
-      console.log(orders);
       const totalPrice = this.getTotalPrice(orders);
       if (totalPrice !== body.transferAmount) {
         throw new BadRequestException(

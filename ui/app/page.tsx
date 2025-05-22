@@ -4,7 +4,6 @@ import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import CircleDev from "@/components/layout/Home/CircleDev";
 import Hero from "@/components/layout/Home/Hero";
-import Process from "@/components/layout/Home/Process";
 import Project from "@/components/layout/Home/Project";
 import Stack from "@/components/layout/Home/Stack";
 import ScrollLinked from "@/components/ui/scroll-linked";
@@ -18,7 +17,6 @@ export default function Home() {
       <CircleDev />
       <Stack />
       <Project />
-      <Process />
       <Footer />
     </div>
   );
