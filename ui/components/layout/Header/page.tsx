@@ -5,7 +5,6 @@ import Link from "next/link";
 import React, { useRef } from "react";
 
 import DropdownAvatar from "@/components/feature/dropdown-avatar";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
@@ -18,7 +17,6 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AlignRight } from "lucide-react";
 import { BsSearch } from "react-icons/bs";
-import { IoMdArrowDropdown } from "react-icons/io";
 
 interface LogoProps {
   theme: string;
@@ -85,46 +83,49 @@ export const Header = () => {
         className={`flex items-center justify-between gap-8 px-2 py-1`}
       >
         <div className="hidden items-center justify-center gap-8 lg:flex">
-          <Link href={"/cv"} className="flex items-center pl-2">
-            <span className="text-[16px] font-light text-white">CV</span>
-            <IoMdArrowDropdown size={22} />
-          </Link>
-          <Link href={"/product"} className="flex items-center">
+          <Link href={"/vps"} className="flex items-center">
             <span className="text-[16px] font-light text-white">VPS</span>
-            <IoMdArrowDropdown size={22} />
           </Link>
           <Link href={"/proxy"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Proxy</span>
-            <IoMdArrowDropdown size={22} />
+          </Link>
+          <Link href={"/proxy"} className="flex items-center">
+            <span className="text-[16px] font-light text-white">VPN</span>
+          </Link>
+          <Link href={"/proxy"} className="flex items-center">
+            <span className="text-[16px] font-light text-white">Domain</span>
+          </Link>
+        </div>
+        <Logo theme="dark" isScroll={isScroll} />
+
+        <div className="hidden items-center justify-center gap-8 lg:flex">
+          <Link href={"/cv"} className="flex items-center pl-2">
+            <span className="text-[16px] font-light text-white">CV</span>
           </Link>
           <Link href={"/components"} className="flex items-center">
             <span className="text-[16px] font-light text-white">
               Components
             </span>
-            <IoMdArrowDropdown size={22} />
           </Link>
-        </div>
-        <Logo theme="dark" isScroll={isScroll} />
-        <div className="hidden items-center justify-center gap-8 lg:flex">
           <Link href={"/blog"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Blog</span>
           </Link>
           <Link href={"/contact"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Contact</span>
           </Link>
+          <Sheet>
+            <SheetTrigger asChild>
+              <BsSearch className="text-gray-400" size={20} />
+            </SheetTrigger>
+            <SheetContent className="bg-black">
+              <SheetHeader>
+                <SheetTitle>Search</SheetTitle>
+              </SheetHeader>
+              <SheetFooter></SheetFooter>
+            </SheetContent>
+          </Sheet>
 
           <DropdownAvatar />
-          <div className="relative flex items-center">
-            <Input
-              id="search"
-              name="search"
-              autoComplete="off"
-              type="text"
-              placeholder="Search..."
-              className={`h-9 rounded-2xl bg-black px-4 pl-10 text-sm text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/20 focus:outline-none`}
-            />
-            <BsSearch className="absolute left-3 text-gray-400" size={14} />
-          </div>
         </div>
         <Sheet>
           <SheetTrigger asChild className="lg:hidden">

@@ -24,7 +24,6 @@ model User {
   devices            Device[] // Liên kết 1-n với Device
   refreshTokens      RefreshToken[]
   carts              CartItem[]
-  orders             Order[]
   reviews            Review[]
   createdPermissions Permission[]   @relation("PermissionCreatedBy")
   updatedPermissions Permission[]   @relation("PermissionUpdatedBy")
@@ -49,7 +48,11 @@ model User {
   deletedOrders      Order[]        @relation("OrderDeletedBy")
   sentMessages       Message[]      @relation("FromUser")
   receivedMessages   Message[]      @relation("ToUser")
-  webSockets         Websocket[]
+
+  Blog         Blog[]
+  CategoryBlog CategoryBlog[]
+  Order        Order[]
+  Payment      Payment[]
 
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
@@ -62,20 +65,11 @@ model User {
   deletedBy    User?  @relation("DeletorUsers", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   deletedUsers User[] @relation("DeletorUsers")
 
-  deletedAt    DateTime?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  Blog         Blog[]
-  CategoryBlog CategoryBlog[]
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([deletedAt])
-}
-
-model Websocket {
-  id        String   @id
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  createdAt DateTime @default(now())
 }
 
 model CategoryBlog {
@@ -306,51 +300,70 @@ model CartItem {
   id       Int  @id @default(autoincrement())
   quantity Int
   skuId    Int
-  sku      SKU  @relation(fields: [skuId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sku      SKU  @relation(fields: [skuId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   userId   Int
   user     User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, skuId])
+  @@index([userId])
 }
 
 model ProductSKUSnapshot {
-  id          Int      @id @default(autoincrement())
-  productName String   @db.VarChar(500)
-  price       Float
-  images      String[]
-  skuValue    String   @db.VarChar(500)
+  id          Int    @id @default(autoincrement())
+  productName String @db.VarChar(500)
+  skuPrice    Float
+  image       String
+  skuValue    String @db.VarChar(500)
   skuId       Int?
-  sku         SKU?     @relation(fields: [skuId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  sku         SKU?   @relation(fields: [skuId], references: [id], onDelete: SetNull, onUpdate: NoAction)
   orderId     Int?
-  order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  order       Order? @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  quantity  Int
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
-  Product   Product? @relation(fields: [productId], references: [id])
-  productId Int?
 }
 
 model Order {
-  id     Int                  @id @default(autoincrement())
-  userId Int
-  user   User                 @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  status OrderStatus
-  items  ProductSKUSnapshot[]
-
+  id          Int                  @id @default(autoincrement())
+  userId      Int
+  user        User                 @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status      OrderStatus
+  items       ProductSKUSnapshot[]
+  products    Product[]
+  reviews     Review[]
+  /// [Receiver]
+  receiver    Json
+  paymentId   Int
+  payment     Payment              @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdById Int?
-  createdBy   User? @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  createdBy   User?                @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   updatedById Int?
-  updatedBy   User? @relation("OrderUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  updatedBy   User?                @relation("OrderUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   deletedById Int?
-  deletedBy   User? @relation("OrderDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  deletedBy   User?                @relation("OrderDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Product   Product?  @relation(fields: [productId], references: [id])
-  productId Int?
 
   @@index([deletedAt])
+  @@index([status, deletedAt])
+}
+
+model Payment {
+  id        Int           @id @default(autoincrement())
+  orders    Order[]
+  status    PaymentStatus
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  User      User?         @relation(fields: [userId], references: [id])
+  userId    Int?
 }
 
 model Review {
@@ -364,13 +377,15 @@ model Review {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   Int?
 }
 
 model PaymentTransaction {
   id                 Int      @id @default(autoincrement())
   gateway            String   @db.VarChar(100)
   transactionDate    DateTime @default(now())
-  accountNumber      String   @db.VarChar(100)
+  accountNumber      String?  @db.VarChar(100)
   subAccount         String?  @db.VarChar(250)
   amountIn           Int      @default(0)
   amountOut          Int      @default(0)
@@ -396,7 +411,7 @@ model Message {
 }
 
 enum OrderStatus {
-  PENDING_CONFIRMATION
+  PENDING_PAYMENT
   PENDING_PICKUP
   PENDING_DELIVERY
   DELIVERED
@@ -430,4 +445,10 @@ enum HTTPMethod {
 enum TagBlog {
   NOI_BAT
   NORMAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
@@ -15,7 +14,6 @@ import {
   CreatePermissionBodyDTO,
   GetPermissionDetailResDTO,
   GetPermissionParamsDTO,
-  GetPermissionsQueryDTO,
   GetPermissionsResDTO,
   UpdatePermissionBodyDTO,
 } from 'src/routes/permission/permission.dto';
@@ -27,11 +25,8 @@ export class PermissionController {
 
   @Get()
   @ZodSerializerDto(GetPermissionsResDTO)
-  list(@Query() query: GetPermissionsQueryDTO) {
-    return this.permissionService.list({
-      page: query.page,
-      limit: query.limit,
-    });
+  list() {
+    return this.permissionService.list();
   }
 
   @Get(':permissionId')

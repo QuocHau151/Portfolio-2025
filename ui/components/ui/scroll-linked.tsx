@@ -1,7 +1,7 @@
 "use client";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, useSpring, useScroll } from "motion/react";
+import { motion, useScroll, useSpring } from "motion/react";
 
 export default function ScrollLinked() {
   const { scrollYProgress } = useScroll();

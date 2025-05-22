@@ -22,6 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
@@ -31,8 +32,10 @@
     "@nestjs/websockets": "^11.1.0",
     "@prisma/client": "^6.5.0",
     "@react-email/components": "^0.0.34",
+    "@socket.io/redis-adapter": "^8.3.0",
     "@types/ms": "^2.1.0",
     "bcrypt": "^5.1.1",
+    "bullmq": "^5.53.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "google-auth-library": "^9.15.1",
@@ -41,9 +44,11 @@
     "ms": "^2.1.3",
     "nestjs-zod": "^4.3.1",
     "otpauth": "^9.3.6",
+    "redis": "^5.1.0",
     "reflect-metadata": "^0.2.2",
     "resend": "^4.1.2",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },

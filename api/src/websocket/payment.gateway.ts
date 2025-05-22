@@ -6,17 +6,16 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@WebSocketGateway()
-export class Gateway {
+@WebSocketGateway({ namespace: 'payment' })
+export class PaymentGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('')
+  @SubscribeMessage('send-money')
   handleEvent(@MessageBody() data: string): string {
-    this.server.emit('', {
-      data: `${data}`,
+    this.server.emit('receive-money', {
+      data: `Money: ${data}`,
     });
-
     return data;
   }
 }

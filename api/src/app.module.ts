@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+import { BullModule } from '@nestjs/bullmq';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
@@ -10,19 +11,22 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
+import envConfig from './configs/config';
 import { AuthModule } from './routes/auth/auth.module';
 import { BlogModule } from './routes/blog/blog.module';
 import { BrandModule } from './routes/brand/brand.module';
+import { CartModule } from './routes/cart/cart.module';
 import { CategoryModule } from './routes/category/category.module';
 import { ComponentModule } from './routes/component/component.module';
 import { MediaModule } from './routes/media/media.module';
+import { OrderModule } from './routes/order/order.module';
+import { PaymentModule } from './routes/payment/payment.module';
 import { PermissionModule } from './routes/permission/permission.module';
 import { ProductModule } from './routes/product/product.module';
 import { ProfileModule } from './routes/profile/profile.module';
 import { RoleModule } from './routes/role/role.module';
 import { UserModule } from './routes/user/user.module';
 import { WebsocketModule } from './websocket/websocket.module';
-
 @Module({
   imports: [
     CommonModule,
@@ -32,11 +36,14 @@ import { WebsocketModule } from './websocket/websocket.module';
     ProfileModule,
     UserModule,
     MediaModule,
+    CartModule,
     WebsocketModule,
     BlogModule,
     BrandModule,
     ProductModule,
+    OrderModule,
     CategoryModule,
+    PaymentModule,
     ComponentModule,
     ThrottlerModule.forRoot({
       throttlers: [
@@ -51,6 +58,11 @@ import { WebsocketModule } from './websocket/websocket.module';
           limit: 20,
         },
       ],
+    }),
+    BullModule.forRoot({
+      connection: {
+        url: envConfig.REDIS_URL,
+      },
     }),
   ],
   controllers: [AppController],

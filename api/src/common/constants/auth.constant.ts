@@ -1,9 +1,10 @@
 export const REQUEST_USER_KEY = 'user';
 export const REQUEST_ROLE_PERMISSIONS = 'role_permissions';
+
 export const AuthType = {
   Bearer: 'Bearer',
   None: 'None',
-  APIKey: 'ApiKey',
+  PaymentAPIKey: 'PaymentAPIKey',
 } as const;
 
 export type AuthTypeType = (typeof AuthType)[keyof typeof AuthType];

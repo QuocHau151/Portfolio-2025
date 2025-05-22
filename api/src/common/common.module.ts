@@ -1,17 +1,17 @@
 import { Global, Module } from '@nestjs/common';
-import { PrismaService } from './services/prisma.service';
-import { JwtModule } from '@nestjs/jwt';
-import { HashingService } from './services/hasing.service';
-import { TokenService } from './services/token.service';
-import { CommonUserRepository } from './repositories/common-user.repo';
-import { AccessTokenGuard } from './guards/access-token.guard';
-import { APIKeyGuard } from './guards/api-key.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+import { AccessTokenGuard } from './guards/access-token.guard';
 import { AuthenticationGuard } from './guards/authentication.guard';
-import { EmailService } from './services/email.service';
+import { PaymentAPIKeyGuard } from './guards/payment-api-key.guard';
 import { CommonRoleRepository } from './repositories/common-role.repo';
+import { CommonUserRepository } from './repositories/common-user.repo';
+
 import { TwoFactorService } from './services/2fa.service';
-import { CommonWebsocketRepository } from './repositories/common-websocket';
+import { EmailService } from './services/email.service';
+import { HashingService } from './services/hasing.service';
+import { PrismaService } from './services/prisma.service';
+import { TokenService } from './services/token.service';
 
 const commonServices = [
   PrismaService,
@@ -21,7 +21,6 @@ const commonServices = [
   CommonRoleRepository,
   EmailService,
   TwoFactorService,
-  CommonWebsocketRepository,
 ];
 
 @Global()
@@ -29,7 +28,7 @@ const commonServices = [
   providers: [
     ...commonServices,
     AccessTokenGuard,
-    APIKeyGuard,
+    PaymentAPIKeyGuard,
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,

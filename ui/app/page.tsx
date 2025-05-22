@@ -7,10 +7,12 @@ import Hero from "@/components/layout/Home/Hero";
 import Process from "@/components/layout/Home/Process";
 import Project from "@/components/layout/Home/Project";
 import Stack from "@/components/layout/Home/Stack";
+import ScrollLinked from "@/components/ui/scroll-linked";
 
 export default function Home() {
   return (
     <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[50px]">
+      <ScrollLinked />
       <Header />
       <Hero />
       <CircleDev />

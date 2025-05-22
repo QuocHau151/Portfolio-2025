@@ -3,10 +3,6 @@ import { z } from 'zod';
 
 export const GetPermissionsResSchema = z.object({
   permissions: z.array(PermissionSchema),
-  totalItems: z.number(), // Tổng số item
-  page: z.number(), // Số trang hiện tại
-  limit: z.number(), // Số item trên 1 trang
-  totalPages: z.number(), // Tổng số trang
 });
 
 export const GetPermissionsQuerySchema = z
@@ -35,7 +31,6 @@ export const UpdatePermissionBodySchema = CreatePermissionBodySchema;
 
 export type PermissionType = z.infer<typeof PermissionSchema>;
 export type GetPermissionsResType = z.infer<typeof GetPermissionsResSchema>;
-export type GetPermissionsQueryType = z.infer<typeof GetPermissionsQuerySchema>;
 export type GetPermissionDetailResType = z.infer<
   typeof GetPermissionDetailResSchema
 >;
