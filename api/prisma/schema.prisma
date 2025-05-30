@@ -53,6 +53,7 @@ model User {
   CategoryBlog CategoryBlog[]
   Order        Order[]
   Payment      Payment[]
+  UserProduct  UserProduct[]
 
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
@@ -202,15 +203,15 @@ model Role {
 }
 
 model Product {
-  id                  Int                  @id @default(autoincrement())
-  publishedAt         DateTime?
-  name                String               @db.VarChar(500)
-  basePrice           Float
-  virtualPrice        Float
-  brands              Brand[]
-  images              String[]
-  categories          Category[]
-  /// [Variants]
+  id           Int        @id @default(autoincrement())
+  publishedAt  DateTime?
+  name         String     @db.VarChar(500)
+  basePrice    Float
+  virtualPrice Float
+  brands       Brand[]
+  images       String[]
+  categories   Category[]
+
   variants            Json
   skus                SKU[]
   reviews             Review[]
@@ -224,9 +225,10 @@ model Product {
   deletedById Int?
   deletedBy   User? @relation("ProductDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  UserProduct UserProduct[]
 
   @@index([deletedAt])
 }
@@ -297,12 +299,13 @@ model Brand {
 }
 
 model CartItem {
-  id       Int  @id @default(autoincrement())
-  quantity Int
-  skuId    Int
-  sku      SKU  @relation(fields: [skuId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  userId   Int
-  user     User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id           Int  @id @default(autoincrement())
+  quantity     Int
+  skuId        Int
+  sku          SKU  @relation(fields: [skuId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId       Int
+  rentalPeriod Int
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -312,15 +315,16 @@ model CartItem {
 }
 
 model ProductSKUSnapshot {
-  id          Int    @id @default(autoincrement())
-  productName String @db.VarChar(500)
-  skuPrice    Float
-  image       String
-  skuValue    String @db.VarChar(500)
-  skuId       Int?
-  sku         SKU?   @relation(fields: [skuId], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  orderId     Int?
-  order       Order? @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  id                Int    @id @default(autoincrement())
+  productName       String @db.VarChar(500)
+  skuPrice          Float
+  image             String
+  skuValue          String @db.VarChar(500)
+  rentalPeriodValue Int
+  skuId             Int?
+  sku               SKU?   @relation(fields: [skuId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  orderId           Int?
+  order             Order? @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   quantity  Int
   productId Int?
@@ -330,23 +334,22 @@ model ProductSKUSnapshot {
 }
 
 model Order {
-  id          Int                  @id @default(autoincrement())
-  userId      Int
-  user        User                 @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  status      OrderStatus
-  items       ProductSKUSnapshot[]
-  products    Product[]
-  reviews     Review[]
-  /// [Receiver]
+  id       Int                  @id @default(autoincrement())
+  userId   Int
+  user     User                 @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status   OrderStatus
+  items    ProductSKUSnapshot[]
+  products Product[]
+
   receiver    Json
   paymentId   Int
-  payment     Payment              @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payment     Payment @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdById Int?
-  createdBy   User?                @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  createdBy   User?   @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   updatedById Int?
-  updatedBy   User?                @relation("OrderUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  updatedBy   User?   @relation("OrderUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   deletedById Int?
-  deletedBy   User?                @relation("OrderDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  deletedBy   User?   @relation("OrderDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -377,7 +380,6 @@ model Review {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Order     Order?   @relation(fields: [orderId], references: [id])
   orderId   Int?
 }
 
@@ -410,13 +412,54 @@ model Message {
   createdAt DateTime  @default(now())
 }
 
+model ProxmoxToken {
+  id                  Int      @id @default(autoincrement())
+  ticket              String
+  CSRFPreventionToken String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model UserProduct {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  productId   Int
+  productName String
+  options     Json
+  VPSResource VPSResource[]
+  status      ProductStatus @default(INACTIVE)
+  expiresAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model VPSResource {
+  id            Int               @id @default(autoincrement())
+  userProductId Int               @unique
+  ipAddress     String
+  rootPassword  String
+  options       Json
+  status        VPSResourceStatus @default(RUNNING)
+
+  createdAt DateTime @default(now())
+
+  userProduct UserProduct @relation(fields: [userProductId], references: [id], onDelete: Cascade)
+}
+
 enum OrderStatus {
   PENDING_PAYMENT
-  PENDING_PICKUP
-  PENDING_DELIVERY
-  DELIVERED
+  PAYMENT_SUCCESS
   RETURNED
   CANCELLED
+}
+
+enum VPSResourceStatus {
+  RUNNING
+  STOPPED
 }
 
 enum VerificationCodeType {
@@ -430,6 +473,12 @@ enum UserStatus {
   ACTIVE
   INACTIVE
   BLOCKED
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
 }
 
 enum HTTPMethod {

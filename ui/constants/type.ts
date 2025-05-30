@@ -16,19 +16,21 @@ export const Role = {
 export const RoleValues = [Role.Admin, Role.Client, Role.Guest] as const;
 
 export const OrderStatus = {
-  Pending: "Pending",
-  Processing: "Processing",
-  Rejected: "Rejected",
-  Delivered: "Delivered",
-  Paid: "Paid",
+  PENDING_PAYMENT: "PENDING_PAYMENT",
+  PENDING_PICKUP: "PENDING_PICKUP",
+  PENDING_DELIVERY: "PENDING_DELIVERY",
+  DELIVERED: "DELIVERED",
+  RETURNED: "RETURNED",
+  CANCELLED: "CANCELLED",
 } as const;
 
 export const OrderStatusValues = [
-  OrderStatus.Pending,
-  OrderStatus.Processing,
-  OrderStatus.Rejected,
-  OrderStatus.Delivered,
-  OrderStatus.Paid,
+  OrderStatus.PENDING_PAYMENT,
+  OrderStatus.PENDING_PICKUP,
+  OrderStatus.PENDING_DELIVERY,
+  OrderStatus.DELIVERED,
+  OrderStatus.RETURNED,
+  OrderStatus.CANCELLED,
 ] as const;
 
 export const ManagerRoom = "manager" as const;
@@ -101,4 +103,13 @@ export const HTTPMethod = {
   PATCH: "PATCH",
   OPTIONS: "OPTIONS",
   HEAD: "HEAD",
+} as const;
+
+export const RentalPeriodToMonth = {
+  ONE_MONTH: "1",
+  THREE_MONTH: "3",
+  SIX_MONTH: "6",
+  ONE_YEAR: "12",
+  TWO_YEAR: "24",
+  THREE_YEAR: "36",
 } as const;

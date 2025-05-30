@@ -143,7 +143,22 @@ export class ProductRepo {
       totalPages: Math.ceil(totalItems / limit),
     };
   }
-
+  listUserProducts(userId: number) {
+    return this.prismaService.userProduct.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        VPSResource: {
+          select: {
+            ipAddress: true,
+            rootPassword: true,
+            status: true,
+          },
+        },
+      },
+    });
+  }
   findById(productId: number) {
     return this.prismaService.product.findUnique({
       where: {
@@ -280,8 +295,8 @@ export class ProductRepo {
     const skusToCreate = skusWithId
       .filter((sku) => sku.id === null)
       .map((sku) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id: skuId, ...skuData } = sku; // đổi tên id thành skuId
-        console.log(skuId);
         return {
           ...skuData,
           productId: id, // sử dụng id của product từ tham số function

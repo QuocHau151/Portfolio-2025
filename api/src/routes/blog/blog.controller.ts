@@ -20,7 +20,6 @@ export class BlogController {
   constructor(private readonly blogService: BlogService) {}
   @Get('author')
   getBlogsByAuthor(@ActiveUser('userId') userId: number) {
-    console.log(userId);
     return this.blogService.getBlogsByAuthor(userId);
   }
 

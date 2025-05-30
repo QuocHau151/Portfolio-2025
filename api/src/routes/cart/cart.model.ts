@@ -7,7 +7,7 @@ export const CartItemSchema = z.object({
   quantity: z.number().int().positive(),
   skuId: z.number(),
   userId: z.number(),
-
+  rentalPeriod: z.number(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
@@ -51,6 +51,7 @@ export const GetCartResSchema = z.object({
 export const AddToCartBodySchema = CartItemSchema.pick({
   skuId: true,
   quantity: true,
+  rentalPeriod: true,
 }).strict();
 
 export const UpdateCartItemBodySchema = AddToCartBodySchema;

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { ProfileRepo } from './profile.repo';
-import { CommonUserRepository } from 'src/common/repositories/common-user.repo';
 import { NotFoundRecordException } from 'src/common/error';
+import { CommonUserRepository } from 'src/common/repositories/common-user.repo';
 import { ChangePasswordBodyType, UpdateProfileBodyType } from './profile.model';
+import { ProfileRepo } from './profile.repo';
 
 @Injectable()
 export class ProfileService {
@@ -25,7 +25,9 @@ export class ProfileService {
     return user;
   }
   async getUserProfileById(id: number) {
-    const user = await this.profileRepo.findUniqueIncludeRolePermissions(id);
+    const user = await this.profileRepo.findUniqueIncludeRolePermissions(
+      Number(id),
+    );
     if (!user) {
       throw NotFoundRecordException;
     }

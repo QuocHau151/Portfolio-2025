@@ -126,7 +126,8 @@ const request = async <Response>(
     if (res.status === ENTITY_ERROR_STATUS) {
       throw new EntityError({
         ...data,
-        message: "Lỗi thực thể",
+
+        message: "Đã có lỗi xảy ra",
       } as {
         status: 422;
         payload: EntityErrorPayload;

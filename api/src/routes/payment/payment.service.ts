@@ -6,7 +6,7 @@ import { WebhookPaymentBodyType } from 'src/routes/payment/payment.model';
 import { PaymentRepo } from 'src/routes/payment/payment.repo';
 
 @Injectable()
-@WebSocketGateway({ namespace: 'payment' })
+@WebSocketGateway({ namespace: '' })
 export class PaymentService {
   @WebSocketServer()
   server: Server;

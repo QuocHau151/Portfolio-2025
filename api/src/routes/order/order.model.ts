@@ -12,6 +12,7 @@ export const ProductSKUSnapshotSchema = z.object({
   skuPrice: z.number(),
   image: z.string(),
   skuValue: z.string(),
+  rentalPeriodValue: z.number(),
   skuId: z.number().nullable(),
   orderId: z.number().nullable(),
   quantity: z.number(),
@@ -31,10 +32,6 @@ export const GetOrderListResSchema = z.object({
       updatedById: true,
     }),
   ),
-  totalItems: z.number(),
-  page: z.number(), // Số trang hiện tại
-  limit: z.number(), // Số item trên 1 trang
-  totalPages: z.number(), // Tổng số trang
 });
 
 export const GetOrderListQuerySchema = PaginationQuerySchema.extend({
@@ -45,22 +42,18 @@ export const GetOrderDetailResSchema = OrderSchema.extend({
   items: z.array(ProductSKUSnapshotSchema),
 });
 
-export const CreateOrderBodySchema = z
-  .array(
-    z.object({
-      receiver: z.object({
-        name: z.string(),
-        phone: z.string().min(9).max(20),
-        address: z.string(),
-      }),
-      cartItemIds: z.array(z.number()).min(1),
-    }),
-  )
-  .min(1);
+export const CreateOrderBodySchema = z.object({
+  receiver: z.object({
+    email: z.string().email(),
+    name: z.string(),
+    phone: z.string().min(9).max(20).optional(),
+  }),
+  cartItemIds: z.array(z.number()).min(1),
+});
 
 export const CreateOrderResSchema = z.object({
-  orders: z.array(OrderSchema),
   paymentId: z.number(),
+  orders: z.array(OrderSchema),
 });
 export const CancelOrderBodySchema = z.object({});
 export const CancelOrderResSchema = OrderSchema;

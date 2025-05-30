@@ -9,6 +9,7 @@ import {
 } from 'src/routes/cart/cart.dto';
 
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
+import { IsPublic } from 'src/common/decorators/auth.decorator';
 import { PaginationQueryDTO } from 'src/common/dtos/request.dto';
 import { MessageResDTO } from 'src/common/dtos/response.dto';
 import { CartService } from './cart.service';
@@ -18,6 +19,7 @@ export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Get()
+  @IsPublic()
   // @ZodSerializerDto(GetCartResDTO)
   getCart(
     @ActiveUser('userId') userId: number,
@@ -25,7 +27,11 @@ export class CartController {
   ) {
     return this.cartService.getCart(userId, query);
   }
-
+  @Get(':cartItemId')
+  @IsPublic()
+  getCartItemById(@Param() param: GetCartItemParamsDTO) {
+    return this.cartService.getCartItemById(param.cartItemId);
+  }
   @Post()
   @ZodSerializerDto(CartItemDTO)
   addToCart(

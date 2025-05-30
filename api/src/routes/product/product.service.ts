@@ -35,4 +35,8 @@ export class ProductService {
     }
     return product;
   }
+  async listUserProducts(userId: number) {
+    const data = await this.productRepo.listUserProducts(userId);
+    return data;
+  }
 }

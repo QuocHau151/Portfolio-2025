@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 
 import { BullModule } from '@nestjs/bullmq';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { CommonModule } from './common/common.module';
@@ -18,12 +19,14 @@ import { BrandModule } from './routes/brand/brand.module';
 import { CartModule } from './routes/cart/cart.module';
 import { CategoryModule } from './routes/category/category.module';
 import { ComponentModule } from './routes/component/component.module';
+import { RemoveRefreshTokenCronjob } from './routes/cron/remove-refresh-token';
 import { MediaModule } from './routes/media/media.module';
 import { OrderModule } from './routes/order/order.module';
 import { PaymentModule } from './routes/payment/payment.module';
 import { PermissionModule } from './routes/permission/permission.module';
 import { ProductModule } from './routes/product/product.module';
 import { ProfileModule } from './routes/profile/profile.module';
+import { ProxmoxModule } from './routes/proxmox/proxmox.module';
 import { RoleModule } from './routes/role/role.module';
 import { UserModule } from './routes/user/user.module';
 import { WebsocketModule } from './websocket/websocket.module';
@@ -43,18 +46,19 @@ import { WebsocketModule } from './websocket/websocket.module';
     ProductModule,
     OrderModule,
     CategoryModule,
+    ProxmoxModule,
     PaymentModule,
     ComponentModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {
           name: 'short',
-          ttl: 60000, // 1 minute
+          ttl: 60, // 1 minute
           limit: 10,
         },
         {
           name: 'long',
-          ttl: 120000, // 2 minutes
+          ttl: 60, // 1 minute
           limit: 20,
         },
       ],
@@ -64,6 +68,7 @@ import { WebsocketModule } from './websocket/websocket.module';
         url: envConfig.REDIS_URL,
       },
     }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
@@ -82,6 +87,7 @@ import { WebsocketModule } from './websocket/websocket.module';
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,
     },
+    RemoveRefreshTokenCronjob,
   ],
 })
 export class AppModule {}

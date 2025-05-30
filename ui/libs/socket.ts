@@ -6,8 +6,10 @@ export const generateSocketInstace = (accessToken: string) => {
     auth: {
       Authorization: `Bearer ${accessToken}`,
     },
+    extraHeaders: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     transports: ["websocket"],
   });
-
   return socket;
 };

@@ -15,10 +15,32 @@ export class WebsocketAdapter extends IoAdapter {
     this.tokenService = app.get(TokenService);
   }
   async connectToRedis(): Promise<void> {
-    const pubClient = createClient({ url: envConfig.REDIS_URL });
+    const pubClient = createClient({
+      url: envConfig.REDIS_URL,
+      socket: {
+        reconnectStrategy: (attempts: number) => {
+          return Math.min(1000 * Math.pow(2, attempts), 10000);
+        },
+        keepAlive: true,
+      },
+    });
     const subClient = pubClient.duplicate();
 
-    await Promise.all([pubClient.connect(), subClient.connect()]);
+    try {
+      await Promise.all([pubClient.connect(), subClient.connect()]);
+    } catch (error) {
+      console.error('Redis connection failed:', error);
+      throw new Error('Failed to connect to Redis');
+    }
+
+    // Add error handling
+    pubClient.on('error', (error) => {
+      console.error('Redis pub client error:', error);
+    });
+
+    subClient.on('error', (error) => {
+      console.error('Redis sub client error:', error);
+    });
 
     this.adapterConstructor = createAdapter(pubClient, subClient);
   }
@@ -46,12 +68,13 @@ export class WebsocketAdapter extends IoAdapter {
   }
 
   async authMiddleware(socket: Socket, next: (err?: any) => void) {
-    const { authorization } = socket.handshake.headers;
-
+    const authorization = socket.handshake.auth.Authorization;
+    // const { authorization } = socket.handshake.headers;
     if (!authorization) {
       return next(new Error('Thiếu Authorization header'));
     }
     const accessToken = authorization.split(' ')[1];
+
     if (!accessToken) {
       return next(new Error('Thiếu access token'));
     }

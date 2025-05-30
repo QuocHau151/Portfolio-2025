@@ -1,6 +1,6 @@
 import authApiRequest from "@/actions/auth";
 import clientApiRequest from "@/actions/clientAuth";
-import { Role } from "@/constants/type";
+import { RentalPeriodToMonth, Role } from "@/constants/type";
 import { EntityError } from "@/libs/http";
 import { TokenPayload } from "@/types/jwt.types";
 import { type ClassValue, clsx } from "clsx";
@@ -207,3 +207,6 @@ export function generateSKUs(variants: VariantsType) {
     images: [],
   }));
 }
+export const formatRentalPeriodToMonth = (period: string) => {
+  return RentalPeriodToMonth[period as keyof typeof RentalPeriodToMonth];
+};

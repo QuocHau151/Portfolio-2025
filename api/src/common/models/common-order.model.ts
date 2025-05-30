@@ -3,7 +3,7 @@ import { OrderStatus } from '../constants/order.constant';
 
 export const OrderStatusSchema = z.enum([
   OrderStatus.PENDING_PAYMENT,
-  OrderStatus.PENDING_PICKUP,
+  OrderStatus.PAYMENT_SUCCESS,
   OrderStatus.PENDING_DELIVERY,
   OrderStatus.DELIVERED,
   OrderStatus.RETURNED,
@@ -17,7 +17,7 @@ export const OrderSchema = z.object({
   receiver: z.object({
     name: z.string(),
     phone: z.string(),
-    address: z.string(),
+    email: z.string(),
   }),
   paymentId: z.number(),
   createdById: z.number().nullable(),

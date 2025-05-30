@@ -37,6 +37,9 @@ const configSchema = z.object({
   MINIO_BUCKET_NAME: z.string(),
   PORT: z.string(),
   REDIS_URL: z.string(),
+  PROXMOX_URL: z.string(),
+  PROXMOX_USERNAME: z.string(),
+  PROXMOX_PASSWORD: z.string(),
 });
 
 const configServer = configSchema.safeParse(process.env);

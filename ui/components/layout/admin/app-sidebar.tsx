@@ -11,6 +11,7 @@ import {
   Package,
   PlusCircleIcon,
   SettingsIcon,
+  ShoppingCart,
   SquareActivity,
   SquareUser,
 } from "lucide-react";
@@ -52,6 +53,11 @@ const data = {
       title: "Sản Phẩm",
       url: "/product",
       icon: Package,
+    },
+    {
+      title: "Order",
+      url: "/order",
+      icon: ShoppingCart,
     },
     {
       title: "Thanh Toán",

@@ -1,6 +1,7 @@
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import ScrollLinked from "@/components/ui/scroll-linked";
+import { Suspense } from "react";
 
 export default function MarketingLayout({
   children,
@@ -11,9 +12,12 @@ export default function MarketingLayout({
     <>
       <ScrollLinked />
       <Header />
-      <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[100px]">
-        {children}
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[100px]">
+          {children}
+        </div>
+      </Suspense>
+
       <Footer />
     </>
   );

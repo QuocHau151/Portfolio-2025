@@ -120,6 +120,29 @@ export class CartRepo {
       totalPages: Math.ceil(cartItems.length / limit),
     };
   }
+  getCartItemById(cartItemId: number) {
+    return this.prismaService.cartItem.findUnique({
+      where: {
+        id: cartItemId,
+      },
+      include: {
+        sku: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                publishedAt: true,
+                basePrice: true,
+                virtualPrice: true,
+                images: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 
   async create(userId: number, body: AddToCartBodyType): Promise<CartItemType> {
     await this.validateSKU({
@@ -140,11 +163,15 @@ export class CartRepo {
         quantity: {
           increment: body.quantity,
         },
+        rentalPeriod: {
+          increment: body.rentalPeriod,
+        },
       },
       create: {
         userId,
         skuId: body.skuId,
         quantity: body.quantity,
+        rentalPeriod: body.rentalPeriod,
       },
     });
   }
@@ -174,6 +201,7 @@ export class CartRepo {
         data: {
           skuId: body.skuId,
           quantity: body.quantity,
+          rentalPeriod: body.rentalPeriod,
         },
       })
       .catch((error) => {

@@ -19,7 +19,9 @@ export class CartService {
       limit: query.limit,
     });
   }
-
+  getCartItemById(cartItemId: number) {
+    return this.cartRepo.getCartItemById(cartItemId);
+  }
   addToCart(userId: number, body: AddToCartBodyType) {
     return this.cartRepo.create(userId, body);
   }

@@ -47,3 +47,9 @@ export const useDeleteProductMutation = () => {
     },
   });
 };
+export const useGetUserProductQuery = () => {
+  return useQuery({
+    queryKey: ["user-products"],
+    queryFn: apiProductRequest.getUserProducts,
+  });
+};
