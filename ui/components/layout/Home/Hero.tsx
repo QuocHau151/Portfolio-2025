@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 export default function Hero() {
   return (
     <div className="relative container mx-auto flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-start">
-      <div className="flex flex-col items-center justify-center lg:w-[110%] lg:items-start lg:justify-start xl:w-[85%] 2xl:w-[80%]">
+      <div className="flex flex-col items-center justify-center lg:w-[100%] lg:items-start lg:justify-start xl:w-[85%] 2xl:w-[80%]">
         <HeroHighlight>
           <motion.h1
             initial={{
@@ -48,7 +48,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <div className="relative z-10 h-[400px] w-full overflow-hidden rounded-lg md:h-[930px] lg:h-[700px] xl:h-[860px] 2xl:h-[1100px]">
+      <div className="relative z-10 h-[400px] w-full overflow-hidden rounded-lg md:h-[930px] lg:h-[750px] xl:h-[860px] 2xl:h-[1100px]">
         <CobeDraggableAuto />
       </div>
     </div>

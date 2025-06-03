@@ -1,7 +1,7 @@
 "use client";
 
 import { Building, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +49,12 @@ export default function CheckoutPage() {
     (sum, item) => sum + item?.sku.price * item?.rentalPeriod * item?.quantity,
     0,
   );
+  useEffect(() => {
+    if (orderItems?.[0] === null) {
+      toast("Giỏ hàng trống");
+      router.replace("/");
+    }
+  }, [orderItems]);
   const tax = Math.round(subtotal * 0.08);
   const total = subtotal;
   const handleCreateOrder = async () => {
@@ -196,8 +202,8 @@ export default function CheckoutPage() {
               {orderItemQueries?.some((query) => query.isLoading) ? (
                 <div>Loading...</div>
               ) : (
-                orderItems?.map((item) => (
-                  <div key={item.id} className="flex justify-between pb-2">
+                orderItems?.map((item, index) => (
+                  <div key={index} className="flex justify-between pb-2">
                     <div>
                       <p className="font-medium">{item?.sku.product.name}</p>
                       <p className="text-muted-foreground text-sm">

@@ -212,22 +212,25 @@ export const Header = () => {
           <Link href={"/vps"} className="flex items-center">
             <span className="text-[16px] font-light text-white">VPS</span>
           </Link>
+          <Link href={"/hosting"} className="flex items-center">
+            <span className="text-[16px] font-light text-white">Hosting</span>
+          </Link>
           <Link href={"/proxy"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Proxy</span>
           </Link>
-          <Link href={"/proxy"} className="flex items-center">
+          <Link href={"/vpn"} className="flex items-center">
             <span className="text-[16px] font-light text-white">VPN</span>
           </Link>
-          <Link href={"/proxy"} className="flex items-center">
+          <Link href={"/domain"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Domain</span>
           </Link>
         </div>
         <Logo theme="dark" isScroll={isScroll} />
 
         <div className="hidden items-center justify-center gap-8 lg:flex">
-          {/* <Link href={"/cv"} className="flex items-center pl-2">
+          <Link href={"/cv"} className="flex items-center pl-2">
             <span className="text-[16px] font-light text-white">CV</span>
-          </Link> */}
+          </Link>
           <Link href={"/components"} className="flex items-center">
             <span className="text-[16px] font-light text-white">
               Components

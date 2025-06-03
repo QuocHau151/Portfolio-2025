@@ -15,11 +15,13 @@ const ENTITY_ERROR_STATUS = 422;
 const AUTHENTICATION_ERROR_STATUS = 401;
 
 type EntityErrorPayload = {
-  message: string;
-  errors: {
-    field: string;
+  errors: string;
+  message: {
+    code: string;
+    path: string;
     message: string;
   }[];
+  statusCode: number;
 };
 
 export class HttpError extends Error {
@@ -124,10 +126,11 @@ const request = async <Response>(
   // Interceptor là nời chúng ta xử lý request và response trước khi trả về cho phía component
   if (!res.ok) {
     if (res.status === ENTITY_ERROR_STATUS) {
+      console.log(data);
       throw new EntityError({
-        ...data,
-
-        message: "Đã có lỗi xảy ra",
+        message: (data.payload as any).message[0].message,
+        payload: data.payload,
+        status: data.status,
       } as {
         status: 422;
         payload: EntityErrorPayload;

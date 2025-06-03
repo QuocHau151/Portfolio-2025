@@ -141,6 +141,7 @@ export const CreateProductBodySchema = ProductSchema.pick({
       }
       return isValid;
     });
+
     if (!isValidSKUs) {
       ctx.addIssue({
         code: 'custom',
@@ -150,7 +151,31 @@ export const CreateProductBodySchema = ProductSchema.pick({
     }
   });
 
-export const UpdateProductBodySchema = CreateProductBodySchema;
+export const UpdateProductBodySchema = ProductSchema.pick({
+  publishedAt: true,
+  name: true,
+  basePrice: true,
+  virtualPrice: true,
+  brands: true,
+  images: true,
+  variants: true,
+})
+  .extend({
+    categories: z.array(z.coerce.number().int().positive()),
+    skus: z.array(UpsertSKUBodySchema),
+  })
+  .strict()
+  .superRefine(({ variants, skus }, ctx) => {
+    // Kiểm tra xem số lượng SKU có hợp lệ hay không
+    const skuValueArray = generateSKUs(variants);
+    if (skus.length !== skuValueArray.length) {
+      return ctx.addIssue({
+        code: 'custom',
+        path: ['skus'],
+        message: `Số lượng SKU nên là ${skuValueArray.length}. Vui lòng kiểm tra lại.`,
+      });
+    }
+  });
 
 export type GetProductsResType = z.infer<typeof GetProductsResSchema>;
 export type GetProductsQueryType = z.infer<typeof GetProductsQuerySchema>;

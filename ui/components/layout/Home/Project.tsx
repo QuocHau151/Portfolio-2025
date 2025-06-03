@@ -14,30 +14,28 @@ interface Project {
 const projects: Project[] = [
   {
     title: "FPT Smart Home",
-    description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description: "",
     src: "/assets/images/project/fpt.png",
     url: "https://www.fpt-smarthome.vn",
     tag: ["Full-Stack", "NextJS", "Github CI/CD", "PostgreSQL"],
   },
   {
     title: "Khuê Tuấn ",
-    description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description: "",
     src: "/assets/images/project/khuetuan.png",
     url: "https://khuetuan.com",
     tag: ["Front-End", "Back-End", "Full-Stack"],
   },
   {
     title: "Khang Minh Lighting",
-    description: "Mô tả cho Project Two.",
+    description: "",
     src: "/assets/images/project/khangminh.png",
     url: "https://khangminhlighting.com",
     tag: ["Front-End", "Back-End", "Full-Stack"],
   },
   {
     title: "MepSharing",
-    description: "Mô tả cho Project Two.",
+    description: "",
     src: "/assets/images/project/mepsharing.png",
     url: "https://www.mepsharing.com",
     tag: ["Front-End", "Back-End", "Full-Stack"],

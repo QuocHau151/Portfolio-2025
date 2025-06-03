@@ -398,7 +398,7 @@ export default function ProductForm({
         images: productImages,
         skus: skusWithUrls,
       };
-      console.log(finalFormData);
+
       const result = await updateProduct.mutateAsync({
         id: Number(id),
         data: finalFormData,

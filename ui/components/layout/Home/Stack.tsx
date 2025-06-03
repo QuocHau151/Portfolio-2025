@@ -3,7 +3,7 @@ import { MainMenusGradientCard } from "@/components/ui/animatedcard";
 import { SpotlightButton } from "@/components/ui/Spotlightbutton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
-import React, { useRef } from "react";
+import { useRef } from "react";
 
 export default function Stack() {
   const ref1 = useRef<HTMLDivElement>(null);
@@ -55,11 +55,10 @@ export default function Stack() {
             <div className="grid size-12 place-content-center rounded-full bg-white text-black"></div>
             <h1 className="text-[20px] font-medium">Front End</h1>
           </div>
-          <h2 className="text-justify text-sm text-gray-400">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi vero
-            minus explicabo animi numquam, vel soluta voluptas accusamus eveniet
-            quis magni necessitatibus commodi labore laborum eaque nobis alias!
-            Nihil, labore.
+          <h2 className="text-left text-sm text-gray-400">
+            Experienced in building responsive UIs with React.js, Next.js, and
+            Tailwind CSS. Skilled in state management (React Query, Zustand),
+            animations (Framer Motion), and API integration.
           </h2>
           <SpotlightButton className="mt-4 text-[13px]" text="Lear More" />
         </MainMenusGradientCard>
@@ -75,11 +74,10 @@ export default function Stack() {
             <div className="grid size-12 place-content-center rounded-full bg-white text-black"></div>
             <h1 className="text-[20px] font-medium">Back End</h1>
           </div>
-          <h2 className="text-justify text-sm text-gray-500">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi vero
-            minus explicabo animi numquam, vel soluta voluptas accusamus eveniet
-            quis magni necessitatibus commodi labore laborum eaque nobis alias!
-            Nihil, labore.
+          <h2 className="text-left text-sm text-gray-500">
+            Proficient in Node.js and NestJS for building scalable APIs.
+            Experienced with PostgreSQL (Prisma ORM), JWT auth, role-based
+            access, and background jobs using BullMQ & Redis.
           </h2>
           <SpotlightButton className="mt-4 text-[13px]" text="Lear More" />
         </MainMenusGradientCard>
@@ -95,11 +93,10 @@ export default function Stack() {
             <div className="grid size-12 place-content-center rounded-full bg-white text-black"></div>
             <h1 className="text-[20px] font-medium">DevOps</h1>
           </div>
-          <h2 className="text-justify text-sm text-gray-500">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi vero
-            minus explicabo animi numquam, vel soluta voluptas accusamus eveniet
-            quis magni necessitatibus commodi labore laborum eaque nobis alias!
-            Nihil, labore.
+          <h2 className="text-left text-sm text-gray-500">
+            Capable of deploying apps using Docker on Linux servers. Familiar
+            with Proxmox, Vultr, CI/CD, and managing services with Redis and
+            background job queues.
           </h2>
           <SpotlightButton className="mt-4 text-[13px]" text="Lear More" />
         </MainMenusGradientCard>
