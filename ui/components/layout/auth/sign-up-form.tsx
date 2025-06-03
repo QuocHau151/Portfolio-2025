@@ -17,8 +17,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GoogleLoginUrl, handleErrorApi } from "@/libs/utils";
-import { useCheckEmailExits, useSendOTP } from "@/queries/useAuth";
+import { handleErrorApi } from "@/libs/utils";
+import {
+  useCheckEmailExits,
+  useGetGoogleLoginUrl,
+  useSendOTP,
+} from "@/queries/useAuth";
 import {
   RegisterBodyStepBefore,
   RegisterBodyStepBeforeType,
@@ -33,7 +37,9 @@ export default function SignUpForm() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const { setRegisterForm } = useAppStore();
   const checkEmailExitsMutation = useCheckEmailExits();
-
+  const getGoogleLoginUrl = useGetGoogleLoginUrl();
+  const GoogleLoginUrl = (getGoogleLoginUrl.data?.payload as any)?.data
+    .url as string;
   const sendOTP = useSendOTP();
   const form = useForm<RegisterBodyStepBeforeType>({
     resolver: zodResolver(RegisterBodyStepBefore),
@@ -261,14 +267,12 @@ export default function SignUpForm() {
               </span>
             </div>
           </div>
-          <Link href={GoogleLoginUrl}>
+          <Link href={GoogleLoginUrl ? GoogleLoginUrl : ""}>
             <Button
               type="button"
               variant="outline"
               className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
-              onClick={() => {
-               
-              }}
+              onClick={() => {}}
             >
               <svg
                 className="mr-2 h-4 w-4"

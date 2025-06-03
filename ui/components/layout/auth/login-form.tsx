@@ -33,7 +33,6 @@ export default function SignInForm() {
   const getGoogleLoginUrl = useGetGoogleLoginUrl();
   const GoogleLoginUrl = (getGoogleLoginUrl.data?.payload as any)?.data
     .url as string;
-  console.log(GoogleLoginUrl);
   const clearTokens = searchParams?.get("clearTokens");
 
   const { setRole, setAccount, setSocket } = useAppStore();
