@@ -85,6 +85,9 @@ const authApiRequest = {
   forgotPassword: (body: ForgotPasswordType) => {
     return http.post("/auth/forgot-password", body);
   },
+  getGoogleLoginUrl: () => {
+    return http.get("/auth/google-link");
+  },
 };
 
 export default authApiRequest;

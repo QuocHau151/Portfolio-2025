@@ -1,5 +1,5 @@
 import authApiRequest from "@/actions/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useLoginMutation = () => {
   return useMutation({
@@ -39,6 +39,12 @@ export const useVerificationCode = () => {
 };
 export const useForgotPassword = () => {
   return useMutation({
-    mutationFn: authApiRequest.forgotPassword
-  })
+    mutationFn: authApiRequest.forgotPassword,
+  });
+};
+export const useGetGoogleLoginUrl = () => {
+  return useQuery({
+    queryFn: authApiRequest.getGoogleLoginUrl,
+    queryKey: ["getGoogleLoginUrl"],
+  });
 };

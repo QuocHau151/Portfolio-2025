@@ -180,8 +180,7 @@ export const getIdFromSlugUrl = (slug: string) => {
 export const formatDateTimeToDateString = (date: string | Date) => {
   return format(date instanceof Date ? date : new Date(date), "dd/MM/yyyy");
 };
-export const GoogleLoginUrl =
-  "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&include_granted_scopes=true&state=eyJ1c2VyQWdlbnQiOiJQb3N0bWFuUnVudGltZS83LjQzLjMiLCJpcCI6Ijo6MSJ9&response_type=code&client_id=1080194740749-vqoi81hhqpeg59a7qh6fve3kbaribccs.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fgoogle%2Fcallback";
+
 export function generateSKUs(variants: VariantsType) {
   // Hàm hỗ trợ để tạo tất cả tổ hợp
   function getCombinations(arrays: string[][]): string[] {

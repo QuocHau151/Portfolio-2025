@@ -18,8 +18,7 @@ import { FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { generateSocketInstace } from "@/libs/socket";
-import { GoogleLoginUrl } from "@/libs/utils";
-import { useLoginMutation } from "@/queries/useAuth";
+import { useGetGoogleLoginUrl, useLoginMutation } from "@/queries/useAuth";
 import { LoginBody, LoginBodyType } from "@/schemas/auth.schema";
 import { useAppStore } from "@/stores/app";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +30,10 @@ export default function SignInForm() {
   const [rememberMe, setRememberMe] = useState(false);
   const { searchParams } = useSearchParamsLoader();
   const loginMutation = useLoginMutation();
+  const getGoogleLoginUrl = useGetGoogleLoginUrl();
+  const GoogleLoginUrl = (getGoogleLoginUrl.data?.payload as any)?.data
+    .url as string;
+  console.log(GoogleLoginUrl);
   const clearTokens = searchParams?.get("clearTokens");
 
   const { setRole, setAccount, setSocket } = useAppStore();
@@ -174,7 +177,7 @@ export default function SignInForm() {
               </span>
             </div>
           </div>
-          <Link href={GoogleLoginUrl}>
+          <Link href={GoogleLoginUrl ? GoogleLoginUrl : ""}>
             <Button
               type="button"
               variant="outline"
