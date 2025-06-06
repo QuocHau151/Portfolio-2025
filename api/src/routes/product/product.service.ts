@@ -39,4 +39,10 @@ export class ProductService {
     const data = await this.productRepo.listUserProducts(userId);
     return data;
   }
+  async listByCategory({ categoryId }: { categoryId: number }) {
+    const data = await this.productRepo.listByCategory({
+      categoryId,
+    });
+    return data;
+  }
 }

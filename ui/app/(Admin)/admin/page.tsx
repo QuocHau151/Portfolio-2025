@@ -2,7 +2,6 @@ import { ChartAreaInteractive } from "@/components/layout/admin/chart-area-inter
 import { DataTable } from "@/components/layout/admin/data-table";
 import { SectionCards } from "@/components/layout/admin/section-cards";
 
-import data from "@/data/adminData.json";
 export default function Page() {
   return (
     <div className="flex flex-1 flex-col">
@@ -12,7 +11,7 @@ export default function Page() {
           <div className="px-4 lg:px-6">
             <ChartAreaInteractive />
           </div>
-          <DataTable data={data} />
+          <DataTable data={[]} />
         </div>
       </div>
     </div>

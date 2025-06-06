@@ -124,9 +124,9 @@ export default function QrCodePayment() {
   const paymentInfo = {
     amount: total,
     orderId: paymentId,
-    accountNumber: "0123456789",
-    accountName: "NGUYEN VAN A",
-    bankName: "Vietcombank",
+    accountNumber: "8805366159",
+    accountName: "Trần Lê Quốc Hậu",
+    bankName: "BIDV",
     content: `DH${paymentId}`,
   };
 
@@ -181,7 +181,10 @@ export default function QrCodePayment() {
           </CardHeader>
 
           <CardFooter>
-            <Button className="w-full" onClick={() => router.push("/order")}>
+            <Button
+              className="w-full"
+              onClick={() => router.push("/dashboard")}
+            >
               Xem đơn hàng
             </Button>
           </CardFooter>
@@ -346,7 +349,9 @@ export default function QrCodePayment() {
             </Tabs>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Xác Nhận Đã Thanh Toán</Button>
+            <Button className="w-full" onClick={() => setIsProcessing(true)}>
+              Xác Nhận Đã Thanh Toán
+            </Button>
           </CardFooter>
         </Card>
       </div>

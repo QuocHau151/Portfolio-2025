@@ -37,4 +37,11 @@ export class ProductController {
       productId: params.productId,
     });
   }
+
+  @Get('category/:categoryId')
+  listByCategory(@Param() params: { categoryId: number }) {
+    return this.productService.listByCategory({
+      categoryId: params.categoryId,
+    });
+  }
 }

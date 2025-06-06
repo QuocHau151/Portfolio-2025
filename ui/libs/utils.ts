@@ -23,6 +23,8 @@ export const normalizePath = (path: string) => {
   return path.startsWith("/") ? path.slice(1) : path;
 };
 
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export const handleErrorApi = ({
   error,
   setError,

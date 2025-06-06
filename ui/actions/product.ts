@@ -4,6 +4,9 @@ export const apiProductRequest = {
   getProducts: () => {
     return http.get("/products");
   },
+  getCategoryProducts: (categoryId: number) => {
+    return http.get(`/products/category/${categoryId}`);
+  },
   getUserProducts: () => {
     return http.get("/products/user-products");
   },

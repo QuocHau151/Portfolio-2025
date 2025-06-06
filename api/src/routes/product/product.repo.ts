@@ -213,7 +213,31 @@ export class ProductRepo {
       },
     });
   }
-
+  async listByCategory({ categoryId }: { categoryId: number }) {
+    return this.prismaService.product.findMany({
+      where: {
+        categories: {
+          some: {
+            id: Number(categoryId),
+          },
+        },
+        deletedAt: null,
+      },
+      include: {
+        brands: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        skus: {
+          where: {
+            deletedAt: null,
+          },
+        },
+      },
+    });
+  }
   async create({
     createdById,
     data,

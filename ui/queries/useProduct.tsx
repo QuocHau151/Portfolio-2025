@@ -7,6 +7,12 @@ export const useGetProductsQuery = () => {
     queryFn: apiProductRequest.getProducts,
   });
 };
+export const useGetCategoryProductsQuery = (categoryId: number) => {
+  return useQuery({
+    queryKey: ["category-products", categoryId],
+    queryFn: () => apiProductRequest.getCategoryProducts(categoryId),
+  });
+};
 export const useGetProductIdQuery = (id: number) => {
   return useQuery({
     queryKey: ["product-id"],

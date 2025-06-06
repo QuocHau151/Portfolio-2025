@@ -128,7 +128,7 @@ const request = async <Response>(
     if (res.status === ENTITY_ERROR_STATUS) {
       console.log(data);
       throw new EntityError({
-        message: (data.payload as any).message[0].message,
+        message: (data.payload as any).message,
         payload: data.payload,
         status: data.status,
       } as {

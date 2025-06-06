@@ -1,23 +1,35 @@
 "use client";
 
+import AnimatedBackground from "@/components/feature/animated-background";
+import SmoothScroll from "@/components/feature/smooth-scroll";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
-import CircleDev from "@/components/layout/Home/CircleDev";
-import Hero from "@/components/layout/Home/Hero";
-import Project from "@/components/layout/Home/Project";
-import Stack from "@/components/layout/Home/Stack";
+import HeroSection from "@/components/layout/Sections/hero";
+import ProjectsSection from "@/components/layout/Sections/projects";
+import SkillsSection from "@/components/layout/Sections/skills";
 import ScrollLinked from "@/components/ui/scroll-linked";
 
 export default function Home() {
   return (
-    <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[50px]">
-      <ScrollLinked />
-      <Header />
-      <Hero />
+    <SmoothScroll>
+      <main className={""}>
+        <ScrollLinked />
+        <Header />
+        <div className="fixed top-0 z-0 h-screen w-full">
+          <AnimatedBackground />
+        </div>
+        <HeroSection />
+        <SkillsSection />
+        <ProjectsSection />
+        {/* contact section */}
+        <Footer />
+      </main>
+      {/* <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[50px]">
+        <Hero />
       <CircleDev />
       <Stack />
       <Project />
-      <Footer />
-    </div>
+      </div> */}
+    </SmoothScroll>
   );
 }

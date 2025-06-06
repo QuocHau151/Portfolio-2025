@@ -62,8 +62,7 @@ export default function SignInForm() {
 
       router.push("/");
     } catch (error: any) {
-      console.log(error);
-      toast("Đăng nhập thất bại");
+      toast(error.message);
     }
   };
 

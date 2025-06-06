@@ -15,7 +15,7 @@ import {
   useCartQuery,
   useUpdateCartMutation,
 } from "@/queries/useCart";
-import { useGetProductsQuery } from "@/queries/useProduct";
+import { useGetCategoryProductsQuery } from "@/queries/useProduct";
 import { useEffect, useState } from "react";
 
 // Define types for our data structure
@@ -31,12 +31,6 @@ interface Sku {
   stock: number;
   images: any[];
   productId: number;
-  createdById: number;
-  updatedById: number | null;
-  deletedById: number | null;
-  deletedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 interface Product {
@@ -48,12 +42,6 @@ interface Product {
   images: any[];
   variants: Variant[];
   skus: Sku[];
-  createdById: number;
-  updatedById: number | null;
-  deletedById: number | null;
-  deletedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export default function VpsPlans() {
@@ -67,7 +55,8 @@ export default function VpsPlans() {
 
   const [activeTab, setActiveTab] = useState<string>("");
   const [sku, setSku] = useState<Sku | null>(null);
-  const response = useGetProductsQuery();
+  const response = useGetCategoryProductsQuery(1);
+
   const { data: cartData } = useCartQuery();
   const addToCartMutation = useAddToCartMutation();
   const updateCartMutation = useUpdateCartMutation();
@@ -83,7 +72,8 @@ export default function VpsPlans() {
 
   useEffect(() => {
     if (response.data) {
-      const data = (response.data?.payload as any)?.data?.data;
+      const data = (response.data?.payload as any)?.data;
+
       setProducts(data);
       setActiveTab(data[0].id.toString());
 
