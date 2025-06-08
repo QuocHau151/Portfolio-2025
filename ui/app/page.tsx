@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import ContactSection from "@/components/layout/Home/contact";
 import HeroSection from "@/components/layout/Home/hero";
+
 import ProjectsSection from "@/components/layout/Home/projects";
 import SkillsSection from "@/components/layout/Home/skills";
 import ScrollLinked from "@/components/ui/scroll-linked";
@@ -27,12 +28,6 @@ export default function Home() {
         <Footer />
         <Dock />
       </main>
-      {/* <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[50px]">
-        <Hero />
-      <CircleDev />
-      <Stack />
-      <Project />
-      </div> */}
     </SmoothScroll>
   );
 }
