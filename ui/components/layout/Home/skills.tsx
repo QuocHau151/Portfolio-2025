@@ -8,11 +8,13 @@ const SkillsSection = () => {
       <div className="sticky top-[70px] mb-96">
         <Link href={"#skills"}>
           <BoxReveal width="100%">
-            <h2 className="text-center text-4xl font-bold">SKILLS</h2>
+            <h2 className="mt-5 bg-gradient-to-tr from-neutral-500 via-neutral-300 to-white bg-clip-text text-center text-4xl font-extrabold text-transparent md:text-6xl">
+              SKILLS
+            </h2>
           </BoxReveal>
         </Link>
-        <p className="mx-auto mt-4 line-clamp-4 max-w-3xl text-center text-base font-normal text-neutral-300">
-          (hint: press a key)
+        <p className="mx-auto line-clamp-4 max-w-3xl text-center text-base font-normal text-neutral-600">
+          (hint: press a key or hover)
         </p>
       </div>
     </section>

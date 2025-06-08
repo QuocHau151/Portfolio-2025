@@ -3,7 +3,7 @@
  * Desktop navbar is better positioned at the bottom
  * Mobile navbar is better positioned at bottom right.
  **/
-
+"use client";
 import { cn } from "@/libs/utils";
 // import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
@@ -15,6 +15,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export const FloatingDock = ({
@@ -34,47 +35,50 @@ export const FloatingDock = ({
   );
 };
 
-const FloatingDockMobile = ({
+export const FloatingDockMobile = ({
   items,
   className,
 }: {
-  items: { title: string; icon: React.ReactNode }[];
+  items: { title: string; icon: React.ReactNode; link: string }[];
   className?: string;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <div className={cn("relative block md:hidden", className)}>
       <AnimatePresence>
         {open && (
           <motion.div
             layoutId="nav"
-            className="absolute inset-x-0 bottom-full mb-2 flex flex-col gap-2"
+            className="absolute bottom-full w-full bg-transparent pb-1"
           >
-            {items.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: 10,
-                  transition: {
-                    delay: idx * 0.05,
-                  },
-                }}
-                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
-              >
-                <div
-                  key={item.title}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900"
+            <div className="mx-3 mx-auto flex w-min items-center justify-center gap-2 rounded-2xl bg-neutral-800 px-4 py-2">
+              {items.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 10,
+                    transition: {
+                      delay: idx * 0.05,
+                    },
+                  }}
+                  transition={{ delay: (items.length - 1 - idx) * 0.05 }}
                 >
-                  <div className="h-4 w-4">{item.icon}</div>
-                </div>
-              </motion.div>
-            ))}
+                  <Link
+                    href={item.link}
+                    key={item.title}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900"
+                  >
+                    <div className="h-4 w-4">{item.icon}</div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -137,8 +141,8 @@ const FloatingDockDesktop = ({
           className,
         )}
       >
-        {items.map((item) => (
-          <IconContainer mouseX={mouseX} key={item.title} {...item} />
+        {items.map((item, index) => (
+          <IconContainer mouseX={mouseX} key={index} {...item} />
         ))}
       </motion.div>
       {showHint && (

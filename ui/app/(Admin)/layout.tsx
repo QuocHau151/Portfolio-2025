@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/layout/admin/app-sidebar";
 import { SiteHeader } from "@/components/layout/admin/site-header";
+import Dock from "@/components/layout/Dock/page";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function AdminLayout({
@@ -15,6 +16,7 @@ export default function AdminLayout({
           <SiteHeader />
           {children}
         </SidebarInset>
+        <Dock />
       </SidebarProvider>
     </>
   );

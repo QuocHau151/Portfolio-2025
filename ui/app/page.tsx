@@ -2,11 +2,13 @@
 
 import AnimatedBackground from "@/components/feature/animated-background";
 import SmoothScroll from "@/components/feature/smooth-scroll";
+import Dock from "@/components/layout/Dock/page";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
-import HeroSection from "@/components/layout/Sections/hero";
-import ProjectsSection from "@/components/layout/Sections/projects";
-import SkillsSection from "@/components/layout/Sections/skills";
+import ContactSection from "@/components/layout/Home/contact";
+import HeroSection from "@/components/layout/Home/hero";
+import ProjectsSection from "@/components/layout/Home/projects";
+import SkillsSection from "@/components/layout/Home/skills";
 import ScrollLinked from "@/components/ui/scroll-linked";
 
 export default function Home() {
@@ -21,8 +23,9 @@ export default function Home() {
         <HeroSection />
         <SkillsSection />
         <ProjectsSection />
-        {/* contact section */}
+        <ContactSection />
         <Footer />
+        <Dock />
       </main>
       {/* <div className="mt-20 md:mt-[140px] lg:mt-20 xl:mt-[50px]">
         <Hero />

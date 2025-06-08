@@ -1,14 +1,13 @@
 "use client";
 
-import { CobeDraggableAuto } from "@/components/ui/cobeglobeautodraggable";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { SpotlightButton } from "@/components/ui/Spotlightbutton";
 import { motion } from "framer-motion";
 
-export default function Hero() {
+export default function HeroSection() {
   return (
-    <div className="relative container mx-auto flex flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-start">
-      <div className="flex flex-col items-center justify-center lg:w-[100%] lg:items-start lg:justify-start xl:w-[85%] 2xl:w-[80%]">
+    <div className="relative container mx-auto flex h-screen flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-start">
+      <div className="l flex flex-col items-center justify-center lg:w-1/2 lg:items-start lg:justify-start">
         <HeroHighlight>
           <motion.h1
             initial={{
@@ -46,10 +45,6 @@ export default function Hero() {
         >
           <SpotlightButton className="mt-4" text="Contact Me" />
         </motion.div>
-      </div>
-
-      <div className="relative z-10 h-[400px] w-full overflow-hidden rounded-lg md:h-[930px] lg:h-[750px] xl:h-[860px] 2xl:h-[1100px]">
-        <CobeDraggableAuto />
       </div>
     </div>
   );

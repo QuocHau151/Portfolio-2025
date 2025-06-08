@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
 
@@ -21,7 +22,7 @@ const SlideShow = ({ images }: { images: string[] }) => {
     <Splide
       options={{
         autoplay: "true",
-        perPage: 1,
+        perPage: 3,
         start: 0,
         rewind: true,
         padding: { left: "3rem", right: "3rem" },
@@ -34,7 +35,7 @@ const SlideShow = ({ images }: { images: string[] }) => {
           <SplideSlide key={idx} className="flex items-center">
             <Dialog>
               <DialogTrigger
-                className="relative"
+                className="relative max-h-[140px] overflow-hidden"
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
               >
@@ -59,6 +60,7 @@ const SlideShow = ({ images }: { images: string[] }) => {
                 </AnimatePresence>
               </DialogTrigger>
               <DialogContent className="m-0 h-[90vh] min-w-[90vw] border-none bg-transparent p-0 outline-none">
+                <DialogTitle className="sr-only">Image Preview</DialogTitle>
                 <DialogHeader className="w-full">
                   {/* <DialogTitle>Are you absolutely sure?</DialogTitle> */}
                   <DialogDescription>

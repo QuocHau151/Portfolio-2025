@@ -5,7 +5,6 @@ import { sleep } from "@/libs/utils";
 import { Application, SPEObject, SplineEvent } from "@splinetool/runtime";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { usePreloader } from "../layout/preloader";
@@ -16,8 +15,8 @@ gsap.registerPlugin(ScrollTrigger);
 const STATES = {
   hero: {
     desktop: {
-      scale: { x: 0.25, y: 0.25, z: 0.25 },
-      position: { x: 400, y: -200, z: 0 },
+      scale: { x: 0.3, y: 0.3, z: 0.3 },
+      position: { x: 500, y: -200, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
     },
     mobile: {
@@ -48,7 +47,7 @@ const STATES = {
   },
   skills: {
     desktop: {
-      scale: { x: 0.4, y: 0.4, z: 0.4 },
+      scale: { x: 0.35, y: 0.35, z: 0.35 },
       position: { x: 0, y: -100, z: 0 },
       rotation: {
         x: 0,
@@ -108,11 +107,12 @@ const STATES = {
   },
 };
 
-type Section = "hero" | "about" | "skills" | "projects";
+type Section = "hero" | "about" | "skills" | "projects" | "contact";
 
 const AnimatedBackground = () => {
   const { isLoading, bypassLoading } = usePreloader();
-  const { theme } = useTheme();
+  const theme = "dark";
+
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const splineContainer = useRef<HTMLDivElement>(null);
@@ -160,9 +160,12 @@ const AnimatedBackground = () => {
   useEffect(() => {
     if (!splineApp) return;
     const textDesktopDark = splineApp.findObjectByName("text-desktop-dark");
+
     const textDesktopLight = splineApp.findObjectByName("text-desktop");
+
     const textMobileDark = splineApp.findObjectByName("text-mobile-dark");
     const textMobileLight = splineApp.findObjectByName("text-mobile");
+    console.log(textMobileDark);
     if (
       !textDesktopDark ||
       !textDesktopLight ||
@@ -187,11 +190,6 @@ const AnimatedBackground = () => {
       textDesktopLight.visible = false;
       textMobileDark.visible = false;
       textMobileLight.visible = true;
-    } else if (theme === "light" && !isMobile) {
-      textDesktopDark.visible = true;
-      textDesktopLight.visible = false;
-      textMobileDark.visible = false;
-      textMobileLight.visible = false;
     } else {
       textDesktopDark.visible = false;
       textDesktopLight.visible = false;
@@ -426,6 +424,46 @@ const AnimatedBackground = () => {
           });
           gsap.to(kbd.rotation, {
             ...keyboardStates("skills").rotation,
+            duration: 1,
+          });
+          // gsap.to(kbd.rotation, { x: 0, duration: 1 });
+        },
+      },
+    });
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: "#contact",
+        start: "top 30%",
+        end: "bottom bottom",
+        scrub: true,
+        // markers: true,
+        onEnter: () => {
+          setActiveSection("contact");
+          gsap.to(kbd.scale, {
+            ...keyboardStates("contact").scale,
+            duration: 1,
+          });
+          gsap.to(kbd.position, {
+            ...keyboardStates("contact").position,
+            duration: 1,
+          });
+          gsap.to(kbd.rotation, {
+            ...keyboardStates("contact").rotation,
+            duration: 1,
+          });
+        },
+        onLeaveBack: () => {
+          setActiveSection("projects");
+          gsap.to(kbd.scale, {
+            ...keyboardStates("projects").scale,
+            duration: 1,
+          });
+          gsap.to(kbd.position, {
+            ...keyboardStates("projects").position,
+            duration: 1,
+          });
+          gsap.to(kbd.rotation, {
+            ...keyboardStates("projects").rotation,
             duration: 1,
           });
           // gsap.to(kbd.rotation, { x: 0, duration: 1 });

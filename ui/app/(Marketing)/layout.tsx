@@ -1,3 +1,4 @@
+import Dock from "@/components/layout/Dock/page";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import ScrollLinked from "@/components/ui/scroll-linked";
@@ -17,7 +18,7 @@ export default function MarketingLayout({
           {children}
         </div>
       </Suspense>
-
+      <Dock />
       <Footer />
     </>
   );
