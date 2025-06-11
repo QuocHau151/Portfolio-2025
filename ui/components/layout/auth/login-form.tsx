@@ -59,7 +59,7 @@ export default function SignInForm() {
       setRole(result.payload.data.account.role);
       setAccount(result.payload.data.account);
       setSocket(generateSocketInstace(result.payload.data.accessToken));
-
+      
       router.push("/");
     } catch (error: any) {
       toast(error.message);

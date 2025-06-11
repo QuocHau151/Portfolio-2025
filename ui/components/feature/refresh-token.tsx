@@ -54,12 +54,15 @@ export default function RefreshToken() {
     function onRefreshTokenSocket() {
       onRefreshToken(true);
     }
-    socket?.on("connect", onConnect);
+
+    socket?.on("connect", () => onConnect());
     socket?.on("connect_error", (error) => {
       console.error("Socket connection error:", error);
     });
+
     socket?.on("disconnect", onDisconnect);
     socket?.on("refresh-token", onRefreshTokenSocket);
+
     return () => {
       clearInterval(interval);
       socket?.off("connect", onConnect);

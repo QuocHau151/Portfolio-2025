@@ -182,7 +182,9 @@ export const getIdFromSlugUrl = (slug: string) => {
 export const formatDateTimeToDateString = (date: string | Date) => {
   return format(date instanceof Date ? date : new Date(date), "dd/MM/yyyy");
 };
-
+export const formatDateTimeToHourMinuteString = (date: string | Date) => {
+  return format(date instanceof Date ? date : new Date(date), "HH:mm");
+};
 export function generateSKUs(variants: VariantsType) {
   // Hàm hỗ trợ để tạo tất cả tổ hợp
   function getCombinations(arrays: string[][]): string[] {

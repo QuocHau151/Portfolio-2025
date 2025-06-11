@@ -7,6 +7,7 @@ import {
   DollarSign,
   HelpCircleIcon,
   LayoutDashboardIcon,
+  MessageSquareMore,
   NotebookTabs,
   Package,
   PlusCircleIcon,
@@ -98,6 +99,11 @@ const data = {
     },
   ],
   navSecondary: [
+    {
+      title: "Messenger",
+      url: "/chat",
+      icon: MessageSquareMore,
+    },
     {
       title: "Settings",
       url: "/setting",

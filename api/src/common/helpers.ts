@@ -41,5 +41,5 @@ export const generateCancelPaymentJobId = (paymentId: number) => {
 };
 
 export const generateRoomUserId = (userId: number) => {
-  return `userId-${userId}`;
+  return `room-${userId}`;
 };

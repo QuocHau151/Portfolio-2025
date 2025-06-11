@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
-    <div className="relative container mx-auto flex h-screen flex-col items-center justify-center lg:flex-row lg:items-center lg:justify-start">
+    <div className="relative container mx-auto mt-[100px] flex h-[calc(100vh-100px)] flex-col items-start justify-start lg:flex-row lg:items-center lg:justify-start">
       <div className="l flex flex-col items-center justify-center lg:w-1/2 lg:items-start lg:justify-start">
         <HeroHighlight>
           <motion.h1

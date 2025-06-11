@@ -148,7 +148,7 @@ export default function SettingsPage() {
     }
   }
   return (
-    <div className="mx-auto w-full px-10 py-5">
+    <div className="mx-auto w-full px-10 py-5 pb-20">
       <div className="flex flex-col gap-6 md:flex-row">
         {/* Sidebar with user info */}
         <div className="w-full md:w-1/3">
@@ -201,7 +201,7 @@ export default function SettingsPage() {
         {/* Main content */}
         <div className="w-full md:w-2/3">
           <Tabs defaultValue="account">
-            <TabsList className="mb-3 rounded-xl bg-neutral-800 p-2">
+            <TabsList className="mb-3 w-full justify-start overflow-x-scroll rounded-xl bg-neutral-800 p-2">
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="permissions">Permissions</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>

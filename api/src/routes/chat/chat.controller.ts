@@ -1,0 +1,25 @@
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateMessageBodyType } from './chat.model';
+import { ChatService } from './chat.service';
+
+@Controller('chat')
+export class ChatController {
+  constructor(private readonly chatService: ChatService) {}
+
+  @Get()
+  async getRooms() {
+    return this.chatService.getRooms();
+  }
+  @Get(':roomId')
+  async getRoom(@Param('roomId') roomId: string) {
+    return this.chatService.getRoom(Number(roomId));
+  }
+  @Get('user/:userId')
+  getRoomByUserId(@Param('userId') userId: string) {
+    return this.chatService.getRoomByUserId(Number(userId));
+  }
+  @Post()
+  async createMessage(@Body() body: CreateMessageBodyType) {
+    return this.chatService.createMessage(body);
+  }
+}

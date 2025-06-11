@@ -29,9 +29,16 @@ import { useCartStore } from "@/stores/cart";
 import { useOrderStore } from "@/stores/order";
 import {
   AlignRight,
+  BookOpen,
+  Boxes,
   Check,
+  FileText,
+  Globe,
+  LogIn,
+  Mail,
   Minus,
   Plus,
+  Server,
   ShoppingBag,
   ShoppingCart,
   X,
@@ -44,7 +51,16 @@ interface LogoProps {
   isScroll?: boolean;
   isMobile?: boolean;
 }
-
+const menuItems = [
+  { label: "VPS", icon: Server, href: "/vps" },
+  { label: "Proxy", icon: Globe, href: "/proxy" },
+  { label: "VPN", icon: Server, href: "/vpn" },
+  { label: "Domain", icon: Server, href: "/domain" },
+  { label: "Components", icon: Boxes, href: "/components" },
+  { label: "Blog", icon: BookOpen, href: "/blog" },
+  { label: "Contact", icon: Mail, href: "/contact" },
+  { label: "Portfolio", icon: FileText, href: "/cv" },
+];
 export const Header = () => {
   const { cart, setCart } = useCartStore();
   const { setOrder } = useOrderStore();
@@ -250,7 +266,6 @@ export const Header = () => {
               <SheetHeader>
                 <SheetTitle>Search</SheetTitle>
               </SheetHeader>
-              <SheetFooter></SheetFooter>
             </SheetContent>
           </Sheet>
           <Sheet>
@@ -521,33 +536,34 @@ export const Header = () => {
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
 
-            <ul className="w-full">
-              <li className="w-full border-y-2 border-y-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/cv"}>CV</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/product"}>VPS</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/proxy"}>Proxy</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/components"}>Componets</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/blog"}>Blog</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/contact"}>Contact</Link>
-              </li>
-              <li className="w-full border-b-2 border-b-gray-600 py-3 text-center text-[15px] font-semibold text-white">
-                <Link href={"/login"}>Sign In</Link>
+            <ul className="w-full divide-y divide-gray-700 overflow-hidden rounded-xl shadow-xl">
+              {menuItems.map((item, idx) => (
+                <li key={idx}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center gap-3 px-5 py-4 text-white transition-colors"
+                  >
+                    <item.icon className="h-5 w-5 text-gray-400" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">{item.label}</p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href={`${isAuth ? "/logout" : "/login"}`}
+                  className="flex items-center gap-3 px-5 py-4 text-white transition-colors"
+                >
+                  <LogIn className="h-5 w-5 text-gray-400" />
+                  <div className="text-left">
+                    <p className="text-sm font-medium">
+                      {isAuth ? "Log Out" : "Sign In"}
+                    </p>
+                  </div>
+                </Link>
               </li>
             </ul>
-
-            <SheetFooter>
-              <SheetClose asChild></SheetClose>
-            </SheetFooter>
           </SheetContent>
         </Sheet>
       </motion.div>

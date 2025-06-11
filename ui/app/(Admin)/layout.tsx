@@ -16,8 +16,8 @@ export default function AdminLayout({
           <SiteHeader />
           {children}
         </SidebarInset>
-        <Dock />
       </SidebarProvider>
+      <Dock />
     </>
   );
 }

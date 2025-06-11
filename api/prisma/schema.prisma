@@ -46,14 +46,14 @@ model User {
   createdOrders      Order[]        @relation("OrderCreatedBy")
   updatedOrders      Order[]        @relation("OrderUpdatedBy")
   deletedOrders      Order[]        @relation("OrderDeletedBy")
-  sentMessages       Message[]      @relation("FromUser")
-  receivedMessages   Message[]      @relation("ToUser")
 
   Blog         Blog[]
   CategoryBlog CategoryBlog[]
   Order        Order[]
   Payment      Payment[]
   UserProduct  UserProduct[]
+  RoomUser     RoomUser[]
+  Message      Message[]
 
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
@@ -400,16 +400,35 @@ model PaymentTransaction {
   createdAt DateTime @default(now())
 }
 
-model Message {
-  id         Int    @id @default(autoincrement())
-  fromUserId Int
-  fromUser   User   @relation("FromUser", fields: [fromUserId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  toUserId   Int
-  toUser     User   @relation("ToUser", fields: [toUserId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  content    String
+model Room {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
+  messages Message[]
+  users    RoomUser[]
+}
+
+model RoomUser {
+  userId   Int
+  roomId   Int
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roomId])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
 model ProxmoxToken {

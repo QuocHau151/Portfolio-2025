@@ -29,7 +29,11 @@ import { ProfileModule } from './routes/profile/profile.module';
 import { ProxmoxModule } from './routes/proxmox/proxmox.module';
 import { RoleModule } from './routes/role/role.module';
 import { UserModule } from './routes/user/user.module';
+
+import { createKeyv } from '@keyv/redis';
+import { CacheModule } from '@nestjs/cache-manager';
 import { WebsocketModule } from './websocket/websocket.module';
+import { ChatModule } from './routes/chat/chat.module';
 @Module({
   imports: [
     CommonModule,
@@ -39,6 +43,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     ProfileModule,
     UserModule,
     MediaModule,
+    ChatModule,
     CartModule,
     WebsocketModule,
     BlogModule,
@@ -66,6 +71,14 @@ import { WebsocketModule } from './websocket/websocket.module';
     BullModule.forRoot({
       connection: {
         url: envConfig.REDIS_URL,
+      },
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: () => {
+        return {
+          stores: [createKeyv(envConfig.REDIS_URL)],
+        };
       },
     }),
     ScheduleModule.forRoot(),

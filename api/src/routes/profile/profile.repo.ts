@@ -27,7 +27,7 @@ export class ProfileRepo {
   async findUniqueIncludeRolePermissions(id: number) {
     const profile = await this.prisma.user.findUnique({
       where: {
-        id,
+        id: Number(id),
       },
       include: {
         role: {

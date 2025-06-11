@@ -16,7 +16,7 @@ const STATES = {
   hero: {
     desktop: {
       scale: { x: 0.3, y: 0.3, z: 0.3 },
-      position: { x: 500, y: -200, z: 0 },
+      position: { x: 400, y: -200, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
     },
     mobile: {
@@ -165,7 +165,7 @@ const AnimatedBackground = () => {
 
     const textMobileDark = splineApp.findObjectByName("text-mobile-dark");
     const textMobileLight = splineApp.findObjectByName("text-mobile");
-    console.log(textMobileDark);
+
     if (
       !textDesktopDark ||
       !textDesktopLight ||
@@ -283,7 +283,7 @@ const AnimatedBackground = () => {
     await sleep(400);
     kbd.visible = true;
     setKeyboardRevealed(true);
-    console.log(activeSection);
+
     gsap.fromTo(
       kbd?.scale,
       { x: 0.01, y: 0.01, z: 0.01 },

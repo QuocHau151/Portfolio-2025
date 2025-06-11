@@ -25,10 +25,16 @@ function SmoothScroll({ children, isInsideModal = false }: LenisProps) {
       root
       options={{
         duration: 2,
-        prevent: (node) => {
+        prevent: (node: HTMLElement) => {
+          // Ngăn Lenis khi ở trong modal
           if (isInsideModal) return true;
-          const modalOpen = node.classList.contains("modal");
-          return modalOpen;
+          // Ngăn Lenis khi node có lớp modal
+          if (node.classList.contains("modal")) return true;
+          // Ngăn Lenis khi node hoặc cha của nó có lớp no-smooth-scroll
+          return (
+            node.classList.contains("no-smooth-scroll") ||
+            !!node.closest(".no-smooth-scroll")
+          );
         },
       }}
     >

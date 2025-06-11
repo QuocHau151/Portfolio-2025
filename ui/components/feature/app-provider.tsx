@@ -3,7 +3,6 @@ import { generateSocketInstace } from "@/libs/socket";
 import { getAccessTokenFromLocalStorage } from "@/libs/utils";
 import { useAppStore } from "@/stores/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useRef } from "react";
 import ListenLogoutSocket from "./listen-logout-socket";
 import RefreshToken from "./refresh-token";
@@ -43,7 +42,7 @@ export default function AppProvider({
       {children}
       <RefreshToken />
       <ListenLogoutSocket />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

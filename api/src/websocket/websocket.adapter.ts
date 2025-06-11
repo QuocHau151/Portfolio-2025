@@ -4,15 +4,19 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
 import { Server, ServerOptions, Socket } from 'socket.io';
 import { generateRoomUserId } from 'src/common/helpers';
+import { PrismaService } from 'src/common/services/prisma.service';
 import { TokenService } from 'src/common/services/token.service';
 import envConfig from 'src/configs/config';
 
 export class WebsocketAdapter extends IoAdapter {
   private readonly tokenService: TokenService;
   private adapterConstructor: ReturnType<typeof createAdapter>;
+  private readonly prismaService: PrismaService;
+  app: INestApplicationContext;
   constructor(app: INestApplicationContext) {
     super(app);
     this.tokenService = app.get(TokenService);
+    this.prismaService = app.get(PrismaService);
   }
   async connectToRedis(): Promise<void> {
     const pubClient = createClient({
@@ -68,8 +72,8 @@ export class WebsocketAdapter extends IoAdapter {
   }
 
   async authMiddleware(socket: Socket, next: (err?: any) => void) {
-    const authorization = socket.handshake.auth.Authorization;
-    // const { authorization } = socket.handshake.headers;
+    const { authorization } = socket.handshake.headers;
+
     if (!authorization) {
       return next(new Error('Thiếu Authorization header'));
     }
@@ -79,8 +83,65 @@ export class WebsocketAdapter extends IoAdapter {
       return next(new Error('Thiếu access token'));
     }
     try {
-      const { userId } = await this.tokenService.verifyAccessToken(accessToken);
-      await socket.join(generateRoomUserId(userId));
+      const { userId, roleName } =
+        await this.tokenService.verifyAccessToken(accessToken);
+
+      if (roleName === 'ADMIN') {
+        const rooms = await this.prismaService.room.findMany({
+          include: {
+            users: true,
+          },
+        });
+
+        for (const room of rooms) {
+          const existingRoomUser = await this.prismaService.roomUser.findUnique(
+            {
+              where: {
+                userId_roomId: {
+                  userId: Number(userId),
+                  roomId: Number(room.id),
+                },
+              },
+            },
+          );
+          if (!existingRoomUser) {
+            await this.prismaService.roomUser.create({
+              data: {
+                userId: Number(userId),
+                roomId: Number(room.id),
+              },
+            });
+          }
+          await socket.join(generateRoomUserId(room.id));
+        }
+      } else {
+        const existRoom = await this.prismaService.room.findFirst({
+          where: {
+            users: {
+              some: {
+                userId: Number(userId),
+              },
+            },
+          },
+        });
+
+        if (!existRoom) {
+          const room = await this.prismaService.room.create({
+            data: {
+              name: generateRoomUserId(userId),
+              users: {
+                create: {
+                  userId: Number(userId),
+                  joinedAt: new Date(),
+                },
+              },
+            },
+          });
+          await socket.join(generateRoomUserId(room.id));
+        } else {
+          await socket.join(generateRoomUserId(existRoom.id));
+        }
+      }
       next();
     } catch (error) {
       next(error);

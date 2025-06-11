@@ -4,7 +4,10 @@
  * Mobile navbar is better positioned at bottom right.
  **/
 "use client";
+import { Role } from "@/constants/type";
 import { cn } from "@/libs/utils";
+import { useAppStore } from "@/stores/app";
+import { useCartStore } from "@/stores/cart";
 // import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
   AnimatePresence,
@@ -15,8 +18,12 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { FaCartPlus, FaHome, FaUser } from "react-icons/fa";
+import { GrStorage } from "react-icons/gr";
+import { MdDashboard } from "react-icons/md";
 
 export const FloatingDock = ({
   items,
@@ -35,52 +42,98 @@ export const FloatingDock = ({
   );
 };
 
-export const FloatingDockMobile = ({
-  items,
-  className,
-}: {
-  items: { title: string; icon: React.ReactNode; link: string }[];
-  className?: string;
-}) => {
-  const [open, setOpen] = useState(true);
+export const FloatingDockMobile = () => {
+  const { role } = useAppStore();
+  const { cart } = useCartStore();
+  const { isAuth, account } = useAppStore();
+  let avatar = null;
+  if (account?.avatar) {
+    avatar = (
+      <Image
+        src={account.avatar}
+        alt="avatar"
+        width={30}
+        height={30}
+        className="rounded-full"
+      />
+    );
+  } else {
+    avatar = (
+      <div className="rounded-full">
+        {account?.name?.slice(0, 1).toUpperCase()}
+      </div>
+    );
+  }
+  const items = [
+    {
+      title: "Dashboard",
+      icon: <MdDashboard />,
+      link: "/dashboard",
+    },
+    {
+      title: "Storage",
+      icon: <GrStorage />,
+      link: "/dashboard/service",
+    },
+    {
+      title: "Home",
+      icon: <FaHome />,
+      link: "/",
+    },
+    {
+      title: "Cart",
+      icon: (
+        <div className="relative">
+          <FaCartPlus />
+          <span className="absolute -top-2 -right-2 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs text-[8px] font-medium text-white">
+            {cart.length}
+          </span>
+        </div>
+      ),
+      link: "/cart",
+    },
+    {
+      title: "User",
+      icon: isAuth && account ? avatar : <FaUser />,
+      link: role === Role.Admin ? "/admin/setting" : "/dashboard/setting",
+    },
+  ];
   return (
-    <div className={cn("relative block md:hidden", className)}>
+    <div className={cn("relative block md:hidden")}>
       <AnimatePresence>
-        {open && (
-          <motion.div
-            layoutId="nav"
-            className="absolute bottom-full w-full bg-transparent pb-1"
-          >
-            <div className="mx-3 mx-auto flex w-min items-center justify-center gap-2 rounded-2xl bg-neutral-800 px-4 py-2">
-              {items.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: 10,
-                    transition: {
-                      delay: idx * 0.05,
-                    },
-                  }}
-                  transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+        <motion.div
+          layoutId="nav"
+          className="absolute bottom-full w-full bg-transparent pb-1"
+        >
+          <div className="mx-auto flex w-min items-center justify-center gap-2 rounded-full bg-neutral-800 px-4 py-2">
+            {items.map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 10,
+                  transition: {
+                    delay: idx * 0.05,
+                  },
+                }}
+                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+              >
+                <Link
+                  href={item.link}
+                  key={item.title}
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900"
                 >
-                  <Link
-                    href={item.link}
-                    key={item.title}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900"
-                  >
-                    <div className="h-4 w-4">{item.icon}</div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+                  <div className=" ">{item.icon}</div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </AnimatePresence>
       {/* <button
         onClick={() => setOpen(!open)}

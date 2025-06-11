@@ -268,17 +268,26 @@ const projects: Project[] = [
     get content() {
       return (
         <div>
-          <TypographyP className="font-mono">
+          <TypographyP className="font-mono text-[15px]">
             FPT SmartHome là dự án tôi thực hiện trong thời gian thực tập tại
             FPT SmartHome, với vai trò là lập trình viên phát triển website. Đây
             là một website vệ tinh được xây dựng nhằm hỗ trợ người dùng tra cứu
             thông tin sản phẩm, tham khảo và chia sẻ đánh giá, trải nghiệm về
-            các thiết bị nhà thông minh của FPT. Dự án không chỉ góp phần nâng
-            cao trải nghiệm người dùng mà còn đóng vai trò quan trọng trong việc
-            tối ưu hóa SEO và tăng cường nhận diện thương hiệu trong lĩnh vực
-            thiết bị nhà thông minh.
+            các thiết bị nhà thông minh của FPT.
           </TypographyP>
-          <TypographyP className="font-mono">Chức năng chính:</TypographyP>
+          <div className="py-4 font-mono">
+            Chức năng chính: <br />
+            <ul className="ml-8 list-disc text-[15px]">
+              <li>
+                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
+                bằng email
+              </li>
+              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>
+                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+              </li>
+            </ul>
+          </div>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow
             images={[
