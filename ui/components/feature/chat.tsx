@@ -146,7 +146,6 @@ export default function ChatWidget() {
     }
   };
 
-  if (!accountId) return null;
   if (!isAuth)
     return (
       <div className="fixed right-6 bottom-6 z-50">
