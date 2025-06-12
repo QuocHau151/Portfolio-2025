@@ -7,13 +7,6 @@ export const useGetRoomsQuery = () => {
   });
 };
 
-export const useGetRoomByIdQuery = (id: number) => {
-  return useQuery({
-    queryKey: ["room", id],
-    queryFn: () => messengerApiRequest.getRoomById(Number(id)),
-  });
-};
-
 export const useGetRoomByUserIdQuery = (id: string) => {
   return useQuery({
     queryKey: ["room", id],

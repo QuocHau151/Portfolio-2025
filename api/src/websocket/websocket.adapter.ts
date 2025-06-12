@@ -112,7 +112,9 @@ export class WebsocketAdapter extends IoAdapter {
               },
             });
           }
-          await socket.join(generateRoomUserId(room.id));
+          await socket.join(
+            generateRoomUserId(Number(room.name.split('-')[1])),
+          );
         }
       } else {
         const existRoom = await this.prismaService.room.findFirst({
@@ -126,7 +128,7 @@ export class WebsocketAdapter extends IoAdapter {
         });
 
         if (!existRoom) {
-          const room = await this.prismaService.room.create({
+          await this.prismaService.room.create({
             data: {
               name: generateRoomUserId(userId),
               users: {
@@ -137,9 +139,9 @@ export class WebsocketAdapter extends IoAdapter {
               },
             },
           });
-          await socket.join(generateRoomUserId(room.id));
+          await socket.join(generateRoomUserId(Number(userId)));
         } else {
-          await socket.join(generateRoomUserId(existRoom.id));
+          await socket.join(generateRoomUserId(Number(userId)));
         }
       }
       next();

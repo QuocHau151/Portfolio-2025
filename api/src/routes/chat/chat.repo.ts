@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { generateRoomUserId } from 'src/common/helpers';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { CreateMessageBodyType } from './chat.model';
 
@@ -26,49 +27,11 @@ export class ChatRepo {
       },
     });
   }
-  async getRoom(roomId: number) {
-    const room = await this.prisma.room.findUnique({
-      where: {
-        id: roomId || 1,
-      },
-      include: {
-        users: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true,
-              },
-            },
-          },
-        },
-        messages: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    if (!room) {
-      throw new Error('Room not found');
-    }
-    return room;
-  }
+
   async getRoomByUserId(userId: number) {
-    return await this.prisma.room.findFirst({
+    return await this.prisma.room.findUnique({
       where: {
-        users: {
-          some: {
-            userId: Number(userId) || 0,
-          },
-        },
+        name: generateRoomUserId(userId),
       },
       include: {
         users: {
@@ -99,11 +62,11 @@ export class ChatRepo {
   async createMessage(body: CreateMessageBodyType) {
     // First, check if the room exists
     const room = await this.prisma.room.findUnique({
-      where: { id: body.roomId },
+      where: { name: body.roomName },
     });
 
     if (!room) {
-      throw new Error(`Room with ID ${body.roomId} not found`);
+      throw new Error(`Room with ID ${body.roomName} not found`);
     }
 
     // Check if user is a member of the room
@@ -111,14 +74,14 @@ export class ChatRepo {
       where: {
         userId_roomId: {
           userId: body.userId,
-          roomId: body.roomId,
+          roomId: Number(room.id),
         },
       },
     });
 
     if (!roomUser) {
       throw new Error(
-        `User ${body.userId} is not a member of room ${body.roomId}`,
+        `User ${body.userId} is not a member of room-${body.userId}`,
       );
     }
 
@@ -126,8 +89,8 @@ export class ChatRepo {
     const message = await this.prisma.message.create({
       data: {
         content: body.content,
-        userId: body.userId,
-        roomId: body.roomId,
+        userId: Number(body.userId),
+        roomId: Number(room.id),
       },
     });
     return message;

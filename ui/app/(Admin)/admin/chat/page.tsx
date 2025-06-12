@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { formatDateTimeToHourMinuteString } from "@/libs/utils";
 import {
   useCreateChatMutation,
-  useGetRoomByIdQuery,
+  useGetRoomByUserIdQuery,
   useGetRoomsQuery,
 } from "@/queries/useMessenger";
 import { useAppStore } from "@/stores/app";
@@ -49,8 +49,10 @@ export default function ChatDashboard() {
 
   const getRooms = useGetRoomsQuery();
   const rooms = (getRooms.data?.payload as any)?.data;
-  const getRoomById = useGetRoomByIdQuery(selectedRoom.id);
-  const room = (getRoomById.data?.payload as any)?.data;
+  const getRoomByUserId = useGetRoomByUserIdQuery(
+    selectedRoom.name?.split("-")[1],
+  );
+  const room = (getRoomByUserId.data?.payload as any)?.data;
 
   // Ref để tham chiếu đến div chứa tin nhắn
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -77,11 +79,14 @@ export default function ChatDashboard() {
       });
     };
 
-    socket.on("message", handleMessage);
-    return () => {
-      socket.off("message", handleMessage);
-    };
-  }, [socket]);
+    if (room) {
+      console.log(`message-${room.name}`);
+      socket.on(`message-${room.name}`, handleMessage);
+      return () => {
+        socket.off(`message-${room.name}`, handleMessage);
+      };
+    }
+  }, [socket, room]);
 
   // Cuộn xuống bottom khi cần
   useEffect(() => {
@@ -117,8 +122,8 @@ export default function ChatDashboard() {
 
     try {
       await createChat.mutateAsync({
-        roomId: Number(selectedRoom.id),
         userId: Number(accountId),
+        roomName: selectedRoom.name,
         content: messageContent,
       });
 

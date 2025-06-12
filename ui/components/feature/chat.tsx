@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { formatDateTimeToHourMinuteString } from "@/libs/utils";
 import {
   useCreateChatMutation,
-  useGetRoomByIdQuery,
   useGetRoomByUserIdQuery,
 } from "@/queries/useMessenger";
 import { useAppStore } from "@/stores/app";
@@ -39,38 +38,16 @@ interface Message {
 export default function ChatWidget() {
   const { socket, account, isAuth } = useAppStore();
   const [isOpen, setIsOpen] = useState(false);
-  if (!isAuth)
-    return (
-      <div className="fixed right-6 bottom-6 z-50">
-        <Button
-          onClick={() => setIsOpen(!isOpen)}
-          className="bg-primary hover:bg-primary/80 h-14 w-14 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-        >
-          {isOpen ? (
-            <X className="text-white" />
-          ) : (
-            <MessageCircle className="text-white" />
-          )}
-        </Button>
-        {isOpen && (
-          <div className="fixed right-6 bottom-24 z-50 rounded-lg bg-white p-4 text-center text-sm text-gray-500 shadow-lg">
-            Đăng nhập để chat
-          </div>
-        )}
-      </div>
-    );
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const accountId = account?.id?.toString();
   const getRoomByUserId = useGetRoomByUserIdQuery(accountId!);
-  const roomId = (getRoomByUserId.data?.payload as any)?.data?.id;
-  const getRoomById = useGetRoomByIdQuery(roomId!);
-  const room = (getRoomById.data?.payload as any)?.data;
+  const room = (getRoomByUserId.data?.payload as any)?.data;
   const createChat = useCreateChatMutation();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const justSentMessage = useRef(false);
-
   // Cập nhật messages khi room thay đổi
   useEffect(() => {
     if (room?.messages) {
@@ -100,11 +77,14 @@ export default function ChatWidget() {
       });
     };
 
-    socket.on("message", handleMessage);
-    return () => {
-      socket.off("message", handleMessage);
-    };
-  }, [socket]);
+    if (room) {
+      console.log(`message-${room.name}`);
+      socket.on(`message-${room.name}`, handleMessage);
+      return () => {
+        socket.off(`message-${room.name}`, handleMessage);
+      };
+    }
+  }, [socket, room]);
 
   // Cuộn xuống bottom khi cần
   useEffect(() => {
@@ -141,8 +121,8 @@ export default function ChatWidget() {
 
     try {
       await createChat.mutateAsync({
-        roomId: Number(room.id),
         userId: Number(accountId),
+        roomName: room.name,
         content: messageContent,
       });
 
@@ -167,7 +147,26 @@ export default function ChatWidget() {
   };
 
   if (!accountId) return null;
-
+  if (!isAuth)
+    return (
+      <div className="fixed right-6 bottom-6 z-50">
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          className="bg-primary hover:bg-primary/80 h-14 w-14 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+        >
+          {isOpen ? (
+            <X className="text-white" />
+          ) : (
+            <MessageCircle className="text-white" />
+          )}
+        </Button>
+        {isOpen && (
+          <div className="fixed right-6 bottom-24 z-50 rounded-lg bg-white p-4 text-center text-sm text-gray-500 shadow-lg">
+            Đăng nhập để chat
+          </div>
+        )}
+      </div>
+    );
   return (
     <>
       {/* Chat Icon Button */}

@@ -40,7 +40,7 @@ const ProjectsLinks = ({ live, repo }: { live: string; repo?: string }) => {
         target="_new"
         href={live}
       >
-        <Button variant={"default"} size={"sm"}>
+        <Button variant={"default"} size={"sm"} className="bg-neutral-300">
           Visit Website
           <ArrowUpRight className="ml-3 h-5 w-5" />
         </Button>
@@ -289,12 +289,7 @@ const projects: Project[] = [
             </ul>
           </div>
           <ProjectsLinks live={this.live} repo={this.github} />
-          <SlideShow
-            images={[
-              `/assets/images/projects/fpt/1.webp`,
-              `/assets/images/projects/fpt/2.png`,
-            ]}
-          />
+          <SlideShow images={[`/assets/images/projects/fpt/1.jpg`]} />
         </div>
       );
     },
@@ -338,6 +333,19 @@ const projects: Project[] = [
             công việc như thiết kế giao diện, lập trình backend, và tối ưu SEO
             cho website.
           </TypographyP>
+          <div className="py-4 font-mono">
+            Chức năng chính: <br />
+            <ul className="ml-8 list-disc text-[15px]">
+              <li>
+                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
+                bằng email
+              </li>
+              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>
+                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+              </li>
+            </ul>
+          </div>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />
         </div>
@@ -371,12 +379,22 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            FPT SmartHome is a web application that allows users to control
-            their smart home devices from a single interface. It provides a
-            user-friendly interface for users to control their smart home
-            devices, and it also provides a dashboard for users to monitor the
-            status of their smart home devices.
+            Website khuatuan.com là website Fullstack trong dự án Freelance của
+            tôi
           </TypographyP>
+          <div className="py-4 font-mono">
+            Chức năng chính: <br />
+            <ul className="ml-8 list-disc text-[15px]">
+              <li>
+                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
+                bằng email
+              </li>
+              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>
+                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+              </li>
+            </ul>
+          </div>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />
         </div>
@@ -414,12 +432,22 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            FPT SmartHome is a web application that allows users to control
-            their smart home devices from a single interface. It provides a
-            user-friendly interface for users to control their smart home
-            devices, and it also provides a dashboard for users to monitor the
-            status of their smart home devices.
+            Website mepsharing.com là website Fullstack trong dự án Freelance
+            của tôi
           </TypographyP>
+          <div className="py-4 font-mono">
+            Chức năng chính: <br />
+            <ul className="ml-8 list-disc text-[15px]">
+              <li>
+                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
+                bằng email
+              </li>
+              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>
+                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+              </li>
+            </ul>
+          </div>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />
         </div>
@@ -457,12 +485,22 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            FPT SmartHome is a web application that allows users to control
-            their smart home devices from a single interface. It provides a
-            user-friendly interface for users to control their smart home
-            devices, and it also provides a dashboard for users to monitor the
-            status of their smart home devices.
+            Website solmedia.pics là website Fullstack trong dự án Freelance của
+            tôi
           </TypographyP>
+          <div className="py-4 font-mono">
+            Chức năng chính: <br />
+            <ul className="ml-8 list-disc text-[15px]">
+              <li>
+                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
+                bằng email
+              </li>
+              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>
+                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+              </li>
+            </ul>
+          </div>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />
         </div>
@@ -485,26 +523,15 @@ const projects: Project[] = [
         PROJECT_SKILLS.tailwind,
         PROJECT_SKILLS.vite,
       ],
-      backend: [
-        PROJECT_SKILLS.node,
-        PROJECT_SKILLS.express,
-        PROJECT_SKILLS.mongo,
-      ],
-      devops: [
-        PROJECT_SKILLS.ubuntu,
-        PROJECT_SKILLS.portainer,
-        PROJECT_SKILLS.pm2,
-      ],
+      backend: [],
+      devops: [],
     },
     get content() {
       return (
         <div>
           <TypographyP className="font-mono">
-            FPT SmartHome is a web application that allows users to control
-            their smart home devices from a single interface. It provides a
-            user-friendly interface for users to control their smart home
-            devices, and it also provides a dashboard for users to monitor the
-            status of their smart home devices.
+            Website namanvi.vn là website design trong dự án Freelance của tôi
+            kết hợp với Sikido để hoàn thành giao diện website
           </TypographyP>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />

@@ -1,5 +1,5 @@
 "use client";
-import { Skill, SkillNames, SKILLS } from "@/data/constants";
+import { Skill, SkillNames, SKILLS } from "@/data/techstack";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { sleep } from "@/libs/utils";
 import { Application, SPEObject, SplineEvent } from "@splinetool/runtime";

@@ -10,10 +10,6 @@ export class ChatController {
   async getRooms() {
     return this.chatService.getRooms();
   }
-  @Get(':roomId')
-  async getRoom(@Param('roomId') roomId: string) {
-    return this.chatService.getRoom(Number(roomId));
-  }
   @Get('user/:userId')
   getRoomByUserId(@Param('userId') userId: string) {
     return this.chatService.getRoomByUserId(Number(userId));

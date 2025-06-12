@@ -213,3 +213,6 @@ export function generateSKUs(variants: VariantsType) {
 export const formatRentalPeriodToMonth = (period: string) => {
   return RentalPeriodToMonth[period as keyof typeof RentalPeriodToMonth];
 };
+export const generateRoomUserId = (userId: number) => {
+  return `room-${userId}`;
+};

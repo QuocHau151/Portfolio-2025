@@ -4,9 +4,6 @@ export const messengerApiRequest = {
   getRooms: () => {
     return http.get("/chat");
   },
-  getRoomById: (id: number) => {
-    return http.get(`/chat/${id}`);
-  },
   getRoomByUserId: (id: string) => {
     return http.get(`/chat/user/${id}`);
   },
