@@ -27,6 +27,16 @@ import { MultiInput } from "@/components/feature/MultiInput";
 import RichTextEditor from "@/components/feature/RichTextEditor";
 import { UniqueSelect } from "@/components/feature/UniqueSelect";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -36,11 +46,13 @@ import {
 import { FileState, MultiFileDropzone } from "@/components/ui/upLoadFile";
 import {
   useCreateBlogMutation,
+  useCreateCategoryBlogMutation,
   useGetListCategoryBlogMutation,
 } from "@/queries/useBlog";
 import { useUploadImage } from "@/queries/useMedia";
 import { BlogBodySchema, BlogBodyType } from "@/schemas/blog.schema";
 import { useAppStore } from "@/stores/app";
+import { Plus } from "lucide-react";
 
 // Mock category options
 
@@ -57,6 +69,8 @@ export default function AddBlog() {
   const getCategoryBlog = useGetListCategoryBlogMutation();
   const [author, setAuthor] = useState<number>(0);
   const createBlog = useCreateBlogMutation();
+  const createCategoryBlog = useCreateCategoryBlogMutation();
+  const [categoryInput, setCategoryInput] = useState<string>("");
   const category = getCategoryBlog.data?.payload.data;
   const CATEGORY_OPTIONS = (Array.isArray(category) ? category : [])?.map(
     (item) => ({
@@ -85,7 +99,10 @@ export default function AddBlog() {
       image: "",
     },
   });
-
+  const handleCreateCategoryBlog = async () => {
+    await createCategoryBlog.mutateAsync({ name: categoryInput });
+    setCategoryInput("");
+  };
   async function onSubmit(values: BlogBodyType) {
     setError("");
     setSuccess("");
@@ -96,7 +113,7 @@ export default function AddBlog() {
         setIsUploading(false);
         return;
       }
-  
+
       const formData = new FormData();
       fileStates.forEach((state) => {
         if (state.file) {
@@ -162,29 +179,64 @@ export default function AddBlog() {
                     <FormItem>
                       <FormLabel>Danh Mục Bài Viết</FormLabel>
                       <FormControl>
-                        <Select
-                          value={field.value?.toString()} // form đang lưu là number, cần ép sang string
-                          onValueChange={(val) => field.onChange(Number(val))} // ép ngược lại về number
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue>
-                              {CATEGORY_OPTIONS?.find(
-                                (item) =>
-                                  item.value === field.value?.toString(),
-                              )?.label || "Chọn Danh Mục"}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent className="bg-black">
-                            {CATEGORY_OPTIONS?.map((item) => (
-                              <SelectItem
-                                key={item.value}
-                                value={item.value.toString()}
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={field.value?.toString()} // form đang lưu là number, cần ép sang string
+                            onValueChange={(val) => field.onChange(Number(val))} // ép ngược lại về number
+                          >
+                            <SelectTrigger className={`w-[180px]`}>
+                              <SelectValue>
+                                {CATEGORY_OPTIONS?.find(
+                                  (item) =>
+                                    item.value === field.value?.toString(),
+                                )?.label || "Chọn Danh Mục"}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent className="bg-black">
+                              {CATEGORY_OPTIONS?.map((item) => (
+                                <SelectItem
+                                  key={item.value}
+                                  value={item.value.toString()}
+                                >
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Dialog>
+                            <DialogTrigger>
+                              <div
+                                className={`mt-2 flex h-full w-10 items-center justify-center rounded-lg border py-1`}
                               >
-                                {item.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                                <Plus />
+                              </div>
+                            </DialogTrigger>
+                            <DialogContent className="bg-black">
+                              <DialogHeader>
+                                <DialogTitle>Tạo Danh Mục</DialogTitle>
+                                <DialogDescription>
+                                  <Input
+                                    value={categoryInput}
+                                    onChange={(e) =>
+                                      setCategoryInput(e.target.value)
+                                    }
+                                  />
+                                </DialogDescription>
+                                <DialogFooter>
+                                  <DialogClose asChild>
+                                    <Button
+                                      variant="outline"
+                                      className="mt-4"
+                                      onClick={() => handleCreateCategoryBlog()}
+                                    >
+                                      Thêm Danh Mục
+                                    </Button>
+                                  </DialogClose>
+                                </DialogFooter>
+                              </DialogHeader>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -246,7 +298,7 @@ export default function AddBlog() {
                     <FormItem>
                       <FormLabel>Nội Dung Bài Viết</FormLabel>
                       <FormControl>
-                        <RichTextEditor 
+                        <RichTextEditor
                           // không được để field.value ở initialContent vì sẽ bị loop focus() với field.onChange
                           initialContent={""}
                           onChange={field.onChange}

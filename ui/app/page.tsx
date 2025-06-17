@@ -2,6 +2,7 @@
 
 import AnimatedBackground from "@/components/feature/animated-background";
 import ChatWidget from "@/components/feature/chat";
+import SmoothScroll from "@/components/feature/smooth-scroll";
 import Dock from "@/components/layout/Dock/page";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
@@ -14,7 +15,7 @@ import ScrollLinked from "@/components/ui/scroll-linked";
 export default function Home() {
   return (
     <>
-      <main>
+      <SmoothScroll>
         <ScrollLinked />
         <Header />
         <div className="fixed top-0 z-0 h-screen w-full">
@@ -26,7 +27,7 @@ export default function Home() {
         <ContactSection />
         <Footer />
         <Dock />
-      </main>
+      </SmoothScroll>
 
       <ChatWidget />
     </>

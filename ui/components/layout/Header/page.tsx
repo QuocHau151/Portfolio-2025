@@ -231,22 +231,6 @@ export const Header = () => {
           <Link href={"/hosting"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Hosting</span>
           </Link>
-          <Link href={"/proxy"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">Proxy</span>
-          </Link>
-          <Link href={"/vpn"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">VPN</span>
-          </Link>
-          <Link href={"/domain"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">Domain</span>
-          </Link>
-        </div>
-        <Logo theme="dark" isScroll={isScroll} />
-
-        <div className="hidden items-center justify-center gap-8 lg:flex">
-          <Link href={"/cv"} className="flex items-center pl-2">
-            <span className="text-[16px] font-light text-white">CV</span>
-          </Link>
           <Link href={"/components"} className="flex items-center">
             <span className="text-[16px] font-light text-white">
               Components
@@ -255,6 +239,14 @@ export const Header = () => {
           <Link href={"/blog"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Blog</span>
           </Link>
+        </div>
+        <Logo theme="dark" isScroll={isScroll} />
+
+        <div className="hidden items-center justify-center gap-8 lg:flex">
+          <Link href={"/cv"} className="flex items-center pl-2">
+            <span className="text-[16px] font-light text-white">CV</span>
+          </Link>
+
           <Link href={"/contact"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Contact</span>
           </Link>

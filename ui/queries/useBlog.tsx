@@ -83,3 +83,15 @@ export const useGetBlogsByAythorQuery = () => {
     queryFn: () => blogApiRequest.getBlogsByAuthor(),
   });
 };
+export const useCreateCategoryBlogMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string }) =>
+      blogApiRequest.createCategoryBlog(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list-category-blog"],
+      });
+    },
+  });
+};

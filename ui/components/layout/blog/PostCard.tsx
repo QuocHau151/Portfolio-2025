@@ -23,6 +23,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const getAuthor = GetAuthorBlogMutation(post.authorId);
   const category = getCategory.data?.payload.data.name;
   const author = getAuthor.data?.payload.data.name;
+  console.log(post);
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl bg-neutral-900 transition-transform duration-300 hover:-translate-y-2">
       {/* Image */}
@@ -41,6 +42,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
       {/* Content */}
       <div className="flex flex-grow flex-col p-5">
+        <div className="mb-2 flex gap-1">
+          {post.keyword?.map((keyword) => (
+            <span
+              key={keyword}
+              className="bg-primary rounded-full px-2 py-0.5 text-[10px] font-medium text-black"
+            >
+              {keyword}
+            </span>
+          ))}
+        </div>
         <Link href={`/blog/${post.id}`}>
           <h3 className="group-hover:text-primary mb-2 text-xl font-bold text-white transition-colors duration-300">
             {post.title}

@@ -30,6 +30,9 @@ export const blogApiRequest = {
   createBlog: (body: BlogBodyType) => {
     return http.post(`/blogs/create`, body);
   },
+  createCategoryBlog: (body: { name: string }) => {
+    return http.post(`/blogs/category`, body);
+  },
   updateBlog: (blogid: number, data: BlogBodyType) => {
     return http.put(`/blogs/${blogid}`, data);
   },

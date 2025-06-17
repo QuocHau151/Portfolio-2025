@@ -4,7 +4,6 @@ import "./globals.css";
 
 import AppProvider from "@/components/feature/app-provider";
 import Particles from "@/components/feature/Particles";
-import SmoothScroll from "@/components/feature/smooth-scroll";
 import Preloader from "@/components/layout/preloader";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -36,7 +35,7 @@ export default function RootLayout({
             quantity={100}
           />
           <Preloader>
-            <SmoothScroll>{children}</SmoothScroll>
+            {children}
             <Toaster />
           </Preloader>
         </body>

@@ -321,7 +321,7 @@ export default function VpsPlansMain() {
   }));
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-10 lg:py-20">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-10 lg:py-20">
       <div className="mb-10 flex flex-col items-center gap-2 text-center">
         <h1 className="text-4xl font-bold">Bảng chọn gói VPS</h1>
         <p className="text-[13px] text-gray-500">

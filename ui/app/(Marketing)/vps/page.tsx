@@ -11,9 +11,9 @@ export default function VpsPlans() {
   return (
     <div className="min-h-screen">
       <HeroSection />
-      <FeaturesSection />
       <PricingComparison />
       <VpsPlansMain />
+      <FeaturesSection />
       <ServerLocations />
       <Testimonials />
       <FAQSection />
