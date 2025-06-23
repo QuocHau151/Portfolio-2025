@@ -36,11 +36,21 @@ export default function CheckoutPage() {
     ?.split(",")
     .map((id) => useGetCartItemByIdQuery(Number(id)));
 
-  const receiverInfo = {
-    name: account?.name || "",
-    phone: account?.phone || "",
-    email: account?.email || "",
-  };
+  const [receiverInfo, setReceiverInfo] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+  useEffect(() => {
+    if (account) {
+      setReceiverInfo({
+        name: account.name,
+        phone: account.phone,
+        email: account.email,
+      });
+    }
+  }, [account]);
+
   const orderItems = orderItemQueries?.map(
     (query) => (query.data?.payload as any)?.data,
   );
@@ -59,6 +69,10 @@ export default function CheckoutPage() {
   const total = subtotal;
   const handleCreateOrder = async () => {
     try {
+      if (!receiverInfo.name || !receiverInfo.phone || !receiverInfo.email) {
+        toast.error("Vui lòng nhập thông tin người đặt hàng");
+        return;
+      }
       const result = await createOrder.mutateAsync({
         receiver: receiverInfo,
         cartItemIds: order?.split(",").map((id) => Number(id)) || [],
@@ -69,10 +83,10 @@ export default function CheckoutPage() {
       router.push(
         `/payment?total=${total}&paymentId=${paymentId}&orderId=${orderId}`,
       );
-      toast("Đặt hàng thành công");
+      toast.success("Đặt hàng thành công");
     } catch (error) {
       console.error("Failed to create order:", error);
-      toast("Đặt hàng thất bại");
+      toast.error("Đặt hàng thất bại");
     }
   };
   return (
@@ -91,21 +105,45 @@ export default function CheckoutPage() {
             <CardContent className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <div className="bg-muted/50 rounded-md border p-2">
-                  {receiverInfo.email || "Chưa cung cấp"}
-                </div>
+                <input
+                  type="text"
+                  value={receiverInfo?.email}
+                  onChange={(e) =>
+                    setReceiverInfo({
+                      ...receiverInfo,
+                      email: e.target.value,
+                    })
+                  }
+                  className="bg-muted/50 h-10 rounded-md border p-2"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="name">Họ tên</Label>
-                <div className="bg-muted/50 rounded-md border p-2">
-                  {receiverInfo.name}
-                </div>
+                <input
+                  type="text"
+                  value={receiverInfo.name}
+                  onChange={(e) =>
+                    setReceiverInfo({
+                      ...receiverInfo,
+                      name: e.target.value,
+                    })
+                  }
+                  className="bg-muted/50 h-10 rounded-md border p-2"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="phone">Số điện thoại</Label>
-                <div className="bg-muted/50 rounded-md border p-2">
-                  {receiverInfo.phone}
-                </div>
+                <input
+                  type="text"
+                  value={receiverInfo.phone}
+                  onChange={(e) =>
+                    setReceiverInfo({
+                      ...receiverInfo,
+                      phone: e.target.value,
+                    })
+                  }
+                  className="bg-muted/50 h-10 rounded-md border p-2"
+                />
               </div>
             </CardContent>
           </Card>

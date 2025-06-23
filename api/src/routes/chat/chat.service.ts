@@ -20,7 +20,6 @@ export class ChatService {
     return result;
   }
   async createMessage(data: CreateMessageBodyType) {
-    console.log(`message-${data.roomName}`);
     const message = await this.chatRepo.createMessage(data);
     this.server.to(data.roomName).emit(`message-${data.roomName}`, message);
     return message;

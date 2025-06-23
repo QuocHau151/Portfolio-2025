@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactLenis, useLenis } from "@/libs/lenis";
-import React, { useEffect } from "react";
+import React from "react";
 
 interface LenisProps {
   children: React.ReactNode;
@@ -10,15 +10,8 @@ interface LenisProps {
 
 function SmoothScroll({ children, isInsideModal = false }: LenisProps) {
   const lenis = useLenis(({ scroll }) => {
-    // called every scroll
+    console.log(scroll);
   });
-
-  useEffect(() => {
-    document.addEventListener("DOMContentLoaded", () => {
-      lenis?.stop();
-      lenis?.start();
-    });
-  }, []);
 
   return (
     <ReactLenis

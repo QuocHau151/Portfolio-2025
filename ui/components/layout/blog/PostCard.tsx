@@ -23,7 +23,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const getAuthor = GetAuthorBlogMutation(post.authorId);
   const category = getCategory.data?.payload.data.name;
   const author = getAuthor.data?.payload.data.name;
-  console.log(post);
+
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl bg-neutral-900 transition-transform duration-300 hover:-translate-y-2">
       {/* Image */}

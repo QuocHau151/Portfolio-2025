@@ -14,6 +14,7 @@ export class PaymentService {
 
   async receiver(body: WebhookPaymentBodyType) {
     const userId = await this.paymentRepo.receiver(body);
+
     this.server.to(generateRoomUserId(userId)).emit('payment', {
       status: 'success',
     });

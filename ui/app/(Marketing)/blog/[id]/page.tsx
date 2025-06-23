@@ -114,7 +114,7 @@ export default function BlogDetail({
 
               {/* Tags */}
               <div className="mt-8 flex flex-wrap gap-2">
-                <span className="rounded-full bg-neutral-900 px-3 py-1 text-sm text-neutral-300">
+                <span className="bg-primary rounded-full px-3 py-1 text-sm font-medium text-black">
                   {post?.tag === "NOI_BAT" ? "Nổi bật" : "Phổ biến"}
                 </span>
               </div>
