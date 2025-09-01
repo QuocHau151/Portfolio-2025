@@ -76,13 +76,13 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           git add ui/deployment.yaml
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
             git commit -m "🚀 Update deployment image to ${{ github.sha }}"
-            git push https://${{ secrets.GITHUB_TOKEN }}@github.com/QuocHau151/Portfolio-2025.git
+            git push https://${{ secrets.PAT_TOKEN }}@github.com/QuocHau151/Portfolio-2025.git
           fi
 
 # name: Deploy UI Production
