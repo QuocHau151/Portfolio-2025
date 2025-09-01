@@ -18,7 +18,7 @@ spec:
         - name: ui-portfolio
           image: docker.io/quochau151/ui_portfolio:latest
           ports:
-            - containerPort: 3001
+            - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
@@ -29,5 +29,5 @@ spec:
     app: ui-portfolio
   ports:
     - port: 80
-      targetPort: 3001
+      targetPort: 3000
   type: LoadBalancer
