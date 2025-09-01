@@ -10,7 +10,8 @@ on:
     branches: ["main"]
     paths:
       - "ui/**"
-
+permissions:
+  contents: write
 env:
   REGISTRY: docker.io
   IMAGE_NAME: quochau151/ui_portfolio
@@ -82,7 +83,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🚀 Update deployment image to ${{ github.sha }}"
-            git push https://${{ secrets.PAT_TOKEN }}@github.com/QuocHau151/Portfolio-2025.git
+            git push 
           fi
 
 # name: Deploy UI Production
