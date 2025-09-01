@@ -67,14 +67,9 @@ spec:
           ports:
             - containerPort: 4000
               name: http
-          volumeMounts:
-            - name: config-volume
-              mountPath: /usr/src/app/.env
-              subPath: .env
-      volumes:
-        - name: config-volume
-          configMap:
-            name: api-portfolio-config
+          envFrom:
+            - configMapRef:
+                name: api-portfolio-config
 
 ---
 #----------------------------------------------
