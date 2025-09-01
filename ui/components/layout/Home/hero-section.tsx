@@ -27,7 +27,7 @@ export default function HeroSection() {
             <Highlight className="mr-2 pl-3 text-black"> Hello </Highlight> I’m
             A Global Freelance{" "}
             <Highlight className="mr-2 pl-3 text-black"> Web, App </Highlight>{" "}
-            Developer All In JavaScript
+            Developer All In JavaScripts
           </motion.h1>
         </HeroHighlight>
         <motion.div
