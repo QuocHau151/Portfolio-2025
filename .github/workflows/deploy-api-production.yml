@@ -77,6 +77,8 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🚀 Update deployment image to ${{ github.sha }}"
+             # Thêm lệnh pull trước khi push để đồng bộ với remote
+            git pull --rebase origin main
             git push 
           fi
 
