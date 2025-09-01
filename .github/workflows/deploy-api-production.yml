@@ -57,30 +57,29 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Update Kubernetes manifests
-        run: |
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
-            if [ -f api/manifests/deployment.yaml ]; then
-              sed -i "s|image: .*|image: ${IMAGE_FULL}|g" api/manifests/deployment.yaml
-            else
-               echo "Warning: api/manifests/deployment.yaml không tồn tại."
-            fi
-                echo "Updated image to: ${IMAGE_FULL}"
+      # - name: Update Kubernetes manifests
+      #   run: |
+      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #     IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
+      #       if [ -f api/manifests/deployment.yaml ]; then
+      #         sed -i "s|image: .*|image: ${IMAGE_FULL}|g" api/manifests/deployment.yaml
+      #       else
+      #          echo "Warning: api/manifests/deployment.yaml không tồn tại."
+      #       fi
+      #           echo "Updated image to: ${IMAGE_FULL}"
 
-      - name: Commit and push changes to Git repository
-        run: |
-          git config --global user.email "tranlequochau.blc@gmail.com"
-          git config --global user.name "Quochau151"
-          git add api/manifests/deployment.yaml
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "🚀 Update deployment image to ${{ github.sha }}"
-            git pull --rebase origin main
-            git push
-          fi
-
+      # - name: Commit and push changes to Git repository
+      #   run: |
+      #     git config --global user.email "tranlequochau.blc@gmail.com"
+      #     git config --global user.name "Quochau151"
+      #     git add api/manifests/deployment.yaml
+      #     if git diff --staged --quiet; then
+      #       echo "No changes to commit"
+      #     else
+      #       git commit -m "🚀 Update deployment image to ${{ github.sha }}"
+      #       git pull --rebase origin main
+      #       git push
+      #     fi
 # name: Deploy API Production
 # on:
 #   push:
