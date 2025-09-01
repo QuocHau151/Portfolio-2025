@@ -11,9 +11,6 @@ on:
     paths:
       - "ui/**"
 
-permissions:
-  contents: write
-
 env:
   REGISTRY: docker.io
   IMAGE_NAME: quochau151/ui_portfolio
