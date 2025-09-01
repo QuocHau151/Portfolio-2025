@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-portfolio-config
+data:
+  DATABASE_URL: "postgresql://quochau:123456@14.241.251.180:5100/quochaudb?schema=public"
+
+  ACCESS_TOKEN_SECRET: "jK7n2LpT8qXc5Fh1A9zRb3D6vE0sWm4Y"
+  ACCESS_TOKEN_EXPIRES_IN: "15m"
+  REFRESH_TOKEN_SECRET: "A3bP8fZ1tR7gQ4vK5dS2xL9nC6mE0jH"
+  REFRESH_TOKEN_EXPIRES_IN: "7d"
+  PAYMENT_API_KEY: "T6sR9pV2bN7dK3mG5xZ8qW1cF4jLHAU"
+  ADMIN_NAME: "quochau"
+  ADMIN_PASSWORD: "123123"
+  ADMIN_EMAIL: "tranlequochau.blc@gmail.com"
+  ADMIN_PHONE_NUMBER: "0399603123"
+  OTP_EXPIRES_IN: "5m"
+  RESEND_API_KEY: "re_8P223mbe_NyF65Lra2fuibx3ejeaJp7ki"
+  GOOGLE_CLIENT_ID: "1080194740749-pkgmhcn6jqrf4grj4f8pur7dmc28839s.apps.googleusercontent.com"
+  GOOGLE_CLIENT_SECRET: "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"
+  GOOGLE_REDIRECT_URI: "https://api.quochau.com/auth/google/callback"
+  GOOGLE_CLIENT_REDIRECT_URI: "https://quochau.com/login/oauth"
+  APP_NAME: portfolio
+  MINIO_ENDPOINT: s3.quochau.com
+  MINIO_PORT: 9100
+  MINIO_BUCKET_NAME: portfolio
+  MINIO_ACCESS_KEY: mKwHNHIbQxwMmL3uKuaM
+  MINIO_SECRET_KEY: i2CbtsnuAJgF5kwGtnTaFKgWjotHiZuAXP37QZCx
+  PORT: 4000
+  REDIS_URL: redis://:hau123456@14.241.251.180:6300
+  PROXMOX_URL: http://14.241.251.180:8006/api2/json
+  PROXMOX_USERNAME: root@pam
+  PROXMOX_PASSWORD: Quochau150101!
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-portfolio
+  labels:
+    app: api-portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-portfolio
+  template:
+    metadata:
+      labels:
+        app: api-portfolio
+    spec:
+      containers:
+        - name: api-portfolio
+          image: docker.io/quochau151/api_portfolio:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-portfolio-service
+spec:
+  selector:
+    app: api-portfolio
+  ports:
+    - port: 80
+      targetPort: 4000
+  type: LoadBalancer
