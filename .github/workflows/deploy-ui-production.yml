@@ -62,12 +62,12 @@ jobs:
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
-              if [ -f ui/manifests/deployment.yaml ]; then
+            if [ -f ui/manifests/deployment.yaml ]; then
               sed -i "s|image: .*|image: ${IMAGE_FULL}|g" ui/manifests/deployment.yaml
-             else
+            else
                echo "Warning: ui/manifests/deployment.yaml không tồn tại."
-             fi
-            echo "Updated image to: ${IMAGE_FULL}"
+            fi
+                echo "Updated image to: ${IMAGE_FULL}"
 
       - name: Commit and push changes to Git repository
         run: |
