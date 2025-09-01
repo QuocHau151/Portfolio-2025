@@ -56,22 +56,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/x86_64
 
         # === UPDATE DEPLOYMENT MANIFEST FOR ARGOCD ===
       - name: Update Kubernetes manifests
         run: |
-          IMAGE_TAG="${{ github.sha }}"
-          IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${IMAGE_TAG}"
-
-          # Cập nhật image trong deployment.yaml cho ArgoCD
-          if [ -f ui/manifests/deployment.yaml ]; then
-            sed -i "s|image: .*|image: ${IMAGE_FULL}|g" ui/manifests/deployment.yaml
-          else
-            echo "Warning: ui/manifests/deployment.yaml không tồn tại."
-          fi
-
-          echo "Updated image to: ${IMAGE_FULL}"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
+              if [ -f ui/manifests/deployment.yaml ]; then
+              sed -i "s|image: .*|image: ${IMAGE_FULL}|g" ui/manifests/deployment.yaml
+             else
+               echo "Warning: ui/manifests/deployment.yaml không tồn tại."
+             fi
+            echo "Updated image to: ${IMAGE_FULL}"
 
       - name: Commit and push changes to Git repository
         run: |
