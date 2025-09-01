@@ -6,7 +6,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: api-portfolio-config
-  namespace: default
+  namespace: portfolio
   labels:
     app: api-portfolio
     component: config
