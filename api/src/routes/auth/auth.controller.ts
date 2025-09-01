@@ -8,7 +8,6 @@ import { IsPublic } from 'src/common/decorators/auth.decorator';
 import { UserAgent } from 'src/common/decorators/user-agent.decorator';
 import { EmptyBodyDTO } from 'src/common/dtos/request.dto';
 import { BooleanResDTO, MessageResDTO } from 'src/common/dtos/response.dto';
-import envConfig from 'src/configs/config';
 import { AuthService } from 'src/routes/auth/auth.service';
 import {
   DisableTwoFactorBodyDTO,
@@ -104,7 +103,7 @@ export class AuthController {
         state,
       });
       return res.redirect(
-        `${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?accessToken=${data.accessToken}&refreshToken=${data.refreshToken}&account=${encodeURIComponent(JSON.stringify(data.account))}`,
+        `${process.env.GOOGLE_CLIENT_REDIRECT_URI}?accessToken=${data.accessToken}&refreshToken=${data.refreshToken}&account=${encodeURIComponent(JSON.stringify(data.account))}`,
       );
     } catch (error) {
       const message =
@@ -112,7 +111,7 @@ export class AuthController {
           ? error.message
           : 'Đã xảy ra lỗi khi đăng nhập bằng Google, vui lòng thử lại bằng cách khác';
       return res.redirect(
-        `${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?errorMessage=${message}`,
+        `${process.env.GOOGLE_CLIENT_REDIRECT_URI}?errorMessage=${message}`,
       );
     }
   }

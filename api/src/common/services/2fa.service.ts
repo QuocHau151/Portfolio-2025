@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as OTPAuth from 'otpauth';
-import envConfig from 'src/configs/config';
 
 @Injectable()
 export class TwoFactorService {
   private createTOTP(email: string, secret?: string) {
     return new OTPAuth.TOTP({
-      issuer: envConfig.APP_NAME,
+      issuer: process.env.APP_NAME,
       label: email,
       algorithm: 'SHA1',
       digits: 6,

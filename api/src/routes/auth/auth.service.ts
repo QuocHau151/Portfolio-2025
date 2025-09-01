@@ -42,7 +42,6 @@ import { CommonRoleRepository } from 'src/common/repositories/common-role.repo';
 import { TwoFactorService } from 'src/common/services/2fa.service';
 import { EmailService } from 'src/common/services/email.service';
 import { AccessTokenPayloadCreate } from 'src/common/types/jwt.types';
-import envConfig from 'src/configs/config';
 
 @Injectable()
 export class AuthService {
@@ -158,7 +157,7 @@ export class AuthService {
       type: body.type,
       expiresAt: addMilliseconds(
         new Date(),
-        ms(envConfig.OTP_EXPIRES_IN as ms.StringValue),
+        ms(process.env.OTP_EXPIRES_IN as ms.StringValue),
       ),
     });
     return { message: 'Gửi mã OTP thành công', code: code };

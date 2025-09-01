@@ -3,7 +3,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import envConfig from './configs/config';
 import { WebsocketAdapter } from './websocket/websocket.adapter';
 
 async function bootstrap() {
@@ -22,6 +21,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('', app, documentFactory);
 
-  await app.listen(envConfig.PORT);
+  await app.listen(process.env.PORT as string);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

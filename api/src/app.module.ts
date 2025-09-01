@@ -12,7 +12,6 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
-import envConfig from './configs/config';
 import { AuthModule } from './routes/auth/auth.module';
 import { BlogModule } from './routes/blog/blog.module';
 import { BrandModule } from './routes/brand/brand.module';
@@ -32,8 +31,8 @@ import { UserModule } from './routes/user/user.module';
 
 import { createKeyv } from '@keyv/redis';
 import { CacheModule } from '@nestjs/cache-manager';
-import { WebsocketModule } from './websocket/websocket.module';
 import { ChatModule } from './routes/chat/chat.module';
+import { WebsocketModule } from './websocket/websocket.module';
 @Module({
   imports: [
     CommonModule,
@@ -70,14 +69,14 @@ import { ChatModule } from './routes/chat/chat.module';
     }),
     BullModule.forRoot({
       connection: {
-        url: envConfig.REDIS_URL,
+        url: process.env.REDIS_URL,
       },
     }),
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => {
         return {
-          stores: [createKeyv(envConfig.REDIS_URL)],
+          stores: [createKeyv(process.env.REDIS_URL)],
         };
       },
     }),

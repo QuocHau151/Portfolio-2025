@@ -1,4 +1,3 @@
-import envConfig from "@/configs/config";
 import {
   getAccessTokenFromLocalStorage,
   normalizePath,
@@ -99,12 +98,12 @@ const request = async <Response>(
       baseHeaders.Authorization = `Bearer ${accessToken}`;
     }
   }
-  // Nếu không truyền baseUrl (hoặc baseUrl = undefined) thì lấy từ envConfig.NEXT_PUBLIC_API_ENDPOINT
+  // Nếu không truyền baseUrl (hoặc baseUrl = undefined) thì lấy từ process.env.NEXT_PUBLIC_API_ENDPOINT
   // Nếu truyền baseUrl thì lấy giá trị truyền vào, truyền vào '' thì đồng nghĩa với việc chúng ta gọi API đến Next.js Server
 
   const baseUrl =
     options?.baseUrl === undefined
-      ? envConfig.NEXT_PUBLIC_API_ENDPOINT
+      ? process.env.NEXT_PUBLIC_API_ENDPOINT
       : options.baseUrl;
 
   const fullUrl = `${baseUrl}/${normalizePath(url)}`;

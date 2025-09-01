@@ -8,7 +8,6 @@ import { AuthService } from 'src/routes/auth/auth.service';
 
 import { CommonRoleRepository } from 'src/common/repositories/common-role.repo';
 import { HashingService } from 'src/common/services/hasing.service';
-import envConfig from 'src/configs/config';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -21,9 +20,9 @@ export class GoogleService {
     private readonly authService: AuthService,
   ) {
     this.oauth2Client = new google.auth.OAuth2(
-      envConfig.GOOGLE_CLIENT_ID,
-      envConfig.GOOGLE_CLIENT_SECRET,
-      envConfig.GOOGLE_REDIRECT_URI,
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI,
     );
   }
   getAuthorizationUrl({ userAgent, ip }: GoogleAuthStateType) {

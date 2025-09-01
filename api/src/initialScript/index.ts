@@ -1,7 +1,6 @@
 import { RoleName } from 'src/common/constants/role.constant';
 import { HashingService } from 'src/common/services/hasing.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import envConfig from 'src/configs/config';
 
 const prisma = new PrismaService();
 const hashingService = new HashingService();
@@ -32,13 +31,15 @@ const main = async () => {
       name: RoleName.Admin,
     },
   });
-  const hashedPassword = await hashingService.hash(envConfig.ADMIN_PASSWORD);
+  const hashedPassword = await hashingService.hash(
+    process.env.ADMIN_PASSWORD as string,
+  );
   const adminUser = await prisma.user.create({
     data: {
-      email: envConfig.ADMIN_EMAIL,
+      email: process.env.ADMIN_EMAIL as string,
       password: hashedPassword,
-      name: envConfig.ADMIN_NAME,
-      phone: envConfig.ADMIN_PHONE_NUMBER,
+      name: process.env.ADMIN_NAME as string,
+      phone: process.env.ADMIN_PHONE_NUMBER as string,
       roleId: adminRole.id,
     },
   });

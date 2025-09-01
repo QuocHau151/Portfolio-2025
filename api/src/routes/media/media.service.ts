@@ -5,10 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as Minio from 'minio';
-import envConfig from 'src/configs/config';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MediaService {
@@ -17,10 +16,10 @@ export class MediaService {
 
   constructor(private readonly prismaService: PrismaService) {
     this.minioClient = new Minio.Client({
-      endPoint: envConfig.MINIO_ENDPOINT,
+      endPoint: process.env.MINIO_ENDPOINT as string,
       useSSL: true,
-      accessKey: envConfig.MINIO_ACCESS_KEY,
-      secretKey: envConfig.MINIO_SECRET_KEY,
+      accessKey: process.env.MINIO_ACCESS_KEY as string,
+      secretKey: process.env.MINIO_SECRET_KEY as string,
     });
   }
 
@@ -67,7 +66,7 @@ export class MediaService {
           'Original-Name': file.originalname,
         },
       );
-      const fileUrl = `https://${envConfig.MINIO_ENDPOINT}/${bucketName}/${objectName}`;
+      const fileUrl = `https://${process.env.MINIO_ENDPOINT}/${bucketName}/${objectName}`;
       return {
         url: fileUrl,
       };

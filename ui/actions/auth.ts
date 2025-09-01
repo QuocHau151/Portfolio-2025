@@ -1,4 +1,3 @@
-import envConfig from "@/configs/config";
 import {
   ForgotPasswordType,
   TypeOfVerificationCodeType,
@@ -22,14 +21,14 @@ const authApiRequest = {
   sLogin: (body: LoginBodyType) => http.post<LoginResType>("/auth/login", body),
   login: (body: LoginBodyType) => {
     return http.post<LoginResType>("/api/auth/login", body, {
-      baseUrl: envConfig.NEXT_PUBLIC_URL,
+      baseUrl: process.env.NEXT_PUBLIC_URL,
     });
   },
   sRegister: (body: RegisterBodyType) =>
     http.post<RegisterResType>("/auth/register", body),
   register: (body: RegisterBodyType) => {
     return http.post<RegisterResType>("/api/auth/register", body, {
-      baseUrl: envConfig.NEXT_PUBLIC_URL,
+      baseUrl: process.env.NEXT_PUBLIC_URL,
     });
   },
   sLogout: (
@@ -49,7 +48,9 @@ const authApiRequest = {
       },
     ),
   logout: () =>
-    http.post("/api/auth/logout", null, { baseUrl: envConfig.NEXT_PUBLIC_URL }), // client gọi đến route handler, không cần truyền AT và RT vào body vì AT và RT tự  động gửi thông qua cookie rồi
+    http.post("/api/auth/logout", null, {
+      baseUrl: process.env.NEXT_PUBLIC_URL,
+    }), // client gọi đến route handler, không cần truyền AT và RT vào body vì AT và RT tự  động gửi thông qua cookie rồi
   sRefreshToken: (body: RefreshTokenBodyType) =>
     http.post<RefreshTokenResType>("/auth/refresh-token", body),
   async refreshToken() {
@@ -68,7 +69,9 @@ const authApiRequest = {
     return result;
   },
   setTokenToCookie: (body: { accessToken: string; refreshToken: string }) =>
-    http.post("/api/auth/token", body, { baseUrl: envConfig.NEXT_PUBLIC_URL }),
+    http.post("/api/auth/token", body, {
+      baseUrl: process.env.NEXT_PUBLIC_URL,
+    }),
   checkEmailExits: (body: { email: string }) => {
     return http.post("/auth/checkemailexits", body);
   },

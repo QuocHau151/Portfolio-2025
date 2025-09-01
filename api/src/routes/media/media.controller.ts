@@ -8,9 +8,8 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-import envConfig from 'src/configs/config';
-import { MediaService } from './media.service';
 import { memoryStorage } from 'multer';
+import { MediaService } from './media.service';
 
 @Controller('media')
 export class MediaController {
@@ -37,14 +36,20 @@ export class MediaController {
   ) {
     const urls = await Promise.all(
       files.map((file) =>
-        this.mediaService.uploadFile(file, envConfig.MINIO_BUCKET_NAME),
+        this.mediaService.uploadFile(
+          file,
+          process.env.MINIO_BUCKET_NAME as string,
+        ),
       ),
     );
     return urls;
   }
   @Delete(':filename')
   async deleteFile(@Param('filename') filename: string) {
-    await this.mediaService.deleteFile(filename, envConfig.MINIO_BUCKET_NAME);
+    await this.mediaService.deleteFile(
+      filename,
+      process.env.MINIO_BUCKET_NAME as string,
+    );
     return { message: 'Xoá File Thành Công' };
   }
 }

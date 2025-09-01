@@ -53,6 +53,6 @@ if (!configServer.success) {
   process.exit(1);
 }
 
-const envConfig = configServer.data;
+// const envConfig = configServer.data;
 
-export default envConfig;
+// export default envConfig;

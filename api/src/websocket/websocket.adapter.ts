@@ -6,7 +6,6 @@ import { Server, ServerOptions, Socket } from 'socket.io';
 import { generateRoomUserId } from 'src/common/helpers';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { TokenService } from 'src/common/services/token.service';
-import envConfig from 'src/configs/config';
 
 export class WebsocketAdapter extends IoAdapter {
   private readonly tokenService: TokenService;
@@ -20,7 +19,7 @@ export class WebsocketAdapter extends IoAdapter {
   }
   async connectToRedis(): Promise<void> {
     const pubClient = createClient({
-      url: envConfig.REDIS_URL,
+      url: process.env.REDIS_URL,
       socket: {
         reconnectStrategy: (attempts: number) => {
           return Math.min(1000 * Math.pow(2, attempts), 10000);
