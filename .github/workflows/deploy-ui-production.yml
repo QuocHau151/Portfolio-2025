@@ -73,17 +73,16 @@ jobs:
           echo "Updated image to: ${IMAGE_FULL}"
 
       - name: Commit and push changes to Git repository
-        working-directory: ./ui
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
-          git add deployment.yaml
+          
+          git add ui/deployment.yaml
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
             git commit -m "🚀 Update deployment image to ${{ github.sha }}"
-            git push
+            git push https://${{ secrets.GITHUB_TOKEN }}@github.com/QuocHau151/Portfolio-2025.git
           fi
 
 # name: Deploy UI Production
