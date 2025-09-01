@@ -73,6 +73,7 @@ jobs:
           echo "Updated image to: ${IMAGE_FULL}"
 
       - name: Commit and push changes to Git repository
+        working-directory: ./ui
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
