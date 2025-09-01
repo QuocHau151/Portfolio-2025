@@ -37,7 +37,7 @@ data:
   REDIS_URL: redis://:hau123456@14.241.251.180:6300
   PROXMOX_URL: http://14.241.251.180:8006/api2/json
   PROXMOX_USERNAME: root@pam
-  PROXMOX_PASSWORD: Quochau150101!
+  PROXMOX_PASSWORD: 
 
 ---
 #----------------------------------------------

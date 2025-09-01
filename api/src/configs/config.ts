@@ -3,13 +3,16 @@ import fs from 'fs';
 import path from 'path';
 import z from 'zod';
 
-config({
-  path: '.env',
-});
+// config({
+//   path: '.env',
+// });
 // Kiểm tra coi thử có file .env hay chưa
-if (!fs.existsSync(path.resolve('.env'))) {
-  console.log('Không tìm thấy file .env Kiểm tra lại');
-  process.exit(1);
+// if (!fs.existsSync(path.resolve('.env'))) {
+//   console.log('Không tìm thấy file .env Kiểm tra lại');
+//   process.exit(1);
+// }
+if (fs.existsSync(path.resolve('.env'))) {
+  config({ path: '.env' });
 }
 
 const configSchema = z.object({
