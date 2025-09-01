@@ -70,6 +70,8 @@ jobs:
 
       - name: Commit and push changes to Git repository
         run: |
+          git config --global user.email "tranlequochau.blc@gmail.com"
+          git config --global user.name "Quochau151"
           git add api/manifests/deployment.yaml
           if git diff --staged --quiet; then
             echo "No changes to commit"
