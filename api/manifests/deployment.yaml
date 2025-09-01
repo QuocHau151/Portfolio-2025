@@ -4,7 +4,6 @@ metadata:
   name: api-portfolio-config
 data:
   DATABASE_URL: "postgresql://quochau:123456@14.241.251.180:5100/quochaudb?schema=public"
-
   ACCESS_TOKEN_SECRET: "jK7n2LpT8qXc5Fh1A9zRb3D6vE0sWm4Y"
   ACCESS_TOKEN_EXPIRES_IN: "15m"
   REFRESH_TOKEN_SECRET: "A3bP8fZ1tR7gQ4vK5dS2xL9nC6mE0jH"
@@ -61,5 +60,5 @@ spec:
     app: api-portfolio
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 3000
   type: LoadBalancer
