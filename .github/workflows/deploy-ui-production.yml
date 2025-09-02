@@ -57,6 +57,14 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Trigger ArgoCD Sync
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.ARGOCD_AUTH_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            ${{ secrets.ARGOCD_SERVER }}/api/v1/applications/ui-portfolio/sync \
+            -d '{}'
+
       # - name: Update Kubernetes manifests
       #   run: |
       #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
@@ -81,6 +89,7 @@ jobs:
       #       git pull --rebase origin main
       #       git push
       #     fi
+
 # name: Deploy UI Production
 # on:
 #   push:
