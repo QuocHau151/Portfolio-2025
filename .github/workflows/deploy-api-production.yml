@@ -12,6 +12,7 @@ on:
       - "api/**"
 permissions:
   contents: write
+
 env:
   REGISTRY: docker.io
   IMAGE_NAME: quochau151/api_portfolio
@@ -53,10 +54,11 @@ jobs:
         with:
           repository: quochau151/portfolio-manifests
           token: ${{ secrets.PAT_TOKEN }}
+          path: manifests
 
       - name: Update deployment.yaml
         run: |
-          sed -i "s|image: .*|image: $IMAGE_FULL|g" api/deployment.yaml
+          sed -i "s|image: .*|image: $IMAGE_FULL|g" manifests/api/deployment.yaml
 
       - name: Commit & push changes
         run: |
