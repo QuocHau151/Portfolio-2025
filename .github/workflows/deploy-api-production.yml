@@ -63,5 +63,4 @@ jobs:
           git config user.name "Quochau151"
           git config user.email "tranlequochau.blc@gmail.com"
           git add api/deployment.yaml
-          git pull --rebase origin main
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/quochau151/portfolio-manifests.git HEAD:main
