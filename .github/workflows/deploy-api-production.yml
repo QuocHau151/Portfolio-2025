@@ -20,8 +20,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      image_full: ${{ steps.set_image.outputs.image_full }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,16 +49,8 @@ jobs:
           docker push $IMAGE_FULL
           echo "IMAGE_FULL=$IMAGE_FULL" >> $GITHUB_ENV
 
-      - id: set_image
-        name: Set image output
-        run: echo "image_full=$IMAGE_FULL" >> $GITHUB_OUTPUT
-
-  update-gitops:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout manifests repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           repository: quochau151/portfolio-manifests
           token: ${{ secrets.PAT_TOKEN }}
@@ -68,13 +58,13 @@ jobs:
 
       - name: Update deployment.yaml
         run: |
-          sed -i "s|image: .*|image: ${{ needs.build.outputs.image_full }}|g" manifests/api/deployment.yaml
+          sed -i "s|image: .*|image: $IMAGE_FULL|g" manifests/api/deployment.yaml
 
       - name: Commit & push changes
         working-directory: manifests
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "Quochau151"
+          git config user.email "tranlequochau.blc@gmail.com"
           git add api/deployment.yaml
-          git commit -m "Update image to ${{ needs.build.outputs.image_full }}" || echo "No changes"
+          git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
           git push origin main
