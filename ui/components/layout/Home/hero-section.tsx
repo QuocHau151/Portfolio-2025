@@ -29,7 +29,7 @@ export default function HeroSection() {
             A Global Freelance{" "}
             <Highlight className="mr-2 pl-3 text-black"> Web, App </Highlight>{" "}
             Developer All In JavaScript
-            {test}
+            {test} 123123
           </motion.h1>
         </HeroHighlight>
         <motion.div
