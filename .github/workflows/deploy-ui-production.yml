@@ -39,106 +39,33 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./ui
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Trigger ArgoCD Sync
+      - name: Build and push image
+        working-directory: ./ui
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.ARGOCD_AUTH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            ${{ secrets.ARGOCD_SERVER }}/api/v1/applications/ui-portfolio/sync \
-            -d '{}'
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          IMAGE_FULL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}
+          docker build -t $IMAGE_FULL .
+          docker push $IMAGE_FULL
+          echo "IMAGE_FULL=$IMAGE_FULL" >> $GITHUB_ENV
 
-      # - name: Update Kubernetes manifests
-      #   run: |
-      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #     IMAGE_FULL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
-      #       if [ -f ui/manifests/deployment.yaml ]; then
-      #         sed -i "s|image: .*|image: ${IMAGE_FULL}|g" ui/manifests/deployment.yaml
-      #       else
-      #          echo "Warning: ui/manifests/deployment.yaml không tồn tại."
-      #       fi
-      #           echo "Updated image to: ${IMAGE_FULL}"
+      - name: Checkout manifests repo
+        uses: actions/checkout@v3
+        with:
+          repository: quochau151/portfolio-manifests
+          token: ${{ secrets.PAT_TOKEN }} # Personal Access Token hoặc PAT có quyền push
+          path: ui
 
-      # - name: Commit and push changes to Git repository
-      #   run: |
-      #     git config --global user.email "tranlequochau.blc@gmail.com"
-      #     git config --global user.name "Quochau151"
+      - name: Update deployment.yaml
+        working-directory: ./ui
+        run: |
+          sed -i "s|image: .*|image: $IMAGE_FULL|g" deployment.yaml
 
-      #     git add ui/manifests/deployment.yaml
-      #     if git diff --staged --quiet; then
-      #       echo "No changes to commit"
-      #     else
-      #       git commit -m "🚀 Update deployment image to ${{ github.sha }}"
-      #       git pull --rebase origin main
-      #       git push
-      #     fi
+      - name: Commit & push changes
+        working-directory: ./ui
+        run: |
+          git config user.name "Quochau151"
+          git config user.email "tranlequochau.blc@gmail.com"
+          git add deployment.yaml
+          git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
+          git push
 
-# name: Deploy UI Production
-# on:
-#   push:
-#     branches: ["main"]
-#     paths:
-#       - "ui/**"
-#       - ".github/workflows/deploy-ui-production.yml"
-#   pull_request:
-#     branches: ["main"]
-#     paths:
-#       - "ui/**"
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-
-#       - name: Create .env file
-#         working-directory: ./ui
-#         run: |
-#           echo "${{ secrets.UI_ENV_PRODUCTION }}" > .env
-
-#       - name: Build Docker Image
-#         working-directory: ./ui
-#         run: |
-#           docker build --platform linux/x86_64 -t quochau151/ui_portfolio .
-
-#       - name: Login to Docker Hub
-#         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-
-#       - name: Push Docker Image
-#         working-directory: ./ui
-#         run: docker push quochau151/ui_portfolio
-#   deploy:
-#     runs-on: ubuntu-latest
-#     needs: build
-#     steps:
-#       - name: Executing remote ssh commands using password
-#         uses: appleboy/ssh-action@v1.2.0
-#         with:
-#           host: ${{ secrets.HOST_PRODUCTION }}
-#           username: ${{ secrets.USERNAME_PRODUCTION }}
-#           password: ${{ secrets.PASSWORD_PRODUCTION }}
-#           port: ${{ secrets.PORT_PRODUCTION }}
-#           script: |
-#             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-#             docker pull quochau151/ui_portfolio
-#             docker stop ui_portfolio
-#             docker rm ui_portfolio
-#             docker run -dp 9911:3000 --name ui_portfolio  quochau151/ui_portfolio
-#             docker image prune -f
