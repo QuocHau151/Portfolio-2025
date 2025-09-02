@@ -57,12 +57,12 @@ jobs:
 
       - name: Update deployment.yaml
         run: |
-          sed -i "s|image: .*|image: $IMAGE_FULL|g" ui/deployment.yaml
+          sed -i "s|image: .*|image: $IMAGE_FULL|g" deployment.yaml
 
       - name: Commit & push changes
         run: |
           git config user.name "Quochau151"
           git config user.email "tranlequochau.blc@gmail.com"
-          git add ui/deployment.yaml
+          git add deployment.yaml
           git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
           git push
