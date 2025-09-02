@@ -39,20 +39,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # - name: Build and push image
-      #   working-directory: ./ui
-      #   run: |
-      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #     IMAGE_FULL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}
-      #     docker build -t $IMAGE_FULL .
-      #     docker push $IMAGE_FULL
-      #     echo "IMAGE_FULL=$IMAGE_FULL" >> $GITHUB_ENV
+      - name: Build and push image
+        working-directory: ./ui
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          IMAGE_FULL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}
+          docker build -t $IMAGE_FULL .
+          docker push $IMAGE_FULL
+          echo "IMAGE_FULL=$IMAGE_FULL" >> $GITHUB_ENV
 
       - name: Checkout manifests repo
         uses: actions/checkout@v3
         with:
           repository: quochau151/portfolio-manifests
-          token: ${{ secrets.PAT_TOKEN }} # Personal Access Token hoặc PAT có quyền push
+          token: ${{ secrets.PAT_TOKEN }}
           path: manifests
 
       - name: Update deployment.yaml
@@ -60,9 +60,10 @@ jobs:
           sed -i "s|image: .*|image: $IMAGE_FULL|g" manifests/ui/deployment.yaml
 
       - name: Commit & push changes
+        working-directory: manifests
         run: |
           git config user.name "Quochau151"
           git config user.email "tranlequochau.blc@gmail.com"
-          git add manifests/ui/deployment.yaml
+          git add ui/deployment.yaml
           git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/quochau151/portfolio-manifests.git HEAD:main
+          git push origin main
