@@ -52,19 +52,17 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: quochau151/portfolio-manifests
-          token: ${{ secrets.PAT_TOKEN }} # Personal Access Token hoặc PAT có quyền push
+          token: ${{ secrets.PAT_TOKEN }}
           path: api
 
       - name: Update deployment.yaml
-        working-directory: ./api
         run: |
-          sed -i "s|image: .*|image: $IMAGE_FULL|g" deployment.yaml
+          sed -i "s|image: .*|image: $IMAGE_FULL|g" api/deployment.yaml
 
       - name: Commit & push changes
-        working-directory: ./api
         run: |
           git config user.name "Quochau151"
           git config user.email "tranlequochau.blc@gmail.com"
-          git add deployment.yaml
+          git add api/deployment.yaml
           git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
           git push
