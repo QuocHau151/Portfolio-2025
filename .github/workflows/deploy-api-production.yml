@@ -61,8 +61,10 @@ jobs:
           sed -i "s|image: .*|image: $IMAGE_FULL|g" manifests/api/deployment.yaml
 
       - name: Commit & push changes
+        working-directory: manifests
         run: |
           git config user.name "Quochau151"
           git config user.email "tranlequochau.blc@gmail.com"
-          git add manifests/api/deployment.yaml
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/quochau151/portfolio-manifests.git HEAD:main
+          git add api/deployment.yaml
+          git commit -m "Update image to $IMAGE_FULL" || echo "No changes"
+          git push origin main
