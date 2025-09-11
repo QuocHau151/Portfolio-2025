@@ -30,5 +30,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER root
 
 EXPOSE 80
+# port 80
 
 CMD ["node", "server.js"] 
