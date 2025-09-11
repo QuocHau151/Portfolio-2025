@@ -6,7 +6,6 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package*.json ./
-COPY .npmrc ./
 
 RUN npm install --force --legacy-peer-deps
 
@@ -20,17 +19,17 @@ COPY . .
 
 RUN npm run build
 
+RUN npx prisma generate
+
 FROM base AS runner
 WORKDIR /app
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+USER root
 
+EXPOSE 80
 
 CMD ["node", "server.js"] 

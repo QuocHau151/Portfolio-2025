@@ -17,4 +17,9 @@ COPY . .
 
 RUN npm run build
 
+USER root
+
+EXPOSE 80
+
+
 CMD ["node", "dist/main"]
