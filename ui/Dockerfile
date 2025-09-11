@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 RUN npm install --force --legacy-peer-deps
-
+# test
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
