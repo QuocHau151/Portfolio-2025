@@ -1,10 +1,12 @@
-FROM node:24-alpine AS base
+FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package*.json ./
+COPY .npmrc ./
 
 RUN npm install --force --legacy-peer-deps
 
@@ -17,8 +19,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npm run build
-
-RUN npx prisma generate
 
 FROM base AS runner
 WORKDIR /app
