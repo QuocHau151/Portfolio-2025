@@ -1,18 +1,24 @@
 FROM node:22-alpine
 
-WORKDIR /usr/src/app
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat openssl 
+WORKDIR /app
 
 COPY package*.json ./
+COPY prisma ./prisma
 
 RUN npm install
 
-# Copy Prisma schema and .env BEFORE prisma generate
-COPY prisma ./prisma
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
 
-# Generate Prisma client
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/prisma ./prisma
+
 RUN npx prisma generate
 
-# Copy the rest of the code
 COPY . .
 
 RUN npm run build
