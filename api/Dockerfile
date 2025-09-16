@@ -31,7 +31,8 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=deps /app/node_modules ./node_modules
 
-USER node
+USER root
+
 EXPOSE 80
 
 CMD ["node", "dist/main"]
