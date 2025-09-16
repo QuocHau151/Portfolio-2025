@@ -1,6 +1,7 @@
-FROM node:22-alpine
+# Base image
+FROM node:22-alpine AS base
 
-# Install dependencies only when needed
+# Stage: deps
 FROM base AS deps
 RUN apk add --no-cache libc6-compat openssl 
 WORKDIR /app
@@ -10,7 +11,7 @@ COPY prisma ./prisma
 
 RUN npm install
 
-# Rebuild the source code only when needed
+# Stage: builder
 FROM base AS builder
 WORKDIR /app
 
@@ -23,9 +24,14 @@ COPY . .
 
 RUN npm run build
 
-USER root
+# Stage: runner
+FROM base AS runner
+WORKDIR /app
 
+COPY --from=builder /app/dist ./dist
+COPY --from=deps /app/node_modules ./node_modules
+
+USER node
 EXPOSE 80
-
 
 CMD ["node", "dist/main"]
