@@ -5,7 +5,6 @@ import { SpotlightButton } from "@/components/ui/Spotlightbutton";
 import { motion } from "framer-motion";
 
 export default function HeroSection() {
-  const test = process.env.NEXT_PUBLIC_URL;
   return (
     <div className="relative container mx-auto mt-[100px] flex h-[calc(100vh-100px)] flex-col items-start justify-start lg:flex-row lg:items-center lg:justify-start">
       <div className="l flex flex-col items-center justify-center lg:w-1/2 lg:items-start lg:justify-start">
@@ -25,9 +24,9 @@ export default function HeroSection() {
             }}
             className="mx-auto px-4 text-center text-[30px] leading-relaxed font-bold md:text-4xl lg:text-left lg:text-5xl lg:leading-snug xl:text-6xl 2xl:text-7xl"
           >
-            <Highlight className="mr-2 pl-3 text-black"> Hello </Highlight> I’m
-            A Global Freelance{" "}
-            <Highlight className="mr-2 pl-3 text-black"> Web, App </Highlight>{" "}
+            <Highlight className="text-primary mr-2 pl-3"> Hello </Highlight>{" "}
+            I’m A Global Freelance{" "}
+            <Highlight className="text-primary mr-2 pl-3"> Web, App </Highlight>{" "}
             Developer All In JavaScript
           </motion.h1>
         </HeroHighlight>
