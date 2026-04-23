@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   ArrowDownToLine,
@@ -8,16 +10,13 @@ import {
   Github,
   Linkedin,
   Mail,
-  MapPin,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { SiZalo } from "react-icons/si";
-import StackIcon from "tech-stack-icons";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import StackIcon from "tech-stack-icons";
 import * as z from "zod";
 
 import SmoothScroll from "@/components/feature/smooth-scroll";
@@ -32,6 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import projects from "@/data/projects";
+import React from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập họ tên"),
@@ -43,7 +43,11 @@ const formSchema = z.object({
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 const staggerContainer = {
@@ -71,8 +75,8 @@ export default function CV() {
       <div className="container mx-auto px-4 py-10 md:py-16">
         <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
           {/* Profile Sidebar */}
-          <aside className="lg:sticky lg:top-24 lg:h-fit lg:w-[320px] xl:w-[360px] lg:shrink-0">
-            <div className="overflow-hidden rounded-3xl border border-white/5 bg-surface-elevated">
+          <aside className="lg:sticky lg:top-24 lg:h-fit lg:w-[320px] lg:shrink-0 xl:w-[360px]">
+            <div className="bg-surface-elevated overflow-hidden rounded-3xl border border-white/5">
               {/* Avatar */}
               <div className="relative aspect-square overflow-hidden">
                 <Image
@@ -82,32 +86,40 @@ export default function CV() {
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-elevated to-transparent" />
+                <div className="from-surface-elevated absolute inset-0 bg-gradient-to-t to-transparent" />
               </div>
 
               {/* Info */}
               <div className="relative -mt-12 px-6 pb-6 text-center">
-                <div className="mx-auto mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <div className="bg-primary/10 text-primary mx-auto mb-3 inline-block rounded-full px-3 py-1 text-xs font-medium">
                   Fullstack Developer
                 </div>
-                <h2 className="text-xl font-bold text-white">Trần Lê Quốc Hậu</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h2 className="text-xl font-bold text-white">
+                  Trần Lê Quốc Hậu
+                </h2>
+                <p className="text-muted-foreground mt-1 text-sm">
                   tranlequochau.blc@gmail.com
                 </p>
 
                 {/* Social Links */}
                 <div className="mt-5 flex justify-center gap-3">
                   {[
-                    { icon: Facebook, href: "https://www.facebook.com/quochau151/" },
+                    {
+                      icon: Facebook,
+                      href: "https://www.facebook.com/quochau151/",
+                    },
                     { icon: SiZalo, href: "zalo:0399603123", isIcon: true },
                     { icon: Github, href: "https://github.com/QuocHau151" },
-                    { icon: Linkedin, href: "https://www.linkedin.com/in/h%E1%BA%ADu-qu%E1%BB%91c-16426936b" },
+                    {
+                      icon: Linkedin,
+                      href: "https://www.linkedin.com/in/h%E1%BA%ADu-qu%E1%BB%91c-16426936b",
+                    },
                   ].map((social, i) => (
                     <Link
                       key={i}
                       href={social.href}
                       target="_blank"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                      className="hover:border-primary/50 hover:bg-primary/10 hover:text-primary flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors"
                     >
                       {social.isIcon ? (
                         <social.icon size={18} />
@@ -122,7 +134,7 @@ export default function CV() {
                 <div className="mt-6 space-y-3">
                   <Link
                     href="mailto:tranlequochau.blc@gmail.com"
-                    className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="bg-primary flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <Mail className="h-4 w-4" />
                     Hire Me Now
@@ -151,13 +163,13 @@ export default function CV() {
               className="space-y-6"
             >
               <motion.div variants={fadeInUp}>
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Giới thiệu
                 </span>
               </motion.div>
               <motion.h1
                 variants={fadeInUp}
-                className="text-3xl font-black leading-tight md:text-4xl lg:text-5xl"
+                className="text-3xl leading-tight font-black md:text-4xl lg:text-5xl"
               >
                 <BlurText
                   text="Hello, I'm Quoc Hau"
@@ -168,16 +180,16 @@ export default function CV() {
                 />
                 <br />
                 <span className="text-white">
-                  Developer Web Application All In JS, TS & SEO Marketing
+                  Fullstack Developer Web App & Digital Marketing
                 </span>
               </motion.h1>
               <motion.p
                 variants={fadeInUp}
-                className="max-w-xl text-base leading-relaxed text-muted md:text-lg"
+                className="text-muted max-w-xl text-base leading-relaxed md:text-lg"
               >
-                Tôi là lập trình viên web đam mê tạo ra các ứng dụng web động và
-                responsive. Có kinh nghiệm cả front-end lẫn back-end, luôn sẵn sàng
-                học hỏi công nghệ mới và nâng cao kỹ năng.
+                Tôi là lập trình viên web app đam mê tạo ra các ứng dụng web
+                động và app mobile. Có kinh nghiệm cả front-end lẫn back-end và
+                devops, luôn sẵn sàng học hỏi công nghệ mới và nâng cao kỹ năng.
               </motion.p>
             </motion.section>
 
@@ -190,16 +202,18 @@ export default function CV() {
               className="grid grid-cols-1 gap-4 sm:grid-cols-3"
             >
               {[
-                { label: "Địa điểm", value: "Thủ Đức, HCM", icon: MapPin },
-                { label: "Kinh nghiệm", value: "+2 Năm" },
-                { label: "Dự án", value: "+10" },
+                { label: "Địa điểm", value: "Bình Thạnh, HCM" },
+                { label: "Kinh nghiệm", value: "+4 Năm" },
+                { label: "Dự án", value: "+20" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
                   variants={fadeInUp}
                   className="rounded-2xl border border-white/5 bg-white/[0.03] p-6 text-center transition-colors hover:border-white/10"
                 >
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-muted-foreground text-sm">
+                    {stat.label}
+                  </div>
                   <div className="mt-1 text-2xl font-extrabold text-white">
                     {stat.value}
                   </div>
@@ -216,7 +230,7 @@ export default function CV() {
               className="space-y-6"
             >
               <motion.div variants={fadeInUp}>
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Về tôi
                 </span>
               </motion.div>
@@ -225,12 +239,12 @@ export default function CV() {
                   <h2 className="text-2xl font-bold text-white md:text-3xl">
                     Kinh nghiệm Fullstack Developer
                   </h2>
-                  <p className="mt-4 text-base leading-relaxed text-muted">
-                    Mục tiêu trở thành Senior Fullstack Developer trong 2 năm tới
-                    bằng cách không ngừng cải thiện kỹ năng kỹ thuật, mở rộng kiến
-                    thức công nghệ mới và học Flutter để xây dựng ứng dụng di động.
-                    Khát khao được đóng góp vào các dự án có tác động thực tế trong
-                    môi trường làm việc chuyên nghiệp và năng động.
+                  <p className="text-muted mt-4 text-base leading-relaxed">
+                    Mục tiêu trở thành Senior Fullstack Developer trong 1 năm
+                    tới bằng cách không ngừng cải thiện kỹ năng kỹ thuật, mở
+                    rộng kiến thức công nghệ mới. Khát khao được đóng góp vào
+                    các dự án có tác động thực tế trong môi trường làm việc
+                    chuyên nghiệp và năng động.
                   </p>
                   <Link
                     href="/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"
@@ -253,7 +267,7 @@ export default function CV() {
               className="space-y-6"
             >
               <motion.div variants={fadeInUp} className="text-center">
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Kỹ năng
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
@@ -268,23 +282,39 @@ export default function CV() {
                     variants={fadeInUp}
                     className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-colors hover:border-white/10"
                   >
-                    <h3 className="mb-4 text-base font-semibold text-primary">
+                    <h3 className="text-primary mb-4 text-base font-semibold">
                       {group.title}
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
-                      {group.icons.map((icon, j) =>
-                        typeof icon === "string" ? (
-                          <StackIcon
+                      {group.icons.map((icon, j) => {
+                        const label =
+                          typeof icon === "string"
+                            ? icon
+                            : React.isValidElement(icon)
+                              ? ((icon.props as any).alt ?? "")
+                              : "";
+                        return (
+                          <div
                             key={j}
-                            className="size-7 rounded-md"
-                            name={icon}
-                          />
-                        ) : (
-                          <div key={j} className="flex items-center">
-                            {icon}
+                            className="group relative flex items-center"
+                          >
+                            {typeof icon === "string" ? (
+                              <StackIcon
+                                variant="dark"
+                                className="size-7 rounded-md"
+                                name={icon}
+                              />
+                            ) : (
+                              icon
+                            )}
+                            {label && (
+                              <span className="pointer-events-none absolute top-1/2 left-full z-10 ml-2 -translate-y-1/2 rounded-md bg-black/80 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
+                                {label}
+                              </span>
+                            )}
                           </div>
-                        ),
-                      )}
+                        );
+                      })}
                     </div>
                   </motion.div>
                 ))}
@@ -301,7 +331,7 @@ export default function CV() {
             >
               {/* Companies */}
               <motion.div variants={fadeInUp} className="space-y-4">
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Công ty
                 </span>
                 <h2 className="text-xl font-bold text-white">
@@ -309,9 +339,26 @@ export default function CV() {
                 </h2>
                 <div className="space-y-3">
                   {[
-                    { logo: "/assets/logo/fpt.png", name: "FPT SmartHome" },
-                    { logo: "/assets/logo/sikido.png", name: "Sikido" },
-                    { logo: "/assets/logo/khangminh.png", name: "Khang Minh Lighting" },
+                    {
+                      logo: "/assets/logo/fpt.png",
+                      name: "FPT SmartHome",
+                      time: "12/2022 - 04/2023",
+                    },
+                    {
+                      logo: "/assets/logo/sikido.png",
+                      name: "Sikido",
+                      time: "04/2024 - 06/2024",
+                    },
+                    {
+                      logo: "/assets/logo/khangminh.png",
+                      name: "Khang Minh Lighting",
+                      time: "09/2024 - 04/2025",
+                    },
+                    {
+                      logo: "/assets/logo/ape.png",
+                      name: "Apetechs Solution",
+                      time: "07/2025 - 03/2026",
+                    },
                   ].map((company, i) => (
                     <div
                       key={i}
@@ -326,7 +373,11 @@ export default function CV() {
                         />
                       </div>
                       <span className="font-medium text-white">
-                        {company.name}
+                        {company.name}{" "}
+                        <span className="text-sm text-white/50">
+                          {" "}
+                          {company.time}
+                        </span>
                       </span>
                     </div>
                   ))}
@@ -335,10 +386,12 @@ export default function CV() {
 
               {/* Education */}
               <motion.div variants={fadeInUp} className="space-y-4">
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Học vấn
                 </span>
-                <h2 className="text-xl font-bold text-white">Bằng cấp</h2>
+                <h2 className="text-xl font-bold text-white">
+                  Bằng cấp & Chứng chỉ
+                </h2>
                 <div className="space-y-3">
                   {[
                     {
@@ -356,11 +409,11 @@ export default function CV() {
                       key={i}
                       className="relative overflow-hidden rounded-xl border border-white/5 bg-white/[0.03] p-5"
                     >
-                      <h3 className="text-base font-semibold text-primary">
+                      <h3 className="text-primary text-base font-semibold">
                         {edu.title}
                       </h3>
                       <p className="mt-1 text-sm text-white">{edu.school}</p>
-                      <span className="absolute top-4 right-4 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      <span className="bg-primary/10 text-primary absolute top-4 right-4 rounded-full px-2.5 py-0.5 text-xs font-medium">
                         {edu.year}
                       </span>
                     </div>
@@ -378,11 +431,11 @@ export default function CV() {
               className="space-y-6"
             >
               <motion.div variants={fadeInUp} className="text-center">
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Dự án
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
-                  Dự án gần đây
+                  Dự án Freelancer
                 </h2>
               </motion.div>
 
@@ -397,7 +450,7 @@ export default function CV() {
                   <motion.div
                     key={project.id}
                     variants={fadeInUp}
-                    className="group relative overflow-hidden rounded-2xl border border-white/5 bg-surface-elevated transition-all duration-500 hover:-translate-y-1 hover:border-white/10 hover:shadow-2xl"
+                    className="group bg-surface-elevated relative overflow-hidden rounded-2xl border border-white/5 transition-all duration-500 hover:-translate-y-1 hover:border-white/10 hover:shadow-2xl"
                   >
                     <Link
                       href={project.live}
@@ -411,10 +464,10 @@ export default function CV() {
                           src={project.src}
                           alt={project.title}
                           fill
-                          className="object-cover object-[50%_0%] transition-all duration-[3000ms] ease-linear group-hover:object-[50%_100%] group-hover:scale-105 group-hover:brightness-110"
+                          className="object-cover object-[50%_0%] transition-all duration-[3000ms] ease-linear group-hover:scale-105 group-hover:object-[50%_100%] group-hover:brightness-110"
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                        <div className="from-background via-background/40 absolute inset-0 bg-gradient-to-t to-transparent" />
                         {/* Glow on hover */}
                         <div
                           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -428,14 +481,14 @@ export default function CV() {
                       {/* Content */}
                       <div className="relative p-5">
                         <div className="mb-3 flex items-center gap-2">
-                          <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                          <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
                             {project.category}
                           </span>
                         </div>
-                        <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary md:text-xl">
+                        <h3 className="group-hover:text-primary text-lg font-bold text-white transition-colors md:text-xl">
                           {project.title}
                         </h3>
-                        <div className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-sm">
                           <span>Xem chi tiết</span>
                           <ArrowUpRight className="h-4 w-4" />
                         </div>
@@ -455,7 +508,7 @@ export default function CV() {
               className="space-y-6"
             >
               <motion.div variants={fadeInUp} className="text-center">
-                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   Liên hệ
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
@@ -480,7 +533,7 @@ export default function CV() {
                           <FormControl>
                             <Input
                               placeholder="Họ và tên *"
-                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
                           </FormControl>
@@ -497,7 +550,7 @@ export default function CV() {
                             <Input
                               placeholder="Email *"
                               type="email"
-                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
                           </FormControl>
@@ -513,7 +566,7 @@ export default function CV() {
                           <FormControl>
                             <Input
                               placeholder="Số điện thoại *"
-                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
                           </FormControl>
@@ -529,7 +582,7 @@ export default function CV() {
                           <FormControl>
                             <Input
                               placeholder="Chủ đề *"
-                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
                           </FormControl>
@@ -546,7 +599,7 @@ export default function CV() {
                             <Textarea
                               placeholder="Lời nhắn..."
                               rows={4}
-                              className="resize-none border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              className="placeholder:text-muted-foreground focus-visible:ring-primary/20 resize-none border-white/10 bg-white/5 text-white"
                               {...field}
                             />
                           </FormControl>
@@ -557,7 +610,7 @@ export default function CV() {
                     <div className="md:col-span-2">
                       <Button
                         type="submit"
-                        className="bg-primary px-8 py-3 font-bold text-black transition-transform hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98]"
+                        className="bg-primary hover:bg-primary/90 px-8 py-3 font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
                       >
                         Gửi liên hệ
                       </Button>
@@ -577,19 +630,21 @@ const skillGroups = [
   {
     title: "Frontend",
     icons: [
-      "html5",
-      "css3",
-      "js",
       "typescript",
-      "reactjs",
+      "react",
+      "angular",
+      "flutter",
       "nextjs2",
+      "reactquery",
       "tailwindcss",
+      "antd",
+      "zustand",
+      "zod",
+      "shadcnui",
       "framer",
       "gsap",
       "radixui",
-      "reactquery",
       "sass",
-      "shadcnui",
       "threejs",
     ],
   },
@@ -597,9 +652,10 @@ const skillGroups = [
     title: "Backend",
     icons: [
       "typescript",
+      "nestjs",
+      "go",
       "nodejs",
       "mongodb",
-      "nestjs",
       "nextjs2",
       "postgresql",
       "postman",
@@ -610,19 +666,22 @@ const skillGroups = [
       "swagger",
       "zod",
       "elastic",
+      "rabbitmq",
       "jest",
     ],
   },
   {
     title: "DevOps",
     icons: [
+      "aws",
+      "portainer",
+      "kubernetes",
+      "cloudflare",
+      "docker",
       "linux",
       "ubuntu",
-      "docker",
-      "kubernetes",
       "git",
       "github",
-      "cloudflare",
       "grafana",
       "gcloud",
       "kibana",
@@ -645,16 +704,43 @@ const skillGroups = [
   },
   {
     title: "Designer",
-    icons: ["ps", "ai", "figma"],
+    icons: ["ps", "adobeillustrator", "figma"],
   },
   {
-    title: "SEO Marketing",
+    title: "AI Tool",
+    icons: ["claude", "kimi", "gemini"],
+  },
+  {
+    title: "Digital Marketing",
     icons: [
-      <Image key="n8n" src="/assets/logo/n8n.png" width={60} height={28} alt="n8n" />,
-      <Image key="gg" src="/assets/logo/gg.jpg" width={50} height={28} alt="Google" />,
-      <Image key="ga4" src="/assets/logo/ga4.png" width={60} height={28} alt="GA4" />,
-      <Image key="semrush" src="/assets/logo/semrush.png" width={60} height={28} alt="Semrush" />,
+      <Image
+        key="n8n"
+        src="/assets/logo/n8n.png"
+        width={60}
+        height={28}
+        alt="n8n"
+      />,
+      <Image
+        key="gg"
+        src="/assets/logo/gg.jpg"
+        width={50}
+        height={28}
+        alt="Google"
+      />,
+      <Image
+        key="ga4"
+        src="/assets/logo/ga4.png"
+        width={60}
+        height={28}
+        alt="GA4"
+      />,
+      <Image
+        key="semrush"
+        src="/assets/logo/semrush.png"
+        width={60}
+        height={28}
+        alt="Semrush"
+      />,
     ],
   },
 ];
-
