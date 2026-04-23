@@ -22,7 +22,7 @@ export default function HeroSection() {
               duration: 0.5,
               ease: [0.4, 0.0, 0.2, 1],
             }}
-            className="mx-auto px-4 text-center text-[30px] leading-relaxed font-bold md:text-4xl lg:text-left lg:text-5xl lg:leading-snug xl:text-6xl 2xl:text-7xl"
+            className="mx-auto px-4 text-center text-[30px] leading-relaxed font-extrabold md:text-4xl lg:text-left lg:text-5xl lg:leading-snug xl:text-6xl 2xl:text-6xl"
           >
             <Highlight className="text-primary mr-2 pl-3"> Hello </Highlight>{" "}
             I’m A Global Freelance{" "}

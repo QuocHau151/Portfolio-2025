@@ -1,21 +1,24 @@
 "use client";
-import { DotButton, useDotButton } from "@/hooks/useDotCarousel";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Autoplay from "embla-carousel-autoplay";
-import useEmblaCarousel from "embla-carousel-react";
+
+import { motion } from "framer-motion";
 import {
   ArrowDownToLine,
+  ArrowUpRight,
   Facebook,
   Github,
   Linkedin,
   Mail,
-  MoveUpRight,
+  MapPin,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { SiZalo } from "react-icons/si";
 import StackIcon from "tech-stack-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import * as z from "zod";
 
 import SmoothScroll from "@/components/feature/smooth-scroll";
 import BlurText from "@/components/ui/blurText";
@@ -28,722 +31,630 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import * as z from "zod";
-export default function CV() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, startIndex: 0 }, [
-    Autoplay({ delay: 3000, stopOnInteraction: false }),
-  ]);
+import projects from "@/data/projects";
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-  const formSchema = z.object({
-    name: z.string().min(1),
-    email: z.string().min(1),
-    phone: z.string().min(1),
-    subject: z.string().min(1),
-    note: z.string(),
-  });
+const formSchema = z.object({
+  name: z.string().min(1, "Vui lòng nhập họ tên"),
+  email: z.string().email("Email không hợp lệ"),
+  phone: z.string().min(1, "Vui lòng nhập số điện thoại"),
+  subject: z.string().min(1, "Vui lòng nhập chủ đề"),
+  note: z.string(),
+});
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+export default function CV() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      );
+      toast.success("Đã gửi thông tin! Tôi sẽ liên hệ lại sớm.");
+      console.log(values);
+      form.reset();
     } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Gửi thất bại. Vui lòng thử lại.");
     }
   }
+
   return (
     <SmoothScroll>
-      <div className="relative container flex h-full w-full flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-between 2xl:justify-center">
-        <div className="h-[85vh] w-[90%] overflow-hidden rounded-[60px] bg-neutral-800 lg:sticky lg:top-20 lg:h-[85vh] lg:w-[40%] xl:top-[100px] 2xl:top-[150px] 2xl:h-[68vh]">
-          <div className="m-6 aspect-square overflow-hidden rounded-[50px] bg-gray-500">
-            <Image
-              src={"/assets/logo/avt.jpeg"}
-              alt="avatar"
-              width={1000}
-              height={1000}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-          <div className="mb-6 flex flex-col items-center justify-center gap-4 text-2xl xl:mb-12">
-            <p className="text-primary underline underline-offset-4">
-              Fullstack Developer
-            </p>
-            <p className="font-bold uppercase">trần lê quốc hậu </p>
-            <p className="hidden text-lg text-neutral-500 lg:block xl:text-xl">
-              tranlequochau.blc@gmail.com
-            </p>
-          </div>
-          <div className="bg-primary flex h-full w-full flex-col items-center gap-5 py-5">
-            <p className="font-bold uppercase lg:mt-2">Contact me:</p>
-            <div className="flex items-center justify-center gap-3">
-              <Link
-                href={"https://www.facebook.com/quochau151/"}
-                target="_blank"
-                className="rounded-full border-2 border-white p-3"
-              >
-                <Facebook />
-              </Link>
-              <Link
-                href={"zalo:0399603123"}
-                target="_blank"
-                className="rounded-full border-2 border-white p-3"
-              >
-                <SiZalo size={26} />
-              </Link>
-              <Link
-                href={"https://github.com/QuocHau151"}
-                target="_blank"
-                className="rounded-full border-2 border-white p-3"
-              >
-                <Github />
-              </Link>
-              <Link
-                href={
-                  "https://www.linkedin.com/in/h%E1%BA%ADu-qu%E1%BB%91c-16426936b"
-                }
-                target="_blank"
-                className="rounded-full border-2 border-white p-3"
-              >
-                <Linkedin />
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="flex w-full flex-col items-center lg:max-w-[73%]">
-          <div className="mt-20 flex flex-col items-center gap-3 lg:me-auto lg:mt-10 lg:ml-14 lg:max-w-[70%] lg:items-start">
-            <div className="border-primary mb-4 rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-              Introduction
-            </div>
-            <h1 className="inline px-6 text-center text-[35px] font-bold lg:px-0 lg:text-left">
-              <BlurText
-                text="Hello, I’m Quoc Hau"
-                delay={300}
-                animateBy="words"
-                direction="top"
-                className="text-primary flex items-center justify-center lg:justify-start"
-              />
-              Developer Web Application All In JS,TS & SEO Marketing
-            </h1>
-            <p className="mb-4 px-6 text-center text-[16px] text-neutral-500 lg:px-0 lg:text-left">
-              I am a web developer with a passion for creating dynamic and
-              responsive web applications. I have experience in both front-end
-              and back-end development, and I am always eager to learn new
-              technologies and improve my skills.
-            </p>
-            <Link
-              href={"mailto:"}
-              className="bg-primary mb-4 flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-[13px]"
-            >
-              <Mail />
-              <p className="font-bold uppercase">hire me now</p>
-            </Link>
-            <Link
-              href={"/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"}
-              download
-              className="t flex items-center justify-center gap-2 font-bold"
-            >
-              <ArrowDownToLine className="bg-primary rounded-sm p-1" />
-              <p className="ext-[14px] underline ring-offset-2">Download CV</p>
-            </Link>
-          </div>
-          <div className="mx-10 mt-16 flex w-[90%] flex-col rounded-2xl border border-neutral-600 bg-neutral-800 lg:flex-row">
-            <div className="flex flex-col gap-2 border-b-1 border-neutral-500 p-6 lg:basis-1/3 lg:border-r-1 lg:border-b-0 lg:p-10">
-              <h1 className="text-primary text-[18px] font-semibold">Home</h1>
-              <p className="text-[22px] font-medium">
-                Thu Duc, Ho Chi Minh Ctiy
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 border-b-1 border-neutral-500 p-6 lg:basis-1/3 lg:border-r-1 lg:border-b-0 lg:p-10">
-              <h1 className="text-primary text-[18px] font-semibold">
-                Experience
-              </h1>
-              <p className="text-[22px] font-medium">+2 Years</p>
-            </div>
-            <div className="flex flex-col gap-2 p-6 lg:basis-1/3 lg:p-10">
-              <h1 className="text-primary text-[18px] font-semibold">
-                Projects
-              </h1>
-              <p className="text-[22px] font-medium">+10</p>
-            </div>
-          </div>
-          <div className="mx-4 mt-20 flex flex-col items-center gap-3 lg:ml-14 lg:items-start">
-            <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-              About Me
-            </div>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-              <div className="min-w-[50%] space-y-4">
-                <h1 className="text-center text-[30px] font-medium lg:max-w-[70%] lg:text-left">
-                  I Have Experience In Fullstack Developer
-                </h1>
-                <Link
-                  download
-                  href={"/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"}
-                  className="flex items-center justify-center gap-2 font-bold lg:justify-start"
-                >
-                  <ArrowDownToLine className="bg-primary rounded-sm p-1" />
-                  <p className="text-[18px] underline ring-offset-2">
-                    Download CV
-                  </p>
-                </Link>
+      <div className="container mx-auto px-4 py-10 md:py-16">
+        <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
+          {/* Profile Sidebar */}
+          <aside className="lg:sticky lg:top-24 lg:h-fit lg:w-[320px] xl:w-[360px] lg:shrink-0">
+            <div className="overflow-hidden rounded-3xl border border-white/5 bg-surface-elevated">
+              {/* Avatar */}
+              <div className="relative aspect-square overflow-hidden">
+                <Image
+                  src="/assets/logo/avt.jpeg"
+                  alt="Trần Lê Quốc Hậu"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-elevated to-transparent" />
               </div>
-              <div className="lg:-ml-[120px]">
-                <p className="px-4 text-justify text-[16px] text-neutral-500">
-                  I aim to become a Senior Fullstack Developer within the next
-                  two years by continuously improving my technical skills,
-                  expanding my knowledge of new technologies, and learning
-                  Flutter to build mobile applications. I aspire to contribute
-                  to impactful, real-world projects while growing in a dynamic
-                  and professional working environment.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="mx-4 mt-20 flex w-full flex-col items-center justify-center gap-3 lg:ml-14">
-            <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-              My Skills
-            </div>
-            <h1 className="text-center text-[30px] font-medium">
-              My Advantages
-            </h1>
-            <div className="mt-4 flex w-[100%] flex-col items-center gap-6 lg:flex-row lg:flex-wrap lg:justify-center lg:gap-4">
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-4 text-[22px] font-semibold">
-                  Front End Development
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3 text-[17px]">
-                  <StackIcon className="size-7" name="html5" />
-                  <StackIcon className="size-7" name="css3" />
-                  <StackIcon className="size-7" name="js" />
-                  <StackIcon className="size-7" name="typescript" />
-                  <StackIcon className="size-7" name="reactjs" />
-                  <StackIcon className="size-7" name="nextjs2" />
-                  <StackIcon className="size-7" name="tailwindcss" />
-                  <StackIcon className="size-7" name="framer" />
-                  <StackIcon className="size-7" name="gsap" />
-                  <StackIcon className="size-7" name="radixui" />
-                  <StackIcon className="size-7" name="reactquery" />
-                  <StackIcon className="size-7" name="sass" />
-                  <StackIcon className="size-7" name="shadcnui" />
-                  <StackIcon className="size-7" name="threejs" />
-                </div>
-              </div>
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-4 text-[22px] font-semibold">
-                  Back End Development
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3 text-[17px]">
-                  <StackIcon className="size-7" name="typescript" />
-                  <StackIcon className="size-7" name="nodejs" />
-                  <StackIcon className="size-7" name="mongodb" />
-                  <StackIcon className="size-7" name="nestjs" />
-                  <StackIcon className="size-7" name="nextjs2" />
-                  <StackIcon className="size-7" name="postgresql" />
-                  <StackIcon className="size-7" name="postman" />
-                  <StackIcon className="size-7" name="prisma" />
-                  <StackIcon className="size-7" name="redis" />
-                  <StackIcon className="size-7" name="resend" />
-                  <StackIcon className="size-7" name="supabase" />
-                  <StackIcon className="size-7" name="swagger" />
-                  <StackIcon className="size-7" name="zod" />
-                  <StackIcon className="size-7" name="elastic" />
-                  <StackIcon className="size-7" name="jest" />
-                  <StackIcon className="size-7" name="swagger" />
-                </div>
-              </div>
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-4 text-[22px] font-semibold">
-                  DevOps Development
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3 text-[17px]">
-                  <StackIcon className="size-7" name="linux" />
-                  <StackIcon className="size-7" name="ubuntu" />
-                  <StackIcon className="size-7" name="docker" />
-                  <StackIcon className="size-7" name="kubernetes" />
-                  <StackIcon className="size-7" name="git" />
-                  <StackIcon className="size-7" name="github" />
-                  <StackIcon className="size-7" name="cloudflare" />
-                  <StackIcon className="size-7" name="grafana" />
-                  <StackIcon className="size-7" name="gcloud" />
-                  <StackIcon className="size-7" name="kibana" />
-                </div>
-              </div>
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-4 text-[22px] font-semibold">
-                  Server Manegerment
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3 text-[17px]">
-                  <Image
-                    src={"/assets/logo/proxmox.png"}
-                    width={150}
-                    height={50}
-                    alt=""
-                  />
-                  <StackIcon className="size-7" name="linux" />
-                  <StackIcon className="size-7" name="ubuntu" />
-                </div>
-              </div>
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-2 text-[22px] font-semibold">
-                  Designer
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3 text-[17px]">
-                  <StackIcon className="size-7" name="ps" />
-                  <StackIcon className="size-7" name="ai" />
-                  <StackIcon className="size-7" name="figma" />
-                </div>
-              </div>
-              <div className="flex w-[90%] flex-col items-start rounded-2xl bg-neutral-800 p-6 lg:min-h-[250px] lg:w-[30%]">
-                <h1 className="text-primary mb-2 text-[22px] font-semibold">
-                  SEO Marketing
-                </h1>
-                <div className="mb-6 flex flex-wrap gap-3">
-                  <Image
-                    src={"/assets/logo/n8n.png"}
-                    width={120}
-                    height={70}
-                    alt=""
-                  />
-                  <Image
-                    src={"/assets/logo/gg.jpg"}
-                    width={80}
-                    height={50}
-                    alt=""
-                  />
-                  <Image
-                    src={"/assets/logo/ga4.png"}
-                    width={100}
-                    height={50}
-                    alt=""
-                  />
-                  <Image
-                    src={"/assets/logo/semrush.png"}
-                    width={100}
-                    height={50}
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div className="mt-4 px-10 text-center text-[16px] text-neutral-500">
-                Want to see what i am going to offer? Click here to{" "}
-                <Link href={""} className="inline-block">
-                  <p className="text-primary">View More Services</p>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="flex w-full flex-col items-center justify-center gap-3 lg:ml-14 lg:flex-row lg:items-start">
-            <div className="mx-4 mt-20 flex w-full flex-col items-center justify-center gap-3 lg:mx-0">
-              <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-                Companies
-              </div>
-              <h1 className="text-center text-[30px] font-medium">
-                I Worked With Companies
-              </h1>
-              <div className="mt-4 flex w-[90%] flex-col items-center gap-6 overflow-hidden rounded-2xl border border-neutral-600 bg-neutral-800">
-                <div className="flex h-[100px] w-full items-center justify-center rounded-t-2xl border-b-1 border-neutral-600">
-                  <Image
-                    src={"/assets/logo/fpt.png"}
-                    alt="company"
-                    width={150}
-                    height={150}
-                  />
-                </div>
-                <div className="-mt-4 flex h-[100px] w-full items-center justify-center rounded-t-2xl border-b-1 border-neutral-600">
-                  <Image
-                    src={"/assets/logo/sikido.png"}
-                    alt="company"
-                    width={90}
-                    height={90}
-                  />
-                </div>
-                <div className="-mt-4 flex h-[100px] w-full items-center justify-center rounded-t-2xl">
-                  <Image
-                    src={"/assets/logo/khangminh.png"}
-                    alt="company"
-                    width={150}
-                    height={150}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mx-4 mt-20 flex w-full flex-col items-center justify-center gap-3">
-              <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-                Knowledge
-              </div>
-              <h1 className="mb-4 text-center text-[30px] font-medium">
-                My Education
-              </h1>
-              <div className="flex w-full flex-col items-center gap-6">
-                <div className="relative flex w-[90%] flex-col items-center overflow-hidden rounded-2xl bg-neutral-800 py-10">
-                  <h1 className="text-primary mb-2 text-[22px] font-semibold">
-                    Cử Nhân Kinh Tế Học
-                  </h1>
-                  <p className="font-bold">Đại Học Kinh Tế Luật</p>
-                  <div className="bg-primary absolute right-0 bottom-0 rounded-tl-2xl px-4 py-2 text-[13px]">
-                    2020-2024
-                  </div>
-                </div>
-                <div className="relative flex w-[90%] flex-col items-center overflow-hidden rounded-2xl bg-neutral-800 py-10">
-                  <h1 className="text-primary mb-2 text-[22px] font-semibold">
-                    Complete FrontEnd Course
-                  </h1>
-                  <p className="font-bold">CFD Circle</p>
-                  <div className="bg-primary absolute right-0 bottom-0 rounded-tl-2xl px-4 py-2 text-[13px]">
-                    2021-2022
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="mx-auto mt-20 flex w-full flex-col items-center justify-center gap-3 lg:ml-14">
-            <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-              Portfolio
-            </div>
-            <h1 className="mb-4 text-center text-[30px] font-medium">
-              My Recent Projects
-            </h1>
-            <div className="w-[90%] overflow-hidden lg:w-full" ref={emblaRef}>
-              <div className="flex gap-6">
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/fpt.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
-                  <Link
-                    href={"https://www.fpt-smarthome.vn/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
-                  >
-                    <h1 className="text-primary text-xl font-bold">
-                      FPT Smart Home
-                    </h1>
-                    <p>Fullstack app with Nextjs, PostgreSQL</p>
-                  </Link>
-                  <Link
-                    href={"https://www.fpt-smarthome.vn/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
-                  >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
-                  </Link>
+              {/* Info */}
+              <div className="relative -mt-12 px-6 pb-6 text-center">
+                <div className="mx-auto mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                  Fullstack Developer
                 </div>
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/mepsharing.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
-                  <Link
-                    href={"https://www.mepsharing.com/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
-                  >
-                    <h1 className="text-primary text-xl font-bold">
-                      MEPSHARING
-                    </h1>
-                    <p>Fullstack app with Nextjs, PostgreSQL</p>
-                  </Link>
-                  <Link
-                    href={"https://www.mepsharing.com/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
-                  >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
-                  </Link>
+                <h2 className="text-xl font-bold text-white">Trần Lê Quốc Hậu</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  tranlequochau.blc@gmail.com
+                </p>
+
+                {/* Social Links */}
+                <div className="mt-5 flex justify-center gap-3">
+                  {[
+                    { icon: Facebook, href: "https://www.facebook.com/quochau151/" },
+                    { icon: SiZalo, href: "zalo:0399603123", isIcon: true },
+                    { icon: Github, href: "https://github.com/QuocHau151" },
+                    { icon: Linkedin, href: "https://www.linkedin.com/in/h%E1%BA%ADu-qu%E1%BB%91c-16426936b" },
+                  ].map((social, i) => (
+                    <Link
+                      key={i}
+                      href={social.href}
+                      target="_blank"
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                    >
+                      {social.isIcon ? (
+                        <social.icon size={18} />
+                      ) : (
+                        <social.icon className="h-4 w-4" />
+                      )}
+                    </Link>
+                  ))}
                 </div>
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/khuetuan.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
+
+                {/* CTA */}
+                <div className="mt-6 space-y-3">
                   <Link
-                    href={"https://khuetuan.com/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
+                    href="mailto:tranlequochau.blc@gmail.com"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    <h1 className="text-primary text-xl font-bold">
-                      Ván Ép Khưe Tuấn
-                    </h1>
-                    <p>Fullstack app with Nextjs, PostgreSQL</p>
+                    <Mail className="h-4 w-4" />
+                    Hire Me Now
                   </Link>
                   <Link
-                    href={"https://khuetuan.com/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
+                    href="/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"
+                    download
+                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
                   >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
-                  </Link>
-                </div>
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/khangminh.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
-                  <Link
-                    href={"https://khangminhlighting.com/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
-                  >
-                    <h1 className="text-primary text-xl font-bold">
-                      Khang Minh Lighting
-                    </h1>
-                    <p>Fullstack app with Nextjs, PostgreSQL</p>
-                  </Link>
-                  <Link
-                    href={"https://khangminhlighting.com/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
-                  >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
-                  </Link>
-                </div>
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/namanvi.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
-                  <Link
-                    href={"https://namanvi.com/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
-                  >
-                    <h1 className="text-primary text-xl font-bold">
-                      Nấm An Vi
-                    </h1>
-                    <p>Design For Sikido</p>
-                  </Link>
-                  <Link
-                    href={"https://namanvi.com/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
-                  >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
-                  </Link>
-                </div>
-                <div className="relative flex flex-none basis-full flex-col items-center lg:basis-[31%]">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-800">
-                    <Image
-                      src={"/assets/images/project/sol.png"}
-                      alt=""
-                      width={1000}
-                      height={1000}
-                      className="w-full object-cover object-top"
-                    />
-                  </div>
-                  <Link
-                    href={"https://solmedia.pics/"}
-                    target="_blank"
-                    className="flex w-full flex-col items-start gap-2 px-3 py-6"
-                  >
-                    <h1 className="text-primary text-xl font-bold">
-                      Sol Media
-                    </h1>
-                    <p>Fullstack app with Nextjs, PostgreSQL</p>
-                  </Link>
-                  <Link
-                    href={"https://solmedia.pics/"}
-                    target="_blank"
-                    className="border-primary text-primary absolute right-[1%] bottom-[10%] ml-auto rounded-full border-2 p-2 lg:hidden"
-                  >
-                    <MoveUpRight className="text-primary size-5 lg:size-5" />
+                    <ArrowDownToLine className="h-4 w-4" />
+                    Download CV
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                {scrollSnaps.map((_, index) => (
-                  <DotButton
-                    key={index}
-                    onClick={() => onDotButtonClick(index)}
-                    className={`border-primary relative flex h-3 items-center justify-center overflow-hidden rounded-full border transition-all duration-300 ease-in-out ${
-                      index === selectedIndex ? "w-10" : "w-3"
-                    }`}
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="min-w-0 flex-1 space-y-20">
+            {/* Introduction */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="space-y-6"
+            >
+              <motion.div variants={fadeInUp}>
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Giới thiệu
+                </span>
+              </motion.div>
+              <motion.h1
+                variants={fadeInUp}
+                className="text-3xl font-black leading-tight md:text-4xl lg:text-5xl"
+              >
+                <BlurText
+                  text="Hello, I'm Quoc Hau"
+                  delay={300}
+                  animateBy="words"
+                  direction="top"
+                  className="text-primary inline"
+                />
+                <br />
+                <span className="text-white">
+                  Developer Web Application All In JS, TS & SEO Marketing
+                </span>
+              </motion.h1>
+              <motion.p
+                variants={fadeInUp}
+                className="max-w-xl text-base leading-relaxed text-muted md:text-lg"
+              >
+                Tôi là lập trình viên web đam mê tạo ra các ứng dụng web động và
+                responsive. Có kinh nghiệm cả front-end lẫn back-end, luôn sẵn sàng
+                học hỏi công nghệ mới và nâng cao kỹ năng.
+              </motion.p>
+            </motion.section>
+
+            {/* Stats */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+            >
+              {[
+                { label: "Địa điểm", value: "Thủ Đức, HCM", icon: MapPin },
+                { label: "Kinh nghiệm", value: "+2 Năm" },
+                { label: "Dự án", value: "+10" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  variants={fadeInUp}
+                  className="rounded-2xl border border-white/5 bg-white/[0.03] p-6 text-center transition-colors hover:border-white/10"
+                >
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="mt-1 text-2xl font-extrabold text-white">
+                    {stat.value}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.section>
+
+            {/* About */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="space-y-6"
+            >
+              <motion.div variants={fadeInUp}>
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Về tôi
+                </span>
+              </motion.div>
+              <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+                <motion.div variants={fadeInUp} className="w-full">
+                  <h2 className="text-2xl font-bold text-white md:text-3xl">
+                    Kinh nghiệm Fullstack Developer
+                  </h2>
+                  <p className="mt-4 text-base leading-relaxed text-muted">
+                    Mục tiêu trở thành Senior Fullstack Developer trong 2 năm tới
+                    bằng cách không ngừng cải thiện kỹ năng kỹ thuật, mở rộng kiến
+                    thức công nghệ mới và học Flutter để xây dựng ứng dụng di động.
+                    Khát khao được đóng góp vào các dự án có tác động thực tế trong
+                    môi trường làm việc chuyên nghiệp và năng động.
+                  </p>
+                  <Link
+                    href="/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"
+                    download
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
                   >
-                    {index === selectedIndex && (
-                      <div className="bg-primary animate-progress-bar absolute left-0 h-full" />
-                    )}
-                  </DotButton>
+                    <ArrowDownToLine className="h-4 w-4" />
+                    Download CV
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.section>
+
+            {/* Skills */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="space-y-6"
+            >
+              <motion.div variants={fadeInUp} className="text-center">
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Kỹ năng
+                </span>
+                <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
+                  Tech Stack
+                </h2>
+              </motion.div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {skillGroups.map((group, i) => (
+                  <motion.div
+                    key={i}
+                    variants={fadeInUp}
+                    className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-colors hover:border-white/10"
+                  >
+                    <h3 className="mb-4 text-base font-semibold text-primary">
+                      {group.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2.5">
+                      {group.icons.map((icon, j) =>
+                        typeof icon === "string" ? (
+                          <StackIcon
+                            key={j}
+                            className="size-7 rounded-md"
+                            name={icon}
+                          />
+                        ) : (
+                          <div key={j} className="flex items-center">
+                            {icon}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="mx-auto mt-20 flex w-full flex-col items-center justify-center gap-3 lg:ml-14">
-            <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-              My Blogs
-            </div>
-            <h1 className="text-center text-[30px] font-medium">
-              My Recent Blogs
-            </h1>
-            <p>Not Found</p>
-          </div>
-          <div className="mt-20 flex w-[90%] flex-col items-center justify-center gap-4 rounded-2xl border border-neutral-600 bg-neutral-800 p-6 lg:ml-14 lg:flex-row lg:items-center lg:justify-around lg:border-0 lg:p-10">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-primary text-center text-[25px] font-medium lg:text-left">
-                Let's Work Together
-              </h1>
-              <p className="text-center text-neutral-400">
-                Let’s start to capture the wonderful moments of your life.
-              </p>
-            </div>
+            </motion.section>
 
-            <Link
-              href={""}
-              className="bg-primary flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold"
+            {/* Companies + Education */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="grid grid-cols-1 gap-6 lg:grid-cols-2"
             >
-              Contact Me
-            </Link>
-          </div>
-          <div className="mt-20 mb-10 flex w-[90%] flex-col items-center justify-center gap-3 rounded-3xl bg-neutral-800 p-6 lg:ml-14 lg:flex-row lg:items-start lg:justify-around lg:gap-10 lg:px-16">
-            <div className="flex flex-col items-center gap-2 lg:basis-1/3 lg:items-start lg:py-10">
-              <div className="border-primary rounded-4xl border-2 px-6 py-1 text-[14px] font-bold">
-                Want to Hire Me?
-              </div>
-              <h1 className="text-center text-[30px] font-medium lg:text-left">
-                Let's Work Together
-              </h1>
-            </div>
+              {/* Companies */}
+              <motion.div variants={fadeInUp} className="space-y-4">
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Công ty
+                </span>
+                <h2 className="text-xl font-bold text-white">
+                  Đã từng làm việc
+                </h2>
+                <div className="space-y-3">
+                  {[
+                    { logo: "/assets/logo/fpt.png", name: "FPT SmartHome" },
+                    { logo: "/assets/logo/sikido.png", name: "Sikido" },
+                    { logo: "/assets/logo/khangminh.png", name: "Khang Minh Lighting" },
+                  ].map((company, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-4 rounded-xl border border-white/5 bg-white/[0.03] p-4"
+                    >
+                      <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                        <Image
+                          src={company.logo}
+                          alt={company.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <span className="font-medium text-white">
+                        {company.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="mx-auto w-full space-y-10 py-8 lg:basis-2/3"
+              {/* Education */}
+              <motion.div variants={fadeInUp} className="space-y-4">
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Học vấn
+                </span>
+                <h2 className="text-xl font-bold text-white">Bằng cấp</h2>
+                <div className="space-y-3">
+                  {[
+                    {
+                      title: "Cử Nhân Kinh Tế Học",
+                      school: "Đại Học Kinh Tế Luật",
+                      year: "2020 - 2024",
+                    },
+                    {
+                      title: "Complete FrontEnd Course",
+                      school: "CFD Circle",
+                      year: "2021 - 2022",
+                    },
+                  ].map((edu, i) => (
+                    <div
+                      key={i}
+                      className="relative overflow-hidden rounded-xl border border-white/5 bg-white/[0.03] p-5"
+                    >
+                      <h3 className="text-base font-semibold text-primary">
+                        {edu.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-white">{edu.school}</p>
+                      <span className="absolute top-4 right-4 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                        {edu.year}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.section>
+
+            {/* Projects */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="space-y-6"
+            >
+              <motion.div variants={fadeInUp} className="text-center">
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Dự án
+                </span>
+                <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
+                  Dự án gần đây
+                </h2>
+              </motion.div>
+
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
               >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="border-0 border-b-[1px]"
-                          placeholder="Full Name*"
-                          type=""
-                          {...field}
+                {projects.map((project) => (
+                  <motion.div
+                    key={project.id}
+                    variants={fadeInUp}
+                    className="group relative overflow-hidden rounded-2xl border border-white/5 bg-surface-elevated transition-all duration-500 hover:-translate-y-1 hover:border-white/10 hover:shadow-2xl"
+                  >
+                    <Link
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full"
+                    >
+                      {/* Image */}
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
+                        <Image
+                          src={project.src}
+                          alt={project.title}
+                          fill
+                          className="object-cover object-[50%_0%] transition-all duration-[3000ms] ease-linear group-hover:object-[50%_100%] group-hover:scale-105 group-hover:brightness-110"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="border-0 border-b-[1px]"
-                          placeholder="Email*"
-                          type=""
-                          {...field}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                        {/* Glow on hover */}
+                        <div
+                          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                          style={{
+                            background:
+                              "radial-gradient(600px circle at 50% 100%, rgba(40,236,141,0.08), transparent 60%)",
+                          }}
                         />
-                      </FormControl>
+                      </div>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      {/* Content */}
+                      <div className="relative p-5">
+                        <div className="mb-3 flex items-center gap-2">
+                          <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                            {project.category}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary md:text-xl">
+                          {project.title}
+                        </h3>
+                        <div className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+                          <span>Xem chi tiết</span>
+                          <ArrowUpRight className="h-4 w-4" />
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.section>
 
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="border-0 border-b-[1px]"
-                          placeholder="Phone Number*"
-                          type=""
-                          {...field}
-                        />
-                      </FormControl>
+            {/* Contact */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="space-y-6"
+            >
+              <motion.div variants={fadeInUp} className="text-center">
+                <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+                  Liên hệ
+                </span>
+                <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
+                  Hãy cùng hợp tác
+                </h2>
+              </motion.div>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="subject"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="border-0 border-b-[1px]"
-                          placeholder="Your Subject*"
-                          type=""
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="note"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Write your message here..."
-                          className="boder-0 resize-none border-b-[1px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <button
-                  type="submit"
-                  className="bg-primary rounded-xl px-6 py-3 text-[15px] font-bold"
-                >
-                  Contact Me
-                </button>
-              </form>
-            </Form>
-          </div>
+              <motion.div
+                variants={fadeInUp}
+                className="rounded-2xl border border-white/5 bg-white/[0.03] p-6 md:p-10"
+              >
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="grid grid-cols-1 gap-6 md:grid-cols-2"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Họ và tên *"
+                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Email *"
+                              type="email"
+                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Số điện thoại *"
+                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Chủ đề *"
+                              className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="note"
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormControl>
+                            <Textarea
+                              placeholder="Lời nhắn..."
+                              rows={4}
+                              className="resize-none border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="md:col-span-2">
+                      <Button
+                        type="submit"
+                        className="bg-primary px-8 py-3 font-bold text-black transition-transform hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98]"
+                      >
+                        Gửi liên hệ
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </motion.div>
+            </motion.section>
+          </main>
         </div>
       </div>
     </SmoothScroll>
   );
 }
+
+const skillGroups = [
+  {
+    title: "Frontend",
+    icons: [
+      "html5",
+      "css3",
+      "js",
+      "typescript",
+      "reactjs",
+      "nextjs2",
+      "tailwindcss",
+      "framer",
+      "gsap",
+      "radixui",
+      "reactquery",
+      "sass",
+      "shadcnui",
+      "threejs",
+    ],
+  },
+  {
+    title: "Backend",
+    icons: [
+      "typescript",
+      "nodejs",
+      "mongodb",
+      "nestjs",
+      "nextjs2",
+      "postgresql",
+      "postman",
+      "prisma",
+      "redis",
+      "resend",
+      "supabase",
+      "swagger",
+      "zod",
+      "elastic",
+      "jest",
+    ],
+  },
+  {
+    title: "DevOps",
+    icons: [
+      "linux",
+      "ubuntu",
+      "docker",
+      "kubernetes",
+      "git",
+      "github",
+      "cloudflare",
+      "grafana",
+      "gcloud",
+      "kibana",
+    ],
+  },
+  {
+    title: "Server Management",
+    icons: [
+      <Image
+        key="proxmox"
+        src="/assets/logo/proxmox.png"
+        width={28}
+        height={28}
+        alt="Proxmox"
+        className="rounded"
+      />,
+      "linux",
+      "ubuntu",
+    ],
+  },
+  {
+    title: "Designer",
+    icons: ["ps", "ai", "figma"],
+  },
+  {
+    title: "SEO Marketing",
+    icons: [
+      <Image key="n8n" src="/assets/logo/n8n.png" width={60} height={28} alt="n8n" />,
+      <Image key="gg" src="/assets/logo/gg.jpg" width={50} height={28} alt="Google" />,
+      <Image key="ga4" src="/assets/logo/ga4.png" width={60} height={28} alt="GA4" />,
+      <Image key="semrush" src="/assets/logo/semrush.png" width={60} height={28} alt="Semrush" />,
+    ],
+  },
+];
+

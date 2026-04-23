@@ -120,7 +120,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
                 src={project.src}
                 alt={project.title}
                 fill
-                className="object-cover transition-all duration-700 group-hover:brightness-110"
+                className="object-cover object-[50%_0%] transition-all duration-[3000ms] ease-linear group-hover:object-[50%_100%] group-hover:brightness-110"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             </motion.div>

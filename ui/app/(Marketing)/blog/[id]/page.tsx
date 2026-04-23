@@ -37,7 +37,7 @@ export default function BlogDetail({
 
           <div className="absolute right-0 bottom-0 left-0 p-6 md:p-8">
             <div className="mx-auto max-w-6xl">
-              <span className="bg-primary mb-4 inline-block rounded-full px-3 py-1 text-sm font-medium text-black">
+              <span className="mb-4 inline-block rounded-full border border-white/10 bg-black/40 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm">
                 {category}
               </span>
 
@@ -47,7 +47,7 @@ export default function BlogDetail({
 
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center">
-                  <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full font-bold text-black">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/20 bg-primary/10 font-bold text-primary">
                     {author
                       ?.split(" ")
                       .slice(0, 2)
@@ -114,7 +114,7 @@ export default function BlogDetail({
 
               {/* Tags */}
               <div className="mt-8 flex flex-wrap gap-2">
-                <span className="bg-primary rounded-full px-3 py-1 text-sm font-medium text-black">
+                <span className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm">
                   {post?.tag === "NOI_BAT" ? "Nổi bật" : "Phổ biến"}
                 </span>
               </div>

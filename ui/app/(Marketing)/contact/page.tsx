@@ -1,83 +1,125 @@
+"use client";
+
 import { ContactForm } from "@/components/layout/contact/contact-form";
 import { ContactInfo } from "@/components/layout/contact/contact-info";
 import { SocialLinks } from "@/components/layout/contact/contact-link";
+import { motion } from "framer-motion";
 import { LocateIcon, Mail, Phone } from "lucide-react";
-import Image from "next/image";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const contactCards = [
+  {
+    icon: Mail,
+    label: "Email",
+    value: "tranlequochau.blc@gmail.com",
+    href: "mailto:tranlequochau.blc@gmail.com",
+  },
+  {
+    icon: Phone,
+    label: "Điện thoại",
+    value: "0399 603 123",
+    href: "tel:0399603123",
+  },
+  {
+    icon: LocateIcon,
+    label: "Địa chỉ",
+    value: "TP HCM, Việt Nam",
+    href: "#",
+  },
+];
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto px-4 py-12 md:py-16">
-      <div className="mb-12 flex flex-col items-center lg:pb-20">
-        <h1 className="mb-4 text-center text-3xl font-bold md:text-4xl">
-          Liên Hệ
-        </h1>
-        <div className="bg-primary mb-6 h-1 w-20 rounded-full"></div>
-        <p className="text-muted-foreground max-w-xl text-center">
+    <div className="container mx-auto px-4 pb-16 pt-6">
+      {/* Hero */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
+        className="mb-16 text-center"
+      >
+        <motion.div variants={fadeInUp}>
+          <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+            Liên hệ
+          </span>
+        </motion.div>
+        <motion.h1
+          variants={fadeInUp}
+          className="mt-4 text-3xl font-bold text-white md:text-5xl"
+        >
+          <span className="text-gradient">Liên Hệ</span>
+        </motion.h1>
+        <motion.p
+          variants={fadeInUp}
+          className="mx-auto mt-4 max-w-2xl text-muted-foreground"
+        >
           Hãy liên hệ với tôi để thảo luận về dự án của bạn. Tôi luôn sẵn sàng
           hỗ trợ bạn xây dựng các giải pháp công nghệ hiệu quả.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
-      <div className="relative mb-12 h-[200px] w-full overflow-hidden rounded-xl bg-neutral-800 md:h-[300px]">
-        <Image
-          src="/assets/images/contact/1.webp"
-          alt="Description"
-          layout="fill"
-          objectFit="cover"
-        />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <h2 className="text-center text-2xl font-bold text-white md:text-3xl">
-            Hãy bắt đầu dự án tiếp theo của bạn
-          </h2>
-        </div>
-      </div>
+      {/* Contact Cards */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
+        className="mb-16 grid grid-cols-1 gap-4 md:grid-cols-3"
+      >
+        {contactCards.map((card) => (
+          <motion.a
+            key={card.label}
+            href={card.href}
+            variants={fadeInUp}
+            className="group flex flex-col items-center rounded-2xl border border-white/5 bg-surface-elevated p-6 text-center transition-all duration-500 hover:-translate-y-1 hover:border-white/10 hover:shadow-2xl"
+          >
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110">
+              <card.icon size={22} />
+            </div>
+            <h3 className="mb-1 text-lg font-semibold text-white">
+              {card.label}
+            </h3>
+            <p className="text-sm text-muted-foreground">{card.value}</p>
+          </motion.a>
+        ))}
+      </motion.div>
 
-      <div className="space-y-12">
+      {/* Tech Stack Info */}
+      <div className="mb-16">
         <ContactInfo />
-
-        <div className="relative lg:pb-20">
-          <div className="bg-muted absolute top-1/2 right-0 left-0 -z-10 h-40 -translate-y-1/2 rounded-xl"></div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="dark:bg-card flex flex-col items-center rounded-xl bg-neutral-800 p-6 text-center shadow-sm">
-              <div className="bg-primary/10 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black">
-                <Mail />
-              </div>
-              <h3 className="mb-2 text-lg font-medium">Email</h3>
-              <p className="text-muted-foreground">
-                tranlequochau.blc@gmail.com
-              </p>
-            </div>
-            <div className="dark:bg-card flex flex-col items-center rounded-xl bg-neutral-800 p-6 text-center shadow-sm">
-              <div className="bg-primary/10 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black">
-                <Phone />
-              </div>
-              <h3 className="mb-2 text-lg font-medium">Điện thoại</h3>
-              <p className="text-muted-foreground">0399 603 123</p>
-            </div>
-            <div className="dark:bg-card flex flex-col items-center rounded-xl bg-neutral-800 p-6 text-center shadow-sm">
-              <div className="bg-primary/10 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black">
-                <LocateIcon />
-              </div>
-              <h3 className="mb-2 text-lg font-medium">Địa chỉ</h3>
-              <p className="text-muted-foreground">TP HCM, Việt Nam</p>
-            </div>
-          </div>
-        </div>
-
-        <SocialLinks />
-
-        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-          <div className="relative h-[300px] overflow-hidden rounded-xl bg-neutral-800 md:h-full">
-            <Image
-              src="/assets/images/contact/2.webp"
-              alt="Description"
-              layout="fill"
-              objectFit="cover"
-            />
-          </div>
-          <ContactForm />
-        </div>
       </div>
+
+      {/* Social Links */}
+      <div className="mb-16">
+        <SocialLinks />
+      </div>
+
+      {/* Form Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
+        className="mx-auto max-w-2xl"
+      >
+        <motion.div variants={fadeInUp}>
+          <ContactForm />
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

@@ -10,8 +10,23 @@ import {
   useGetListCategoryBlogMutation,
 } from "@/queries/useBlog";
 import { BlogType } from "@/schemas/blog.schema";
-
+import { motion } from "framer-motion";
+import { FileText } from "lucide-react";
 import React, { useEffect, useState } from "react";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
 
 const BlogList: React.FC = () => {
   const getCategory = useGetListCategoryBlogMutation();
@@ -21,24 +36,30 @@ const BlogList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState<BlogType[]>([]);
-  const latestPost =
-    blogPosts.length > 0 ? blogPosts[blogPosts.length - 1] : null;
+
+  // Sort all posts by date desc
+  const sortedPosts = React.useMemo(() => {
+    return [...blogPosts].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }, [blogPosts]);
+
+  const latestPost = sortedPosts.length > 0 ? sortedPosts[0] : null;
 
   useEffect(() => {
     if (!blogPosts.length) return;
 
-    let result = [...blogPosts];
+    let result = [...sortedPosts];
 
-    // Filter by category if selected
     if (selectedCategory) {
       result = result.filter((post) => {
-        // Find category name by ID
         const category = categories.find((c) => c.id === post.categoryId);
         return category?.name === selectedCategory;
       });
     }
 
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -46,64 +67,125 @@ const BlogList: React.FC = () => {
           post.title.toLowerCase().includes(query) ||
           post.description.toLowerCase().includes(query) ||
           (post.keyword &&
-            post.keyword.some((tag) => tag.toLowerCase().includes(query))),
+            post.keyword.some((tag) => tag.toLowerCase().includes(query)))
       );
     }
 
-    // Sắp xếp theo ngày tạo mới nhất
-    result.sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
-      return dateB - dateA; // Sắp xếp giảm dần (mới nhất lên đầu)
-    });
+    // Exclude latest post from grid when in default state (no search, no category)
+    if (!searchQuery && !selectedCategory && latestPost) {
+      result = result.filter((post) => post.id !== latestPost.id);
+    }
 
     setFilteredPosts(result);
-  }, [selectedCategory, searchQuery, blogPosts, categories]);
+  }, [selectedCategory, searchQuery, blogPosts, categories, sortedPosts, latestPost]);
 
   return (
-    <div className="pt-10 pb-10">
+    <div className="pb-16 pt-6">
       <div className="container mx-auto px-4">
+        {/* Header */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="mb-12 text-center"
+        >
+          <motion.div variants={fadeInUp}>
+            <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
+              Blog
+            </span>
+          </motion.div>
+          <motion.h1
+            variants={fadeInUp}
+            className="mt-4 text-3xl font-bold text-white md:text-5xl"
+          >
+            <span className="text-gradient">Bài viết & Chia sẻ</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeInUp}
+            className="mx-auto mt-4 max-w-2xl text-muted-foreground"
+          >
+            Chia sẻ kiến thức, kinh nghiệm và câu chuyện về lập trình, công nghệ
+            và phát triển phần mềm.
+          </motion.p>
+        </motion.div>
+
         {/* Featured Post */}
         {latestPost && !searchQuery && !selectedCategory && (
-          <FeaturedPost post={latestPost} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <FeaturedPost post={latestPost} />
+          </motion.div>
         )}
 
         {/* Search and Filter */}
-        <div className="mb-12">
-          <h2 className="mb-8 text-3xl font-bold text-white">
-            {searchQuery
-              ? `Search results for "${searchQuery}"`
-              : selectedCategory
-                ? `${selectedCategory} Articles`
-                : "Latest Articles"}
-          </h2>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="mb-12"
+        >
+          <motion.div variants={fadeInUp} className="mb-6">
+            <h2 className="text-xl font-bold text-white md:text-2xl">
+              {searchQuery
+                ? `Kết quả tìm kiếm "${searchQuery}"`
+                : selectedCategory
+                  ? `Bài viết: ${selectedCategory}`
+                  : "Bài viết mới nhất"}
+            </h2>
+          </motion.div>
 
-          <SearchBar onSearch={setSearchQuery} />
-          <CategoryFilter
-            categories={categories}
-            activeCategory={selectedCategory}
-            onCategoryClick={setSelectedCategory}
-          />
-        </div>
+          <motion.div variants={fadeInUp}>
+            <SearchBar onSearch={setSearchQuery} />
+          </motion.div>
+          <motion.div variants={fadeInUp}>
+            <CategoryFilter
+              categories={categories}
+              activeCategory={selectedCategory}
+              onCategoryClick={setSelectedCategory}
+            />
+          </motion.div>
+        </motion.div>
 
         {/* Post Grid */}
         {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            key={`${searchQuery}-${selectedCategory}`}
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          >
             {filteredPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <motion.div key={post.id} variants={fadeInUp}>
+                <PostCard post={post} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <div className="py-16 text-center">
-            <h3 className="mb-2 text-2xl font-bold text-white">
-              No articles found
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center py-20 text-center"
+          >
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <FileText className="text-muted-foreground" size={28} />
+            </div>
+            <h3 className="mb-2 text-xl font-bold text-white">
+              Không tìm thấy bài viết
             </h3>
-            <p className="text-neutral-400">
-              Try adjusting your search or filter to find what you're looking
-              for.
+            <p className="max-w-md text-muted-foreground">
+              Thử điều chỉnh từ khóa tìm kiếm hoặc chọn danh mục khác để tìm bài
+              viết phù hợp.
             </p>
-          </div>
+          </motion.div>
         )}
+
         {/* Newsletter */}
         <Newsletter />
       </div>

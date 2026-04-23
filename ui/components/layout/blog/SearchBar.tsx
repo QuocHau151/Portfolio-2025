@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
 
@@ -19,23 +20,29 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <form onSubmit={handleSearch} className="relative">
         <input
           type="text"
-          placeholder="Search articles..."
+          placeholder="Tìm kiếm bài viết..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-lg border border-neutral-800 bg-neutral-900 py-3 pr-10 pl-12 text-neutral-200 focus:ring-2 focus:ring-green-500 focus:outline-none"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            onSearch(e.target.value);
+          }}
+          className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pr-10 pl-12 text-sm text-white placeholder:text-muted-foreground backdrop-blur-sm transition-all duration-300 focus:border-primary/30 focus:bg-white/[0.07] focus:ring-1 focus:ring-primary/30 focus:outline-none"
         />
         <Search
-          className="absolute top-3.5 left-4 text-neutral-500"
-          size={20}
+          className="absolute top-3.5 left-4 text-muted-foreground"
+          size={18}
         />
 
         {query && (
           <button
             type="button"
-            onClick={() => setQuery("")}
-            className="absolute top-3.5 right-4 text-neutral-500 hover:text-neutral-300"
+            onClick={() => {
+              setQuery("");
+              onSearch("");
+            }}
+            className="absolute top-3.5 right-4 text-muted-foreground transition-colors hover:text-white"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         )}
       </form>

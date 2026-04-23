@@ -62,7 +62,7 @@ const Comments: React.FC<CommentsProps> = () => {
           placeholder="Share your thoughts..."
           className="focus:ring-primary min-h-[120px] w-full rounded-lg border border-neutral-800 bg-neutral-900 p-4 text-white placeholder-neutral-500 focus:ring-2 focus:outline-none"
         />
-        <button className="bg-primary hover:bg-primary mt-4 rounded-lg px-6 py-2 font-medium text-black transition-colors duration-300">
+        <button className="mt-4 rounded-lg border border-primary/20 bg-primary/10 px-6 py-2 font-medium text-primary transition-colors duration-300 hover:bg-primary/20">
           Post Comment
         </button>
       </div>

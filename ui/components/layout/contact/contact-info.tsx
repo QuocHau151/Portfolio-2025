@@ -1,46 +1,86 @@
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+
+import { motion } from "framer-motion";
+import { Database, Laptop, Server, Wrench } from "lucide-react";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const stacks = [
+  {
+    icon: Laptop,
+    title: "Frontend",
+    desc: "React, Next.js, TypeScript, Tailwind CSS",
+  },
+  {
+    icon: Server,
+    title: "Backend",
+    desc: "NestJS, Node.js, Express, Prisma",
+  },
+  {
+    icon: Database,
+    title: "Database",
+    desc: "PostgreSQL, MongoDB, Redis",
+  },
+  {
+    icon: Wrench,
+    title: "DevOps",
+    desc: "Ubuntu, Docker, PM2, Nginx",
+  },
+];
 
 export function ContactInfo() {
   return (
-    <Card className="border-none bg-transparent shadow-none lg:py-20">
-      <CardContent className="p-0">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-4 text-2xl font-bold md:text-3xl">
-            Làm việc cùng nhau
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Với kinh nghiệm làm việc với TypeScript, Next.js và NestJS, tôi có
-            thể giúp bạn xây dựng các ứng dụng web hiện đại, hiệu suất cao và dễ
-            bảo trì. Hãy liên hệ để chúng ta có thể thảo luận về dự án của bạn.
-          </p>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">
-              <h3 className="mb-1 font-medium">Frontend</h3>
-              <p className="text-muted-foreground text-sm">
-                React, Next.js, TypeScript
-              </p>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={staggerContainer}
+      className="text-center"
+    >
+      <motion.h2
+        variants={fadeInUp}
+        className="mb-3 text-2xl font-bold text-white md:text-3xl"
+      >
+        Làm việc cùng nhau
+      </motion.h2>
+      <motion.p
+        variants={fadeInUp}
+        className="mx-auto mb-8 max-w-2xl text-muted-foreground"
+      >
+        Với kinh nghiệm làm việc với TypeScript, Next.js và NestJS, tôi có thể
+        giúp bạn xây dựng các ứng dụng web hiện đại, hiệu suất cao và dễ bảo trì.
+      </motion.p>
+
+      <motion.div
+        variants={staggerContainer}
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {stacks.map((stack) => (
+          <motion.div
+            key={stack.title}
+            variants={fadeInUp}
+            className="group rounded-2xl border border-white/5 bg-surface-elevated p-5 transition-all duration-500 hover:-translate-y-1 hover:border-white/10 hover:shadow-2xl"
+          >
+            <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+              <stack.icon size={18} />
             </div>
-            <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">
-              <h3 className="mb-1 font-medium">Backend</h3>
-              <p className="text-muted-foreground text-sm">
-                NestJS, Node.js, Express
-              </p>
-            </div>
-            <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">
-              <h3 className="mb-1 font-medium">Database</h3>
-              <p className="text-muted-foreground text-sm">
-                MongoDB, PostgreSQL
-              </p>
-            </div>
-            <div className="bg-primary/5 hover:bg-primary/10 rounded-lg bg-neutral-800 p-4 transition-colors">
-              <h3 className="mb-1 font-medium">DevOps</h3>
-              <p className="text-muted-foreground text-sm">
-                Ubuntu, Docker, K8s
-              </p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            <h3 className="mb-1 font-semibold text-white">{stack.title}</h3>
+            <p className="text-sm text-muted-foreground">{stack.desc}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.div>
   );
 }

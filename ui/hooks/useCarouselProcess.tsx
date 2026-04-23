@@ -39,12 +39,13 @@ export const useAutoplayProgress = <ProgressElement extends HTMLElement>(
   }, []);
 
   useEffect(() => {
-    const autoplay = emblaApi?.plugins()?.autoplay;
+    if (!emblaApi) return;
+    const autoplay = emblaApi.plugins()?.autoplay as any;
     if (!autoplay) return;
 
     emblaApi
-      .on("autoplay:timerset", () => startProgress(autoplay.timeUntilNext()))
-      .on("autoplay:timerstopped", () => setShowAutoplayProgress(false));
+      .on("autoplay:timerset" as any, () => startProgress(autoplay.timeUntilNext() as number | null))
+      .on("autoplay:timerstopped" as any, () => setShowAutoplayProgress(false));
   }, [emblaApi]);
 
   useEffect(() => {
