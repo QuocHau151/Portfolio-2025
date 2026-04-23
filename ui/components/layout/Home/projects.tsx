@@ -12,144 +12,237 @@ import Link from "next/link";
 
 import SmoothScroll from "@/components/feature/smooth-scroll";
 import projects, { Project } from "@/data/projects";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/libs/utils";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="mx-auto max-w-7xl">
-      <Link href={""}>
-        <h2
-          className={cn(
-            "bg-clip-text pt-16 text-center text-4xl text-transparent md:text-7xl",
-            "bg-gradient-to-b from-black/80 to-black/50",
-            "dark:bg-opacity-50 mb-32 dark:bg-gradient-to-b dark:from-white/80 dark:to-white/20",
-          )}
+    <section id="projects" className="container relative mx-auto py-24 md:py-32">
+      <div className="mb-16 text-center md:mb-24">
+        <motion.span
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase backdrop-blur-sm"
         >
-          Projects
-        </h2>
-      </Link>
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        {projects.map((project, index) => (
-          <Modall key={project.src} project={project} />
-        ))}
+          Portfolio
+        </motion.span>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-4 text-4xl font-extrabold tracking-tight md:text-6xl"
+        >
+          <span className="text-gradient">Dự án đã thực hiện</span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mx-auto mt-4 max-w-2xl text-muted"
+        >
+          Một số dự án tiêu biểu tôi đã phát triển cho khách hàng doanh nghiệp và
+          cá nhân trong vai trò Fullstack Developer & Freelancer.
+        </motion.p>
       </div>
+
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
+        {projects.map((project, index) => (
+          <ProjectCard key={project.id} project={project} index={index} />
+        ))}
+      </motion.div>
     </section>
   );
 };
-const Modall = ({ project }: { project: Project }) => {
-  const cardContainerRef = useRef<HTMLDivElement>(null);
-  // Scroll context cho ảnh nội bộ card
-  const { scrollYProgress: cardScrollProgress } = useScroll({
-    target: cardContainerRef,
-    offset: ["start end", "start start"],
+
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
   });
-  const isMobile = useIsMobile();
-  const imageScale = useTransform(cardScrollProgress, [0, 1], [2, 1]);
-  const [isHovering, setIsHovering] = useState(false);
-  const transitionDuration = isMobile ? "10s" : "10s";
+  const imageScale = useTransform(scrollYProgress, [0, 0.5], [1.15, 1]);
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className="flex items-center justify-center">
+    <motion.div
+      ref={cardRef}
+      variants={itemVariants}
+      className={cn(
+        "group relative overflow-hidden rounded-2xl border border-white/5 bg-surface-elevated transition-all duration-500 hover:border-white/10 hover:shadow-2xl"
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+      }}
+    >
       <Modal>
-        <ModalTrigger className="group/modal-btn flex justify-center bg-transparent">
-          <div
-            className="relative h-[300px] w-[400px] overflow-hidden rounded-lg"
-            style={{ aspectRatio: "3/2" }}
-          >
-            <div className="h-full w-full overflow-hidden">
-              <motion.div
-                className="h-full w-full"
-                style={{ scale: imageScale }}
-              >
-                <motion.div
-                  className="relative h-full w-full cursor-pointer overflow-hidden"
-                  onHoverStart={() => setIsHovering(true)}
-                  onHoverEnd={() => setIsHovering(false)}
-                >
-                  <Image
-                    src={project.src}
-                    alt="image"
-                    fill
-                    className={`rounded-3xl object-cover ${
-                      isHovering ? "object-bottom" : "object-top"
-                    }`}
-                    style={{
-                      transition: `object-position ${transitionDuration} linear`,
-                    }}
-                  />
-                </motion.div>
-              </motion.div>
+        <ModalTrigger className="block w-full text-left">
+          {/* Image */}
+          <div className="relative aspect-[16/10] w-full overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{ scale: imageScale }}
+            >
+              <Image
+                src={project.src}
+                alt={project.title}
+                fill
+                className="object-cover transition-all duration-700 group-hover:brightness-110"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            </motion.div>
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            {/* Glow on hover */}
+            <div
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              style={{
+                background:
+                  "radial-gradient(600px circle at 50% 100%, rgba(40,236,141,0.08), transparent 60%)",
+              }}
+            />
+          </div>
+
+          {/* Content */}
+          <div className="relative p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                {project.category}
+              </span>
             </div>
-            <div className="pointer-events-none absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-black via-black/85 to-transparent">
-              <div className="flex h-full flex-col items-start justify-end p-6">
-                <div className="mb-2 text-left text-lg text-white">
-                  {project.title}
-                </div>
-                <div className="w-fit rounded-lg bg-white px-2 text-xs text-black">
-                  {project.category}
-                </div>
-              </div>
+            <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary md:text-xl">
+              {project.title}
+            </h3>
+            <div className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <span>Xem chi tiết</span>
+              <svg
+                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
             </div>
           </div>
         </ModalTrigger>
-        <ModalBody className="overflow-auto md:max-h-[80%] md:max-w-4xl">
+
+        <ModalBody className="md:max-h-[85%] md:max-w-3xl">
           <ModalContent>
             <SmoothScroll isInsideModal={true}>
-              <ProjectContents project={project} />
+              <ProjectDetail project={project} />
             </SmoothScroll>
           </ModalContent>
-          <ModalFooter className="gap-4">
-            <button className="w-28 rounded-md border border-gray-300 bg-gray-200 px-2 py-1 text-sm text-black dark:border-black dark:bg-black dark:text-white">
-              Cancel
+          <ModalFooter className="gap-3 border-t border-white/5 bg-surface">
+            <button className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10">
+              Đóng
             </button>
-            <Link href={project.live} target="_blank">
-              <button className="w-28 rounded-md border border-black bg-black px-2 py-1 text-sm text-white dark:bg-white dark:text-black">
-                Visit
+            <Link href={project.live} target="_blank" rel="noopener noreferrer">
+              <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                Truy cập website
               </button>
             </Link>
           </ModalFooter>
         </ModalBody>
       </Modal>
-    </div>
+    </motion.div>
   );
 };
+
 export default ProjectsSection;
 
-const ProjectContents = ({ project }: { project: Project }) => {
+const ProjectDetail = ({ project }: { project: Project }) => {
   return (
-    <>
-      <h4 className="mb-8 text-center text-lg font-bold text-neutral-600 md:text-2xl dark:text-neutral-100">
-        {project.title}
-      </h4>
-      <div className="flex max-w-screen flex-col overflow-hidden md:flex-row md:justify-evenly md:overflow-visible">
-        <div className="mb-8 flex flex-row items-center justify-center gap-2 text-3xl text-black md:flex-col-reverse">
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-500">
-            Frontend
-          </p>
-          {project.skills.frontend?.length > 0 && (
-            <FloatingDock items={project.skills.frontend} />
+    <div className="space-y-8">
+      {/* Header image */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/5">
+        <Image
+          src={project.src}
+          alt={project.title}
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-white md:text-3xl">
+          {project.title}
+        </h3>
+        <span className="mt-2 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          {project.category}
+        </span>
+      </div>
+
+      {/* Tech stack */}
+      <div className="space-y-4">
+        <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Công nghệ sử dụng
+        </h4>
+        <div className="flex flex-wrap gap-6">
+          {project.skills.frontend && project.skills.frontend.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Frontend</p>
+              <FloatingDock items={project.skills.frontend} />
+            </div>
+          )}
+          {project.skills.backend && project.skills.backend.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Backend</p>
+              <FloatingDock items={project.skills.backend} />
+            </div>
+          )}
+          {project.skills.devops && project.skills.devops.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">DevOps</p>
+              <FloatingDock items={project.skills.devops} />
+            </div>
           )}
         </div>
-        {project.skills.backend?.length > 0 && (
-          <div className="mb-8 flex flex-row items-center justify-center gap-2 text-3xl text-black md:flex-col-reverse">
-            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-500">
-              Backend
-            </p>
-            <FloatingDock items={project.skills.backend} />
-          </div>
-        )}
-        {project.skills.devops?.length > 0 && (
-          <div className="mb-8 flex flex-row items-center justify-center gap-2 text-3xl text-black md:flex-col-reverse">
-            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-500">
-              DevOps
-            </p>
-            <FloatingDock items={project.skills.devops} />
-          </div>
-        )}
       </div>
-      <div className="text-black">{project.content}</div>
-    </>
+
+      {/* Description */}
+      <div className="prose prose-invert max-w-none text-sm leading-relaxed text-muted md:text-base">
+        {project.content}
+      </div>
+    </div>
   );
 };

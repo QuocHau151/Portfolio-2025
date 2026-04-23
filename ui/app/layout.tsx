@@ -17,8 +17,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Quốc Hậu Portfolio",
-  description: "Quốc Hậu Portfolio",
+  title: "Quốc Hậu — Portfolio",
+  description: "Portfolio của Quốc Hậu — Fullstack Developer & Freelancer",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <AppProvider>
-      <html lang="vi">
+      <html lang="vi" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} h-full`}>
           <Particles
             className="animate-fade-in fixed inset-0 -z-10"

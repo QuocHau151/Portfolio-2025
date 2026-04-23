@@ -138,7 +138,7 @@ export const ModalBody = ({
             }}
           >
             <CloseIcon />
-            <ScrollArea className="h-[80dvh] w-full rounded-md border">
+            <ScrollArea className="h-[80dvh] w-full">
               {children}
             </ScrollArea>
           </motion.div>

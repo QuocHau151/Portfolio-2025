@@ -35,26 +35,34 @@ const ProjectsLinks = ({ live, repo }: { live: string; repo?: string }) => {
   return (
     <div className="my-3 mb-8 flex flex-col items-center justify-start gap-3 md:flex-row">
       <Link
-        className="flex gap-2 font-mono underline"
-        rel="noopener"
-        target="_new"
+        className="flex gap-2 font-mono no-underline"
+        rel="noopener noreferrer"
+        target="_blank"
         href={live}
       >
-        <Button variant={"default"} size={"sm"} className="bg-neutral-300">
-          Visit Website
-          <ArrowUpRight className="ml-3 h-5 w-5" />
+        <Button
+          variant="default"
+          size="sm"
+          className="bg-primary text-black hover:bg-primary/90"
+        >
+          Truy cập website
+          <ArrowUpRight className="ml-2 h-4 w-4" />
         </Button>
       </Link>
       {repo && (
         <Link
-          className="flex gap-2 font-mono underline"
-          rel="noopener"
-          target="_new"
+          className="flex gap-2 font-mono no-underline"
+          rel="noopener noreferrer"
+          target="_blank"
           href={repo}
         >
-          <Button variant={"default"} size={"sm"}>
-            Github
-            <ArrowUpRight className="ml-3 h-5 w-5" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-white/10 text-white hover:bg-white/5 hover:text-white"
+          >
+            Mã nguồn
+            <ArrowUpRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
       )}

@@ -33,7 +33,6 @@ import {
   Boxes,
   Check,
   FileText,
-  Globe,
   LogIn,
   Mail,
   Minus,
@@ -53,7 +52,6 @@ interface LogoProps {
 }
 const menuItems = [
   { label: "VPS", icon: Server, href: "/vps" },
-  { label: "Proxy", icon: Globe, href: "/proxy" },
   { label: "VPN", icon: Server, href: "/vpn" },
   { label: "Domain", icon: Server, href: "/domain" },
   { label: "Components", icon: Boxes, href: "/components" },
@@ -227,9 +225,6 @@ export const Header = () => {
         <div className="hidden items-center justify-center gap-8 lg:flex">
           <Link href={"/vps"} className="flex items-center">
             <span className="text-[16px] font-light text-white">VPS</span>
-          </Link>
-          <Link href={"/hosting"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">Hosting</span>
           </Link>
           <Link href={"/components"} className="flex items-center">
             <span className="text-[16px] font-light text-white">
