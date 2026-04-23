@@ -1,11 +1,8 @@
 "use client";
 import {
   BookPlus,
-  ClipboardListIcon,
   Component,
-  DatabaseIcon,
   DollarSign,
-  HelpCircleIcon,
   LayoutDashboardIcon,
   MessageSquareMore,
   NotebookTabs,
@@ -13,7 +10,6 @@ import {
   PlusCircleIcon,
   SettingsIcon,
   ShoppingCart,
-  SquareActivity,
   SquareUser,
 } from "lucide-react";
 import * as React from "react";
@@ -29,7 +25,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { NavDocuments } from "./nav-documents";
 
 import { useAppStore } from "@/stores/app";
 import Image from "next/image";
@@ -62,13 +57,8 @@ const data = {
     },
     {
       title: "Thanh Toán",
-      url: "/payment",
+      url: "/admin/payment",
       icon: DollarSign,
-    },
-    {
-      title: "Thống Kê",
-      url: "/analytic",
-      icon: SquareActivity,
     },
     {
       title: "Component",
@@ -86,18 +76,6 @@ const data = {
       icon: NotebookTabs,
     },
   ],
-  documents: [
-    {
-      name: "Máy Ảo",
-      url: "/vps",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Proxy",
-      url: "/proxy",
-      icon: ClipboardListIcon,
-    },
-  ],
   navSecondary: [
     {
       title: "Messenger",
@@ -108,11 +86,6 @@ const data = {
       title: "Settings",
       url: "/setting",
       icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "/help",
-      icon: HelpCircleIcon,
     },
   ],
 };
@@ -180,7 +153,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

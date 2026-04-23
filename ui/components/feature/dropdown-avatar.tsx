@@ -14,7 +14,7 @@ import {
 import { handleErrorApi } from "@/libs/utils";
 import { useLogoutMutation } from "@/queries/useAuth";
 import { useAppStore } from "@/stores/app";
-import { ChevronDown, ChevronUp, LogOut, Mail, User } from "lucide-react";
+import { ChevronDown, ChevronUp, LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -151,47 +151,6 @@ export default function DropdownAvatar() {
             )}
           </div>
 
-          {/* Email Settings Section */}
-          <Collapsible
-            open={emailSettingsOpen}
-            onOpenChange={setEmailSettingsOpen}
-          >
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-auto w-full justify-between p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="rounded p-1">
-                    <Mail className="h-4 w-4 text-orange-600" />
-                  </div>
-                  <span className="text-sm font-medium">
-                    Cài đặt email & thông báo
-                  </span>
-                </div>
-                {emailSettingsOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="ml-10 space-y-1">
-              <Button
-                variant="ghost"
-                className="h-8 w-full justify-start text-sm text-gray-600"
-              >
-                Cài đặt thông báo
-              </Button>
-              <Button
-                variant="ghost"
-                className="h-8 w-full justify-start text-sm text-gray-600"
-              >
-                Cài đặt email
-              </Button>
-            </CollapsibleContent>
-          </Collapsible>
-
           {/* Personal & Security Section */}
           <Collapsible
             open={personalSecurityOpen}
@@ -235,12 +194,6 @@ export default function DropdownAvatar() {
                   </Button>
                 </Link>
               )}
-              <Button
-                variant="ghost"
-                className="h-8 w-full justify-start text-sm text-gray-600"
-              >
-                Đổi mật khẩu
-              </Button>
             </CollapsibleContent>
           </Collapsible>
         </div>

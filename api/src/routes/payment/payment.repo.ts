@@ -25,6 +25,13 @@ export class PaymentRepo {
     }, 0);
   }
 
+  async listAdmin() {
+    const transactions = await this.prismaService.paymentTransaction.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return { data: transactions };
+  }
+
   async receiver(body: WebhookPaymentBodyType): Promise<number> {
     // 1. Thêm thông tin giao dịch vào DB
     // Tham khảo: https://docs.sepay.vn/lap-trinh-webhooks.html

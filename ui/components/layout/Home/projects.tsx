@@ -176,7 +176,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
               Đóng
             </button>
             <Link href={project.live} target="_blank" rel="noopener noreferrer">
-              <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]">
+              <button className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-all hover:bg-primary/20 hover:scale-[1.02] active:scale-[0.98]">
                 Truy cập website
               </button>
             </Link>

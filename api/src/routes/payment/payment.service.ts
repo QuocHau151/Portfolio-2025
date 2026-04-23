@@ -12,6 +12,10 @@ export class PaymentService {
   server: Server;
   constructor(private readonly paymentRepo: PaymentRepo) {}
 
+  async listAdmin() {
+    return await this.paymentRepo.listAdmin();
+  }
+
   async receiver(body: WebhookPaymentBodyType) {
     const userId = await this.paymentRepo.receiver(body);
 

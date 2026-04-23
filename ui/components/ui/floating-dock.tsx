@@ -189,7 +189,7 @@ const FloatingDockDesktop = ({
         className={cn(
           // "hidden md:flex",
           "flex gap-2 md:gap-4",
-          "mx-auto h-16 items-end rounded-2xl bg-gray-50 px-4 pb-3 dark:bg-neutral-900",
+          "mx-auto h-16 items-end rounded-2xl bg-neutral-900 px-4 pb-3",
           // "blur-sm brightness-50",
           className,
         )}
@@ -211,7 +211,7 @@ const FloatingDockDesktop = ({
           >
             <motion.div
               className={cn(
-                "top-0 left-[50%] h-5 w-5 rounded-full border-2 border-black dark:border-white",
+                "top-0 left-[50%] h-5 w-5 rounded-full border-2 border-white",
                 "translate-x-[-50px]",
               )}
               initial={{ opacity: 0, x: -50 }}
@@ -281,7 +281,7 @@ function IconContainer({
       style={{ width, height }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"
+      className="relative flex aspect-square items-center justify-center rounded-full bg-neutral-800"
     >
       <AnimatePresence>
         {hovered && (
@@ -289,7 +289,7 @@ function IconContainer({
             initial={{ opacity: 0, y: 10, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 2, x: "-50%" }}
-            className="absolute -top-8 left-1/2 w-fit -translate-x-1/2 rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs whitespace-pre text-neutral-700 dark:border-neutral-900 dark:bg-neutral-800 dark:text-white"
+            className="absolute -top-8 left-1/2 w-fit -translate-x-1/2 rounded-md border border-neutral-900 bg-neutral-800 px-2 py-0.5 text-xs whitespace-pre text-white"
           >
             {title}
           </motion.div>

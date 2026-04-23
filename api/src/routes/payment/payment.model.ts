@@ -34,5 +34,10 @@ export const WebhookPaymentBodySchema = z.object({
   description: z.string(), // Toàn bộ nội dung tin nhắn sms
 });
 
+export const GetPaymentTransactionListResSchema = z.object({
+  data: z.array(PaymentTransactionSchema),
+});
+
 export type PaymentTransactionType = z.infer<typeof PaymentTransactionSchema>;
 export type WebhookPaymentBodyType = z.infer<typeof WebhookPaymentBodySchema>;
+export type GetPaymentTransactionListResType = z.infer<typeof GetPaymentTransactionListResSchema>;
