@@ -21,8 +21,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { FaCartPlus, FaHome, FaUser } from "react-icons/fa";
-import { GrStorage } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
 
 export const FloatingDock = ({
@@ -65,16 +65,27 @@ export const FloatingDockMobile = () => {
     );
   }
   const items = [
-    {
-      title: "Dashboard",
-      icon: <MdDashboard />,
-      link: "/dashboard",
-    },
-    {
-      title: "Storage",
-      icon: <GrStorage />,
-      link: "/dashboard/service",
-    },
+    ...(isAuth && role === Role.Admin
+      ? [
+          {
+            title: "Dashboard",
+            icon: <MdDashboard />,
+            link: "/dashboard",
+          },
+        ]
+      : []),
+    isAuth
+      ? {
+          title: "Chat",
+          icon: <MessageCircle size={18} />,
+          onClick: () =>
+            window.dispatchEvent(new CustomEvent("toggle-chat-widget")),
+        }
+      : {
+          title: "Chat",
+          icon: <MessageCircle size={18} />,
+          link: "/login",
+        },
     {
       title: "Home",
       icon: <FaHome />,
@@ -123,13 +134,22 @@ export const FloatingDockMobile = () => {
                 }}
                 transition={{ delay: (items.length - 1 - idx) * 0.05 }}
               >
-                <Link
-                  href={item.link}
-                  key={item.title}
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900"
-                >
-                  <div className=" ">{item.icon}</div>
-                </Link>
+                {item.onClick ? (
+                  <button
+                    onClick={item.onClick}
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900"
+                  >
+                    <div>{item.icon}</div>
+                  </button>
+                ) : (
+                  <Link
+                    href={(item as any).link}
+                    key={item.title}
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900"
+                  >
+                    <div>{item.icon}</div>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>

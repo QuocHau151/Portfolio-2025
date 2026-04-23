@@ -18,7 +18,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { formatCurrency } from "@/libs/utils";
+import { formatCurrency, handleErrorApi } from "@/libs/utils";
+import { useLogoutMutation } from "@/queries/useAuth";
 import {
   useCartQuery,
   useDeleteCartMutation,
@@ -34,6 +35,7 @@ import {
   Check,
   FileText,
   LogIn,
+  LogOut,
   Mail,
   Minus,
   Plus,
@@ -43,6 +45,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { BsSearch } from "react-icons/bs";
 
 interface LogoProps {
@@ -52,17 +55,29 @@ interface LogoProps {
 }
 const menuItems = [
   { label: "VPS", icon: Server, href: "/vps" },
-  { label: "VPN", icon: Server, href: "/vpn" },
-  { label: "Domain", icon: Server, href: "/domain" },
   { label: "Components", icon: Boxes, href: "/components" },
   { label: "Blog", icon: BookOpen, href: "/blog" },
+  { label: "CV", icon: FileText, href: "/cv" },
   { label: "Contact", icon: Mail, href: "/contact" },
-  { label: "Portfolio", icon: FileText, href: "/cv" },
 ];
 export const Header = () => {
   const { cart, setCart } = useCartStore();
   const { setOrder } = useOrderStore();
-  const { isAuth } = useAppStore();
+  const { isAuth, setRole, disconnectSocket } = useAppStore();
+  const logoutMutation = useLogoutMutation();
+  const router = useRouter();
+  const handleLogout = async () => {
+    if (logoutMutation.isPending) return;
+    try {
+      await logoutMutation.mutateAsync();
+      setRole();
+      disconnectSocket();
+      toast("Đăng xuất thành công");
+      router.push("/");
+    } catch (error: any) {
+      handleErrorApi({ error });
+    }
+  };
   const getCart = useCartQuery();
   const updateCart = useUpdateCartMutation();
   const deleteCart = useDeleteCartMutation();
@@ -123,8 +138,6 @@ export const Header = () => {
     }
     setAllSelected(!allSelected);
   };
-
-  const router = useRouter();
 
   const handleAddToCart = (
     cartItemId: number,
@@ -538,17 +551,29 @@ export const Header = () => {
                 </li>
               ))}
               <li>
-                <Link
-                  href={`${isAuth ? "/logout" : "/login"}`}
-                  className="flex items-center gap-3 px-5 py-4 text-white transition-colors"
-                >
-                  <LogIn className="h-5 w-5 text-gray-400" />
-                  <div className="text-left">
-                    <p className="text-sm font-medium">
-                      {isAuth ? "Log Out" : "Sign In"}
-                    </p>
-                  </div>
-                </Link>
+                {isAuth ? (
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 px-5 py-4 text-white transition-colors"
+                  >
+                    <LogOut className="h-5 w-5 text-gray-400" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">
+                        {logoutMutation.isPending ? "Đang đăng xuất..." : "Đăng xuất"}
+                      </p>
+                    </div>
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-3 px-5 py-4 text-white transition-colors"
+                  >
+                    <LogIn className="h-5 w-5 text-gray-400" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Đăng nhập</p>
+                    </div>
+                  </Link>
+                )}
               </li>
             </ul>
           </SheetContent>

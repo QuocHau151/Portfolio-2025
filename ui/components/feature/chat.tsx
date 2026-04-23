@@ -41,6 +41,12 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
 
+  useEffect(() => {
+    const handler = () => setIsOpen((prev) => !prev);
+    window.addEventListener("toggle-chat-widget", handler);
+    return () => window.removeEventListener("toggle-chat-widget", handler);
+  }, []);
+
   const [isLoading, setIsLoading] = useState(false);
   const accountId = account?.id?.toString();
   const getRoomByUserId = useGetRoomByUserIdQuery(accountId!);
@@ -148,7 +154,7 @@ export default function ChatWidget() {
 
   if (!isAuth)
     return (
-      <div className="fixed right-6 bottom-6 z-50">
+      <div className="fixed right-6 bottom-6 z-50 hidden md:block">
         <Button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-primary hover:bg-primary/80 h-14 w-14 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
@@ -169,7 +175,7 @@ export default function ChatWidget() {
   return (
     <>
       {/* Chat Icon Button */}
-      <div className="fixed right-6 bottom-6 z-50">
+      <div className="fixed right-6 bottom-6 z-50 hidden md:block">
         <Button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-primary hover:bg-primary/80 h-14 w-14 rounded-full shadow-lg transition-all duration-200 hover:scale-110"

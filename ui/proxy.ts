@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authRoutes } from "./constants/authRoute";
 import { decodeToken } from "./libs/utils";
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
   const accessToken = req.cookies.get("accessToken")?.value;
   let role = null;
 
