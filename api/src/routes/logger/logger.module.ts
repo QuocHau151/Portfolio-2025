@@ -8,7 +8,7 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
       pinoHttp:
         process.env.NODE_ENV === 'production'
           ? {
-              level: process.env.LOG_LEVEL || 'info',
+              level: 'info',
               autoLogging: false,
               formatters: {
                 level: (label: string) => ({ level: label }),

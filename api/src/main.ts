@@ -4,14 +4,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
-import { WebsocketAdapter } from './websocket/websocket.adapter';
+import { WebsocketAdapter } from './routes/websocket/websocket.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
-
-  app.useLogger(app.get(Logger));
+  if (process.env.NODE_ENV === 'production') {
+    app.useLogger(app.get(Logger));
+  }
   app.enableCors();
   app.use(helmet());
 

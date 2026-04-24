@@ -17,8 +17,8 @@ export class WebsocketAdapter extends IoAdapter {
     super(app);
     this.tokenService = app.get(TokenService);
     this.prismaService = app.get(PrismaService);
-    this.logger = app.get(Logger);
   }
+
   async connectToRedis(): Promise<void> {
     const pubClient = createClient({
       url: process.env.REDIS_URL,

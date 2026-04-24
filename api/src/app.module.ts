@@ -12,7 +12,6 @@ import { CatchEverythingFilter } from './common/filters/catch-everything.filter'
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { LoggerModule } from './routes/logger/logger.module';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
 import { AuthModule } from './routes/auth/auth.module';
 import { BlogModule } from './routes/blog/blog.module';
@@ -21,6 +20,7 @@ import { CartModule } from './routes/cart/cart.module';
 import { CategoryModule } from './routes/category/category.module';
 import { ComponentModule } from './routes/component/component.module';
 import { RemoveRefreshTokenCronjob } from './routes/cron/remove-refresh-token';
+import { LoggerModule } from './routes/logger/logger.module';
 import { MediaModule } from './routes/media/media.module';
 import { OrderModule } from './routes/order/order.module';
 import { PaymentModule } from './routes/payment/payment.module';
@@ -34,7 +34,7 @@ import { UserModule } from './routes/user/user.module';
 import { createKeyv } from '@keyv/redis';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ChatModule } from './routes/chat/chat.module';
-import { WebsocketModule } from './websocket/websocket.module';
+import { WebsocketModule } from './routes/websocket/websocket.module';
 @Module({
   imports: [
     LoggerModule,
