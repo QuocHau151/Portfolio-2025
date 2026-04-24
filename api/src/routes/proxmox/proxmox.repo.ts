@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 import { PrismaService } from 'src/common/services/prisma.service';
 
 @Injectable()
@@ -8,7 +9,12 @@ export class ProxmoxRepo {
   private readonly username = process.env.PROXMOX_USERNAME;
   private readonly password = process.env.PROXMOX_PASSWORD;
   private tokenTTL = 7200 * 1000;
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(ProxmoxRepo.name);
+  }
 
   async refreshToken() {
     try {
@@ -36,7 +42,7 @@ export class ProxmoxRepo {
         throw new Error('Invalid response format from Proxmox API');
       }
     } catch (error) {
-      console.error('Error refreshing Proxmox token:', error);
+      this.logger.error({ err: error }, 'Error refreshing Proxmox token');
       throw error;
     }
   }

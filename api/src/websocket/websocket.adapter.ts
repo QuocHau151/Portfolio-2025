@@ -1,4 +1,4 @@
-import { INestApplicationContext } from '@nestjs/common';
+import { INestApplicationContext, Logger } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
@@ -11,11 +11,13 @@ export class WebsocketAdapter extends IoAdapter {
   private readonly tokenService: TokenService;
   private adapterConstructor: ReturnType<typeof createAdapter>;
   private readonly prismaService: PrismaService;
+  private readonly logger: Logger;
   app: INestApplicationContext;
   constructor(app: INestApplicationContext) {
     super(app);
     this.tokenService = app.get(TokenService);
     this.prismaService = app.get(PrismaService);
+    this.logger = app.get(Logger);
   }
   async connectToRedis(): Promise<void> {
     const pubClient = createClient({
@@ -32,17 +34,17 @@ export class WebsocketAdapter extends IoAdapter {
     try {
       await Promise.all([pubClient.connect(), subClient.connect()]);
     } catch (error) {
-      console.error('Redis connection failed:', error);
+      this.logger.error('Redis connection failed', error);
       throw new Error('Failed to connect to Redis');
     }
 
     // Add error handling
     pubClient.on('error', (error) => {
-      console.error('Redis pub client error:', error);
+      this.logger.error('Redis pub client error', error);
     });
 
     subClient.on('error', (error) => {
-      console.error('Redis sub client error:', error);
+      this.logger.error('Redis sub client error', error);
     });
 
     this.adapterConstructor = createAdapter(pubClient, subClient);

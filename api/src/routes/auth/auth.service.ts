@@ -32,6 +32,7 @@ import {
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { addMilliseconds } from 'date-fns';
 import ms from 'ms';
 import {
@@ -53,7 +54,10 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
     private readonly twoFactorService: TwoFactorService,
-  ) {}
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthService.name);
+  }
   async validateVerificationCode({
     email,
     code,
@@ -145,7 +149,7 @@ export class AuthService {
       code,
     });
     if (error) {
-      console.log(error);
+      this.logger.error({ err: error }, 'Gửi mã OTP thất bại');
       throw new UnprocessableEntityException({
         message: 'Gửi mã OTP thất bại',
         path: 'code',

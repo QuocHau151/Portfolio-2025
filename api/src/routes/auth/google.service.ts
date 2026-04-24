@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
 import { GoogleUserInfoError } from 'src/routes/auth/auth.error';
@@ -18,7 +19,9 @@ export class GoogleService {
     private readonly hashingService: HashingService,
     private readonly commonRoleRepository: CommonRoleRepository,
     private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
   ) {
+    this.logger.setContext(GoogleService.name);
     this.oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -59,7 +62,7 @@ export class GoogleService {
           ip = clientInfo.ip;
         }
       } catch (error) {
-        console.error('Error parsing state', error);
+        this.logger.error({ err: error }, 'Error parsing state');
       }
       // 2. Dùng code để lấy token
       const { tokens } = await this.oauth2Client.getToken(code);
@@ -117,7 +120,7 @@ export class GoogleService {
         },
       };
     } catch (error) {
-      console.error('Error in googleCallback', error);
+      this.logger.error({ err: error }, 'Error in googleCallback');
       throw error;
     }
   }

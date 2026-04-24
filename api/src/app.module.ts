@@ -8,9 +8,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { CommonModule } from './common/common.module';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { CatchEverythingFilter } from './common/filters/catch-everything.filter';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
+import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { LoggerModule } from './routes/logger/logger.module';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
 import { AuthModule } from './routes/auth/auth.module';
 import { BlogModule } from './routes/blog/blog.module';
@@ -35,6 +37,7 @@ import { ChatModule } from './routes/chat/chat.module';
 import { WebsocketModule } from './websocket/websocket.module';
 @Module({
   imports: [
+    LoggerModule,
     CommonModule,
     AuthModule,
     PermissionModule,
@@ -91,9 +94,10 @@ import { WebsocketModule } from './websocket/websocket.module';
     },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: ErrorInterceptor },
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: CatchEverythingFilter,
     },
     {
       provide: APP_GUARD,
