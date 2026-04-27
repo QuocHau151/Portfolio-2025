@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { IsPublic } from 'src/common/decorators/auth.decorator';
 import { MetricsService } from './metrics.service';
 
-@Controller('metrics')
+@Controller('api/metrics')
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
