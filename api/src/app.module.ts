@@ -34,6 +34,7 @@ import { UserModule } from './routes/user/user.module';
 import { createKeyv } from '@keyv/redis';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ChatModule } from './routes/chat/chat.module';
+import { MetricsModule } from './routes/metrics/metrics.module';
 import { WebsocketModule } from './routes/websocket/websocket.module';
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { WebsocketModule } from './routes/websocket/websocket.module';
     ProxmoxModule,
     PaymentModule,
     ComponentModule,
+    MetricsModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {
