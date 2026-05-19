@@ -14,6 +14,9 @@ RUN npm install --force --legacy-peer-deps
 FROM base AS builder
 WORKDIR /app
 
+ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+
 COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
