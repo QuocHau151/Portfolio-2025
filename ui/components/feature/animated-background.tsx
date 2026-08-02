@@ -119,7 +119,7 @@ const AnimatedBackground = () => {
   const [splineApp, setSplineApp] = useState<Application>();
 
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const [activeSection, setActiveSection] = useState<Section>("projects");
+  const [activeSection, setActiveSection] = useState<Section>("hero");
   const [bongoAnimation, setBongoAnimation] = useState<{
     start: () => void;
     stop: () => void;
@@ -352,6 +352,38 @@ const AnimatedBackground = () => {
     });
     gsap.set(kbd.position, {
       ...keyboardStates("hero").position,
+    });
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: "#about",
+        start: "top 70%",
+        end: "bottom bottom",
+        scrub: true,
+        onEnter: () => {
+          setActiveSection("about");
+          gsap.to(kbd.scale, { ...keyboardStates("about").scale, duration: 1 });
+          gsap.to(kbd.position, {
+            ...keyboardStates("about").position,
+            duration: 1,
+          });
+          gsap.to(kbd.rotation, {
+            ...keyboardStates("about").rotation,
+            duration: 1,
+          });
+        },
+        onLeaveBack: () => {
+          setActiveSection("hero");
+          gsap.to(kbd.scale, { ...keyboardStates("hero").scale, duration: 1 });
+          gsap.to(kbd.position, {
+            ...keyboardStates("hero").position,
+            duration: 1,
+          });
+          gsap.to(kbd.rotation, {
+            ...keyboardStates("hero").rotation,
+            duration: 1,
+          });
+        },
+      },
     });
     gsap.timeline({
       scrollTrigger: {

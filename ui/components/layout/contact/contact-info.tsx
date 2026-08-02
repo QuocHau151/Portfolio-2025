@@ -53,14 +53,14 @@ export function ContactInfo() {
         variants={fadeInUp}
         className="mb-3 text-2xl font-bold text-white md:text-3xl"
       >
-        Làm việc cùng nhau
+        What I work on
       </motion.h2>
       <motion.p
         variants={fadeInUp}
         className="mx-auto mb-8 max-w-2xl text-muted-foreground"
       >
-        Với kinh nghiệm làm việc với TypeScript, Next.js và NestJS, tôi có thể
-        giúp bạn xây dựng các ứng dụng web hiện đại, hiệu suất cao và dễ bảo trì.
+        I work with TypeScript, Next.js and NestJS to build modern, performant
+        and maintainable web applications.
       </motion.p>
 
       <motion.div

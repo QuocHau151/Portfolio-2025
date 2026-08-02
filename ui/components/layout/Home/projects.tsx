@@ -39,7 +39,7 @@ const itemVariants = {
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="container relative mx-auto py-24 md:py-32">
+    <section id="projects" className="container relative z-10 mx-auto py-24 md:py-32">
       <div className="mb-16 text-center md:mb-24">
         <motion.span
           initial={{ opacity: 0, y: 10 }}
@@ -48,7 +48,7 @@ const ProjectsSection = () => {
           transition={{ duration: 0.5 }}
           className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase backdrop-blur-sm"
         >
-          Portfolio
+          Selected work
         </motion.span>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +57,7 @@ const ProjectsSection = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-4 text-4xl font-extrabold tracking-tight md:text-6xl"
         >
-          <span className="text-gradient">Dự án đã thực hiện</span>
+          <span className="text-gradient">Systems I&apos;ve built</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -66,8 +66,7 @@ const ProjectsSection = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto mt-4 max-w-2xl text-muted"
         >
-          Một số dự án tiêu biểu tôi đã phát triển cho khách hàng doanh nghiệp và
-          cá nhân trong vai trò Fullstack Developer & Freelancer.
+          A few snapshots from turning ideas into products, from interface to backend and production infrastructure.
         </motion.p>
       </div>
 
@@ -147,7 +146,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
               {project.title}
             </h3>
             <div className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <span>Xem chi tiết</span>
+              <span>View details</span>
               <svg
                 className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
@@ -173,11 +172,11 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           </ModalContent>
           <ModalFooter className="gap-3 border-t border-white/5 bg-surface">
             <button className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10">
-              Đóng
+              Close
             </button>
             <Link href={project.live} target="_blank" rel="noopener noreferrer">
               <button className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-all hover:bg-primary/20 hover:scale-[1.02] active:scale-[0.98]">
-                Truy cập website
+                Visit website
               </button>
             </Link>
           </ModalFooter>
@@ -215,7 +214,7 @@ const ProjectDetail = ({ project }: { project: Project }) => {
       {/* Tech stack */}
       <div className="space-y-4">
         <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Công nghệ sử dụng
+          Technology
         </h4>
         <div className="flex flex-wrap gap-6">
           {project.skills.frontend && project.skills.frontend.length > 0 && (

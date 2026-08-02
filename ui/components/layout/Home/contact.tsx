@@ -55,7 +55,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="container flex h-screen items-center justify-start"
+      className="relative z-10 container flex min-h-screen items-center justify-start py-24"
     >
       <Form {...form}>
         <motion.form
@@ -69,7 +69,13 @@ export default function ContactSection() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="z-10 w-full space-y-6 rounded-lg bg-neutral-900 p-6 lg:w-1/2"
         >
-          <h1 className="text-2xl font-bold">Hãy gửi cho tôi thông tin</h1>
+          <div>
+            <p className="font-mono text-xs tracking-[0.18em] text-primary uppercase">Let&apos;s connect</p>
+          <h1 className="mt-2 text-2xl font-bold">Have an idea worth starting?</h1>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Send a few lines about what you are building or what you want to explore.
+            </p>
+          </div>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
               <FormField
@@ -79,7 +85,7 @@ export default function ContactSection() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Họ và Tên" type="text" {...field} />
+                      <Input placeholder="Your name" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,7 +102,7 @@ export default function ContactSection() {
                     <FormLabel>Phone</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Số điện thoại"
+                        placeholder="Phone number"
                         type="text"
                         {...field}
                       />
@@ -130,7 +136,7 @@ export default function ContactSection() {
                 <FormLabel>Message</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Lời nhắn"
+                    placeholder="Your message"
                     className="mt-2 rounded-lg border"
                     {...field}
                   />
@@ -140,7 +146,7 @@ export default function ContactSection() {
             )}
           />
           <Button type="submit" className="w-full">
-            Submit
+            Send message
           </Button>
         </motion.form>
       </Form>

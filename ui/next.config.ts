@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   generateBuildId: async () => {
     return `build-${Date.now()}`;
   },
+  async redirects() {
+    return [
+      {
+        source: "/cv",
+        destination: "/about",
+        permanent: false,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

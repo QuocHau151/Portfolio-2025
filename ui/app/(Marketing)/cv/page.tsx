@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { SiZalo } from "react-icons/si";
 import { toast } from "sonner";
@@ -34,10 +35,10 @@ import projects from "@/data/projects";
 import React from "react";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Vui lòng nhập họ tên"),
-  email: z.string().email("Email không hợp lệ"),
-  phone: z.string().min(1, "Vui lòng nhập số điện thoại"),
-  subject: z.string().min(1, "Vui lòng nhập chủ đề"),
+  name: z.string().min(1, "Please enter your name"),
+  email: z.string().email("Please enter a valid email"),
+  phone: z.string().min(1, "Please enter your phone number"),
+  subject: z.string().min(1, "Please enter a subject"),
   note: z.string(),
 });
 
@@ -55,18 +56,18 @@ const staggerContainer = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-export default function CV() {
+export function AboutPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      toast.success("Đã gửi thông tin! Tôi sẽ liên hệ lại sớm.");
+      toast.success("Message sent! I will get back to you soon.");
       console.log(values);
       form.reset();
     } catch (error) {
-      toast.error("Gửi thất bại. Vui lòng thử lại.");
+      toast.error("Unable to send the message. Please try again.");
     }
   }
 
@@ -81,8 +82,9 @@ export default function CV() {
               <div className="relative aspect-square overflow-hidden">
                 <Image
                   src="/assets/logo/avt.jpeg"
-                  alt="Trần Lê Quốc Hậu"
+                  alt="Quoc Hau"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 360px"
                   className="object-cover"
                   priority
                 />
@@ -95,7 +97,7 @@ export default function CV() {
                   Fullstack Developer
                 </div>
                 <h2 className="text-xl font-bold text-white">
-                  Trần Lê Quốc Hậu
+                  Quoc Hau
                 </h2>
                 <p className="text-muted-foreground mt-1 text-sm">
                   tranlequochau.blc@gmail.com
@@ -137,7 +139,7 @@ export default function CV() {
                     className="bg-primary flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <Mail className="h-4 w-4" />
-                    Hire Me Now
+                    Connect with me
                   </Link>
                   <Link
                     href="/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"
@@ -164,7 +166,7 @@ export default function CV() {
             >
               <motion.div variants={fadeInUp}>
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Giới thiệu
+                  Profile
                 </span>
               </motion.div>
               <motion.h1
@@ -180,16 +182,15 @@ export default function CV() {
                 />
                 <br />
                 <span className="text-white">
-                  Fullstack Developer Web App & Digital Marketing
+                  Fullstack Developer · Product & Systems
                 </span>
               </motion.h1>
               <motion.p
                 variants={fadeInUp}
                 className="text-muted max-w-xl text-base leading-relaxed md:text-lg"
               >
-                Tôi là lập trình viên web app đam mê tạo ra các ứng dụng web
-                động và app mobile. Có kinh nghiệm cả front-end lẫn back-end và
-                devops, luôn sẵn sàng học hỏi công nghệ mới và nâng cao kỹ năng.
+                  I build web apps from interface to backend and production infrastructure.
+                  I care about clear products with real-world impact that can grow over time.
               </motion.p>
             </motion.section>
 
@@ -202,9 +203,9 @@ export default function CV() {
               className="grid grid-cols-1 gap-4 sm:grid-cols-3"
             >
               {[
-                { label: "Địa điểm", value: "Bình Thạnh, HCM" },
-                { label: "Kinh nghiệm", value: "+4 Năm" },
-                { label: "Dự án", value: "+20" },
+                { label: "Location", value: "Ho Chi Minh City" },
+                { label: "Experience", value: "+4 years" },
+                { label: "Projects", value: "+20" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -231,20 +232,18 @@ export default function CV() {
             >
               <motion.div variants={fadeInUp}>
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Về tôi
+                  About me
                 </span>
               </motion.div>
               <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
                 <motion.div variants={fadeInUp} className="w-full">
                   <h2 className="text-2xl font-bold text-white md:text-3xl">
-                    Kinh nghiệm Fullstack Developer
+                    Full-stack development
                   </h2>
                   <p className="text-muted mt-4 text-base leading-relaxed">
-                    Mục tiêu trở thành Senior Fullstack Developer trong 1 năm
-                    tới bằng cách không ngừng cải thiện kỹ năng kỹ thuật, mở
-                    rộng kiến thức công nghệ mới. Khát khao được đóng góp vào
-                    các dự án có tác động thực tế trong môi trường làm việc
-                    chuyên nghiệp và năng động.
+                    I keep improving my technical craft, exploring new tools and
+                    contributing to products with real-world impact in thoughtful,
+                    collaborative environments.
                   </p>
                   <Link
                     href="/assets/Tran-Le-Quoc-Hau-Fullstack-Developer.pdf"
@@ -268,7 +267,7 @@ export default function CV() {
             >
               <motion.div variants={fadeInUp} className="text-center">
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Kỹ năng
+                  Skills
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
                   Tech Stack
@@ -332,10 +331,10 @@ export default function CV() {
               {/* Companies */}
               <motion.div variants={fadeInUp} className="space-y-4">
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Công ty
+                  Experience
                 </span>
                 <h2 className="text-xl font-bold text-white">
-                  Đã từng làm việc
+                  Selected workplaces
                 </h2>
                 <div className="space-y-3">
                   {[
@@ -369,6 +368,7 @@ export default function CV() {
                           src={company.logo}
                           alt={company.name}
                           fill
+                          sizes="40px"
                           className="object-contain"
                         />
                       </div>
@@ -387,16 +387,16 @@ export default function CV() {
               {/* Education */}
               <motion.div variants={fadeInUp} className="space-y-4">
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Học vấn
+                  Education
                 </span>
                 <h2 className="text-xl font-bold text-white">
-                  Bằng cấp & Chứng chỉ
+                  Degrees & certificates
                 </h2>
                 <div className="space-y-3">
                   {[
                     {
-                      title: "Cử Nhân Kinh Tế Học",
-                      school: "Đại Học Kinh Tế Luật",
+                      title: "Bachelor of Economics",
+                      school: "University of Economics and Law",
                       year: "2020 - 2024",
                     },
                     {
@@ -432,10 +432,10 @@ export default function CV() {
             >
               <motion.div variants={fadeInUp} className="text-center">
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Dự án
+                  Projects
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
-                  Dự án Freelancer
+                  Selected work
                 </h2>
               </motion.div>
 
@@ -489,7 +489,7 @@ export default function CV() {
                           {project.title}
                         </h3>
                         <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-sm">
-                          <span>Xem chi tiết</span>
+                          <span>View details</span>
                           <ArrowUpRight className="h-4 w-4" />
                         </div>
                       </div>
@@ -509,10 +509,10 @@ export default function CV() {
             >
               <motion.div variants={fadeInUp} className="text-center">
                 <span className="text-primary inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
-                  Liên hệ
+                  Contact
                 </span>
                 <h2 className="mt-4 text-2xl font-bold text-white md:text-3xl">
-                  Hãy cùng hợp tác
+                  Connect & exchange ideas
                 </h2>
               </motion.div>
 
@@ -532,7 +532,7 @@ export default function CV() {
                         <FormItem>
                           <FormControl>
                             <Input
-                              placeholder="Họ và tên *"
+                              placeholder="Name *"
                               className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
@@ -565,7 +565,7 @@ export default function CV() {
                         <FormItem>
                           <FormControl>
                             <Input
-                              placeholder="Số điện thoại *"
+                              placeholder="Phone *"
                               className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
@@ -581,7 +581,7 @@ export default function CV() {
                         <FormItem>
                           <FormControl>
                             <Input
-                              placeholder="Chủ đề *"
+                              placeholder="Subject *"
                               className="placeholder:text-muted-foreground focus-visible:ring-primary/20 border-white/10 bg-white/5 text-white"
                               {...field}
                             />
@@ -597,7 +597,7 @@ export default function CV() {
                         <FormItem className="md:col-span-2">
                           <FormControl>
                             <Textarea
-                              placeholder="Lời nhắn..."
+                              placeholder="Message..."
                               rows={4}
                               className="placeholder:text-muted-foreground focus-visible:ring-primary/20 resize-none border-white/10 bg-white/5 text-white"
                               {...field}
@@ -612,7 +612,7 @@ export default function CV() {
                         type="submit"
                         className="bg-primary hover:bg-primary/90 px-8 py-3 font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
                       >
-                        Gửi liên hệ
+                        Send message
                       </Button>
                     </div>
                   </form>
@@ -624,6 +624,10 @@ export default function CV() {
       </div>
     </SmoothScroll>
   );
+}
+
+export default function CV() {
+  redirect("/about");
 }
 
 const skillGroups = [

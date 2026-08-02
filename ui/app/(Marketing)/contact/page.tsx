@@ -29,14 +29,14 @@ const contactCards = [
   },
   {
     icon: Phone,
-    label: "Điện thoại",
+    label: "Phone",
     value: "0399 603 123",
     href: "tel:0399603123",
   },
   {
     icon: LocateIcon,
-    label: "Địa chỉ",
-    value: "TP HCM, Việt Nam",
+    label: "Location",
+    value: "Ho Chi Minh City, Vietnam",
     href: "#",
   },
 ];
@@ -54,21 +54,21 @@ export default function ContactPage() {
       >
         <motion.div variants={fadeInUp}>
           <span className="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase">
-            Liên hệ
+            Contact
           </span>
         </motion.div>
         <motion.h1
           variants={fadeInUp}
           className="mt-4 text-3xl font-bold text-white md:text-5xl"
         >
-          <span className="text-gradient">Liên Hệ</span>
+          <span className="text-gradient">Get in touch</span>
         </motion.h1>
         <motion.p
           variants={fadeInUp}
           className="mx-auto mt-4 max-w-2xl text-muted-foreground"
         >
-          Hãy liên hệ với tôi để thảo luận về dự án của bạn. Tôi luôn sẵn sàng
-          hỗ trợ bạn xây dựng các giải pháp công nghệ hiệu quả.
+          Reach out to discuss an idea, a system or a technical challenge. I am
+          always open to thoughtful conversations about building useful technology.
         </motion.p>
       </motion.div>
 

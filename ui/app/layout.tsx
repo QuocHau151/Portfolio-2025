@@ -17,8 +17,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Quốc Hậu — Portfolio",
-  description: "Portfolio của Quốc Hậu — Fullstack Developer & Freelancer",
+  title: "Quoc Hau — Portfolio",
+  description:
+    "Personal portfolio of Quoc Hau — a Full-stack Developer building web apps, backends and production systems.",
 };
 
 export default function RootLayout({

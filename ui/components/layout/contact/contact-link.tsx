@@ -35,10 +35,9 @@ export function SocialLinks() {
       variants={fadeInUp}
       className="text-center"
     >
-      <h2 className="mb-3 text-2xl font-bold text-white">Kết nối với tôi</h2>
+      <h2 className="mb-3 text-2xl font-bold text-white">Find me online</h2>
       <p className="mx-auto mb-6 max-w-xl text-muted-foreground">
-        Theo dõi tôi trên các nền tảng mạng xã hội để cập nhật các dự án mới
-        nhất và chia sẻ kiến thức.
+        Follow along for new projects, experiments and notes from the workbench.
       </p>
       <div className="flex flex-wrap justify-center gap-3">
         {socials.map((social) => (

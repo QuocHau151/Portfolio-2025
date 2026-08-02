@@ -31,17 +31,16 @@ import { useOrderStore } from "@/stores/order";
 import {
   AlignRight,
   BookOpen,
-  Boxes,
+  FolderKanban,
   Check,
-  FileText,
   LogIn,
   LogOut,
   Mail,
   Minus,
   Plus,
-  Server,
   ShoppingBag,
   ShoppingCart,
+  UserRound,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -54,11 +53,10 @@ interface LogoProps {
   isMobile?: boolean;
 }
 const menuItems = [
-  { label: "VPS", icon: Server, href: "/vps" },
-  { label: "Components", icon: Boxes, href: "/components" },
+  { label: "Projects", icon: FolderKanban, href: "/#projects" },
+  { label: "About", icon: UserRound, href: "/about" },
   { label: "Blog", icon: BookOpen, href: "/blog" },
-  { label: "CV", icon: FileText, href: "/cv" },
-  { label: "Contact", icon: Mail, href: "/contact" },
+  { label: "Contact", icon: Mail, href: "/#contact" },
 ];
 export const Header = () => {
   const { cart, setCart } = useCartStore();
@@ -236,26 +234,21 @@ export const Header = () => {
         className={`flex items-center justify-between gap-8 px-2 py-1`}
       >
         <div className="hidden items-center justify-center gap-8 lg:flex">
-          <Link href={"/vps"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">VPS</span>
+          <Link href={"/#projects"} className="flex items-center">
+            <span className="text-[16px] font-light text-white">Projects</span>
           </Link>
-          <Link href={"/components"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">
-              Components
-            </span>
-          </Link>
-          <Link href={"/blog"} className="flex items-center">
-            <span className="text-[16px] font-light text-white">Blog</span>
+          <Link href={"/about"} className="flex items-center">
+            <span className="text-[16px] font-light text-white">About</span>
           </Link>
         </div>
         <Logo theme="dark" isScroll={isScroll} />
 
         <div className="hidden items-center justify-center gap-8 lg:flex">
-          <Link href={"/cv"} className="flex items-center pl-2">
-            <span className="text-[16px] font-light text-white">CV</span>
+          <Link href={"/blog"} className="flex items-center pl-2">
+            <span className="text-[16px] font-light text-white">Blog</span>
           </Link>
 
-          <Link href={"/contact"} className="flex items-center">
+          <Link href={"/#contact"} className="flex items-center">
             <span className="text-[16px] font-light text-white">Contact</span>
           </Link>
           <Sheet>

@@ -7,6 +7,7 @@ import Dock from "@/components/layout/Dock/page";
 import Footer from "@/components/layout/Footer/page";
 import { Header } from "@/components/layout/Header/page";
 import ContactSection from "@/components/layout/Home/contact";
+import AboutSection from "@/components/layout/Home/about";
 import HeroSection from "@/components/layout/Home/hero-section";
 import ProjectsSection from "@/components/layout/Home/projects";
 import SkillsSection from "@/components/layout/Home/skills";
@@ -22,6 +23,7 @@ export default function Home() {
           <AnimatedBackground />
         </div>
         <HeroSection />
+        <AboutSection />
         <SkillsSection />
         <ProjectsSection />
         <ContactSection />

@@ -45,7 +45,7 @@ const ProjectsLinks = ({ live, repo }: { live: string; repo?: string }) => {
           size="sm"
           className="bg-primary text-black hover:bg-primary/90"
         >
-          Truy cập website
+          Visit website
           <ArrowUpRight className="ml-2 h-4 w-4" />
         </Button>
       </Link>
@@ -61,7 +61,7 @@ const ProjectsLinks = ({ live, repo }: { live: string; repo?: string }) => {
             size="sm"
             className="border-white/10 text-white hover:bg-white/5 hover:text-white"
           >
-            Mã nguồn
+            Source code
             <ArrowUpRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
@@ -255,7 +255,7 @@ const projects: Project[] = [
   {
     id: "1",
     category: "Fullstack Dev ",
-    title: "Công ty Cổ Phần FPT SmartHome",
+    title: "FPT SmartHome",
     src: "/assets/images/projects/fpt/fpt.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://fpt-smarthome.vn/",
@@ -277,22 +277,20 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono text-[15px]">
-            FPT SmartHome là dự án tôi thực hiện trong thời gian thực tập tại
-            FPT SmartHome, với vai trò là lập trình viên phát triển website. Đây
-            là một website vệ tinh được xây dựng nhằm hỗ trợ người dùng tra cứu
-            thông tin sản phẩm, tham khảo và chia sẻ đánh giá, trải nghiệm về
-            các thiết bị nhà thông minh của FPT.
+            FPT SmartHome was a project I worked on during my internship as a
+            web developer. It is a satellite website that helps users explore
+            product information, reviews and experiences with FPT smart-home
+            devices.
           </TypographyP>
           <div className="py-4 font-mono">
-            Chức năng chính: <br />
+            Key capabilities: <br />
             <ul className="ml-8 list-disc text-[15px]">
               <li>
-                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
-                bằng email
+                Login, registration, OAuth, password recovery and email verification
               </li>
-              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>Product, order, checkout and search management</li>
               <li>
-                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+                User, role, permission, analytics and reporting management
               </li>
             </ul>
           </div>
@@ -305,7 +303,7 @@ const projects: Project[] = [
   {
     id: "2",
     category: "Fullstack Dev ",
-    title: "Công Ty TNHH Xuất Nhập Khẩu Khang Minh",
+    title: "Khang Minh Lighting",
     src: "/assets/images/projects/khangminh/khangminh.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://khangminhlighting.com/",
@@ -334,23 +332,19 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            Khang Minh Lighting là website tôi lập trình trong vị trí fullstack
-            developer tại công ty xuất nhập khẩu Khang Minh Lighting. Dự án này
-            là website bán hàng trực tuyến, cho phép người dùng tìm kiếm thông
-            tin sản phẩm, mua hàng và thanh toán online. Tôi đã thực hiện các
-            công việc như thiết kế giao diện, lập trình backend, và tối ưu SEO
-            cho website.
+            Khang Minh Lighting is an e-commerce website I built as a full-stack
+            developer. Users can discover products, place orders and pay online.
+            I worked across the interface, backend and SEO optimization.
           </TypographyP>
           <div className="py-4 font-mono">
-            Chức năng chính: <br />
+            Key capabilities: <br />
             <ul className="ml-8 list-disc text-[15px]">
               <li>
-                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
-                bằng email
+                Login, registration, OAuth, password recovery and email verification
               </li>
-              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>Product, order, checkout and search management</li>
               <li>
-                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+                User, role, permission, analytics and reporting management
               </li>
             </ul>
           </div>
@@ -363,7 +357,7 @@ const projects: Project[] = [
   {
     id: "3",
     category: "Fullstack Dev ",
-    title: "Công Ty TNHH Ván Ép Khuê Tuấn",
+    title: "Khue Tuan",
     src: "/assets/images/projects/khuetuan/khuetuan.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://khuetuan.com/",
@@ -387,19 +381,18 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            Website khuatuan.com là website Fullstack trong dự án Freelance của
-            tôi
+            khuatuan.com is a full-stack system I built while developing web
+            products.
           </TypographyP>
           <div className="py-4 font-mono">
-            Chức năng chính: <br />
+            Key capabilities: <br />
             <ul className="ml-8 list-disc text-[15px]">
               <li>
-                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
-                bằng email
+                Login, registration, OAuth, password recovery and email verification
               </li>
-              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>Product, order, checkout and search management</li>
               <li>
-                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+                User, role, permission, analytics and reporting management
               </li>
             </ul>
           </div>
@@ -412,7 +405,7 @@ const projects: Project[] = [
   {
     id: "4",
     category: "Fullstack Dev ",
-    title: "Công Ty TNHH MepSharing",
+    title: "MepSharing",
     src: "/assets/images/projects/mepsharing/mepsharing.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://mepsharing.com/",
@@ -440,19 +433,18 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            Website mepsharing.com là website Fullstack trong dự án Freelance
-            của tôi
+            mepsharing.com is a full-stack system I built for document sharing
+            and online content operations.
           </TypographyP>
           <div className="py-4 font-mono">
-            Chức năng chính: <br />
+            Key capabilities: <br />
             <ul className="ml-8 list-disc text-[15px]">
               <li>
-                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
-                bằng email
+                Login, registration, OAuth, password recovery and email verification
               </li>
-              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>Product, order, checkout and search management</li>
               <li>
-                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+                User, role, permission, analytics and reporting management
               </li>
             </ul>
           </div>
@@ -465,7 +457,7 @@ const projects: Project[] = [
   {
     id: "5",
     category: "Fullstack Dev ",
-    title: "Kỷ Yếu Lâm Đồng Sol Media",
+    title: "Lam Dong Yearbook · Sol Media",
     src: "/assets/images/projects/sol/sol.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://solmedia.pics/",
@@ -493,19 +485,18 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            Website solmedia.pics là website Fullstack trong dự án Freelance của
-            tôi
+            solmedia.pics is a full-stack system I built for managing and
+            sharing images online.
           </TypographyP>
           <div className="py-4 font-mono">
-            Chức năng chính: <br />
+            Key capabilities: <br />
             <ul className="ml-8 list-disc text-[15px]">
               <li>
-                Đăng nhập, đăng kí, oauth, quên mật khẩu, xác thực tài khoản
-                bằng email
+                Login, registration, OAuth, password recovery and email verification
               </li>
-              <li>Quản lý sản phẩm, đơn hàng, checkout, tìm kiếm sản phẩm</li>
+              <li>Product, order, checkout and search management</li>
               <li>
-                Quản lý người dùng, vai trò, phân quyền, thống kê, báo cáo
+                User, role, permission, analytics and reporting management
               </li>
             </ul>
           </div>
@@ -518,7 +509,7 @@ const projects: Project[] = [
   {
     id: "6",
     category: "Designer ",
-    title: "Công Ty TNHH Nấm An Vi",
+    title: "Nam An Vi",
     src: "/assets/images/projects/namanvi/namanvi.png",
     screenshots: ["1.png", "2.png", "3.png"],
     live: "https://namavi.vn/",
@@ -538,8 +529,8 @@ const projects: Project[] = [
       return (
         <div>
           <TypographyP className="font-mono">
-            Website namanvi.vn là website design trong dự án Freelance của tôi
-            kết hợp với Sikido để hoàn thành giao diện website
+            namanvi.vn is a case study in web experience and interface design,
+            completed together with a design team.
           </TypographyP>
           <ProjectsLinks live={this.live} repo={this.github} />
           <SlideShow images={[]} />

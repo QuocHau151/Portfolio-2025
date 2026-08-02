@@ -20,10 +20,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
-  email: z.string().email({ message: "Email không hợp lệ" }),
-  subject: z.string().min(5, { message: "Tiêu đề phải có ít nhất 5 ký tự" }),
-  message: z.string().min(10, { message: "Tin nhắn phải có ít nhất 10 ký tự" }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email" }),
+  subject: z.string().min(5, { message: "Subject must be at least 5 characters" }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,10 +46,10 @@ export function ContactForm() {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("Gửi thành công! Cảm ơn bạn đã liên hệ.");
+      toast.success("Message sent! Thanks for reaching out.");
       form.reset();
     } catch {
-      toast.error("Không thể gửi tin nhắn. Vui lòng thử lại sau.");
+      toast.error("Unable to send the message. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
@@ -58,9 +58,9 @@ export function ContactForm() {
   return (
     <div className="rounded-2xl border border-white/5 bg-surface-elevated p-6 md:p-8">
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-white">Gửi tin nhắn</h3>
+        <h3 className="text-xl font-bold text-white">Send a message</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Điền thông tin và tôi sẽ phản hồi trong thời gian sớm nhất.
+          Share a little context and I will get back to you soon.
         </p>
       </div>
 
@@ -72,10 +72,10 @@ export function ContactForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm text-white/80">Họ tên</FormLabel>
+                  <FormLabel className="text-sm text-white/80">Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Nguyễn Văn A"
+                    placeholder="Your name"
                       className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus:border-primary/30 focus:ring-1 focus:ring-primary/30"
                       {...field}
                     />
@@ -107,10 +107,10 @@ export function ContactForm() {
             name="subject"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-white/80">Tiêu đề</FormLabel>
+                  <FormLabel className="text-sm text-white/80">Subject</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Dự án website..."
+                    placeholder="What would you like to discuss?"
                     className="border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus:border-primary/30 focus:ring-1 focus:ring-primary/30"
                     {...field}
                   />
@@ -124,10 +124,10 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-white/80">Tin nhắn</FormLabel>
+                  <FormLabel className="text-sm text-white/80">Message</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Mô tả chi tiết về dự án của bạn..."
+                    placeholder="Tell me a little more..."
                     className="min-h-[140px] border-white/10 bg-white/5 text-white placeholder:text-muted-foreground focus:border-primary/30 focus:ring-1 focus:ring-primary/30"
                     {...field}
                   />
@@ -164,12 +164,12 @@ export function ContactForm() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Đang gửi...
+                Sending...
               </span>
             ) : (
               <span className="flex items-center gap-2">
                 <Send className="h-4 w-4" />
-                Gửi tin nhắn
+                Send message
               </span>
             )}
           </Button>

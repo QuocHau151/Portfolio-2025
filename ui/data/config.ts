@@ -1,8 +1,8 @@
 const config = {
-  title: "Quốc Hậu DEV",
+  title: "Quoc Hau DEV",
   description: {
-    long: "",
-    short: "",
+    long: "Personal portfolio of Quoc Hau — a Full-stack Developer building web apps, backends and production systems.",
+    short: "Fullstack Builder · Product & Systems",
   },
   keywords: [
     "portfolio",
@@ -19,7 +19,7 @@ const config = {
     "AIOps",
     "Azure",
   ],
-  author: "Quốc Hậu",
+  author: "Quoc Hau",
   email: "tranlequochau.blc@gmail.com",
   site: "https://quochau.com",
 
