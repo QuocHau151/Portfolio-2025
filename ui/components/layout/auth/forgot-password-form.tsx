@@ -44,12 +44,12 @@ export default function ForgotPasswordForm() {
   });
   const router = useRouter();
   const onSubmit = async (data: { email: string }) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      if (checkEmailExitsMutation.isPending) return;
       const result = await checkEmailExitsMutation.mutateAsync({
         email: data.email,
       });
-      setIsSubmitting(true);
       const payload = result.payload as { data: { message: string } };
       if (Boolean(payload.data.message) === true) {
         if (data) {
@@ -64,13 +64,13 @@ export default function ForgotPasswordForm() {
       } else {
         toast("Email Không Tồn Tại");
       }
-
-      setIsSubmitting(false);
     } catch (error) {
       handleErrorApi({
         error,
         setError: form.setError,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -81,7 +81,7 @@ export default function ForgotPasswordForm() {
           Quên mật khẩu
         </CardTitle>
         <CardDescription className="text-center text-zinc-400">
-          Nhập email hoặc số điện thoại để đặt lại mật khẩu
+          Nhập email để đặt lại mật khẩu
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -100,6 +100,7 @@ export default function ForgotPasswordForm() {
               </TabsTrigger>
               <TabsTrigger
                 value="phone"
+                disabled
                 className="data-[state=active]:bg-zinc-700"
               >
                 Số điện thoại
@@ -207,7 +208,7 @@ export default function ForgotPasswordForm() {
       </CardContent>
       <CardFooter className="flex justify-center">
         <Link
-          href="/"
+          href="/login"
           className="text-primary flex items-center text-sm font-medium hover:underline"
         >
           <ArrowLeft className="mr-1 h-4 w-4" />

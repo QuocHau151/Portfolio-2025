@@ -30,6 +30,7 @@ export const LoginBody = z
       message: "invalidEmail",
     }),
     password: z.string().min(6, "minmaxPassword").max(100, "minmaxPassword"),
+    totpCode: z.string().length(6, "Mã xác thực phải gồm 6 ký tự").optional(),
   })
   .strict();
 

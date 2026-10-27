@@ -1,11 +1,13 @@
 import authApiRequest from "@/actions/auth";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { saveAuthCookies } from "@/libs/auth-cookies";
+import { HttpError } from "@/libs/http";
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
   if (!refreshToken) {
+    cookieStore.delete("accessToken");
     return Response.json(
       {
         message: "Không tìm thấy refreshToken",
@@ -20,36 +22,19 @@ export async function POST(request: Request) {
       refreshToken,
     });
 
-    const decodedAccessToken = jwt.decode(payload.data.accessToken) as {
-      exp: number;
-    };
-    const decodedRefreshToken = jwt.decode(payload.data.refreshToken) as {
-      exp: number;
-    };
-    cookieStore.set("accessToken", payload.data.accessToken, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      expires: decodedAccessToken.exp * 1000,
-    });
-    cookieStore.set("refreshToken", payload.data.refreshToken, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      expires: decodedRefreshToken.exp * 1000,
-    });
+    await saveAuthCookies(payload.data.accessToken, payload.data.refreshToken);
     return Response.json(payload);
-  } catch (error: any) {
-    console.log(error);
+  } catch (error) {
+    if (error instanceof HttpError) {
+      if (error.status === 401) {
+        cookieStore.delete("accessToken");
+        cookieStore.delete("refreshToken");
+      }
+      return Response.json(error.payload, { status: error.status });
+    }
     return Response.json(
-      {
-        message: error.message ?? "Có lỗi xảy ra",
-      },
-      {
-        status: 401,
-      },
+      { message: "Không thể làm mới phiên đăng nhập" },
+      { status: 502 },
     );
   }
 }

@@ -28,6 +28,7 @@ import { RegisterBodyType } from "@/schemas/auth.schema";
 import { useAppStore } from "@/stores/app";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { handleErrorApi } from "@/libs/utils";
 import { generateSocketInstace } from "@/libs/socket";
 
 export default function VerifyAccountForm() {
@@ -142,9 +143,14 @@ export default function VerifyAccountForm() {
     if (query === "FORGOT_PASSWORD") {
       setEmail(forgotPasswordForm?.email as string);
     }
-  }, [query]);
+  }, [query, registerForm?.email, forgotPasswordForm?.email]);
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isVerifying) return;
+    if (!email || !["REGISTER", "FORGOT_PASSWORD"].includes(query ?? "")) {
+      toast.error("Vui lòng bắt đầu lại từ trang đăng ký hoặc quên mật khẩu");
+      return;
+    }
     setIsVerifying(true);
 
     try {
@@ -156,20 +162,26 @@ export default function VerifyAccountForm() {
         const result = await registerMutation.mutateAsync(
           form as RegisterBodyType,
         );
-        setIsVerified(true);
         toast.success("Xác thực tài khoản thành công!");
 
-        if (result.status === 200) {
-          const login = await loginMutation.mutateAsync({
-            email: form.email as string,
-            password: form.password as string,
-          });
-          toast("Đăng nhập thành công");
-          setRole(login.payload.data.account.role);
-          setAccount(login.payload.data.account);
-          setSocket(generateSocketInstace(login.payload.data.accessToken));
-          setRegisterForm();
-          router.push("/");
+        if (result.status >= 200 && result.status < 300) {
+          try {
+            const login = await loginMutation.mutateAsync({
+              email: form.email as string,
+              password: form.password as string,
+            });
+            toast("Đăng nhập thành công");
+            setRole(login.payload.data.account.role);
+            setAccount(login.payload.data.account);
+            setSocket(generateSocketInstace(login.payload.data.accessToken));
+            setRegisterForm();
+            setIsVerified(true);
+            router.push("/");
+          } catch {
+            setRegisterForm();
+            toast("Tài khoản đã được tạo. Vui lòng đăng nhập");
+            router.replace("/login");
+          }
         }
       }
       if (query === "FORGOT_PASSWORD") {
@@ -185,24 +197,25 @@ export default function VerifyAccountForm() {
         });
         router.push("/reset-password");
       }
-    } catch (error: any) {
-      toast(error.payload.message);
+    } catch (error) {
+      handleErrorApi({ error });
     } finally {
       setIsVerifying(false);
     }
   };
 
   const handleResend = async () => {
+    if (isResending || countdown > 0 || !email) return;
     setIsResending(true);
-    await sendOTP.mutateAsync({
-      email: email,
-      type: query as string,
-    });
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await sendOTP.mutateAsync({ email, type: query as string });
+      setCountdown(60);
+      toast.success("Đã gửi lại mã xác thực");
+    } catch (error) {
+      handleErrorApi({ error });
+    } finally {
       setIsResending(false);
-      setCountdown(60); // Start 60 second countdown
-    }, 1500);
+    }
   };
 
   return (
@@ -213,7 +226,7 @@ export default function VerifyAccountForm() {
         </CardTitle>
         <CardDescription className="text-center text-zinc-400">
           {!isVerified
-            ? "Nhập mã xác thực đã được gửi đến email hoặc số điện thoại của bạn"
+            ? "Nhập mã xác thực đã được gửi đến email của bạn"
             : "Tài khoản của bạn đã được xác thực thành công"}
         </CardDescription>
       </CardHeader>
@@ -234,6 +247,7 @@ export default function VerifyAccountForm() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="phone"
+                  disabled
                   className="data-[state=active]:bg-zinc-700"
                 >
                   Số điện thoại

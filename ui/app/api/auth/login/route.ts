@@ -1,7 +1,6 @@
 import authApiRequest from "@/actions/auth";
 import { LoginBodyType } from "@/schemas/auth.schema";
-import { cookies } from "next/headers";
-import { jwtDecode } from "jwt-decode";
+import { saveAuthCookies } from "@/libs/auth-cookies";
 import { HttpError } from "@/libs/http";
 
 export async function POST(request: Request) {
@@ -9,34 +8,15 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ message: "Body JSON không hợp lệ" }, { status: 400 });
+    return Response.json(
+      { message: "Body JSON không hợp lệ" },
+      { status: 400 },
+    );
   }
   try {
     const { payload } = await authApiRequest.sLogin(body);
     const { accessToken, refreshToken } = payload.data;
-    const decodedAccessToken = jwtDecode<{ exp: number }>(accessToken);
-    const decodedRefreshToken = jwtDecode<{ exp: number }>(refreshToken);
-    if (
-      !Number.isFinite(decodedAccessToken.exp) ||
-      !Number.isFinite(decodedRefreshToken.exp)
-    ) {
-      throw new Error("Backend trả về token không có thời hạn hợp lệ");
-    }
-    const cookieStore = await cookies();
-    cookieStore.set("accessToken", accessToken, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      expires: decodedAccessToken.exp * 1000,
-    });
-    cookieStore.set("refreshToken", refreshToken, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      expires: decodedRefreshToken.exp * 1000,
-    });
+    await saveAuthCookies(accessToken, refreshToken);
     return Response.json(payload);
   } catch (error) {
     if (error instanceof HttpError) {

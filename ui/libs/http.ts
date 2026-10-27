@@ -1,3 +1,4 @@
+import { getErrorMessage } from "@/libs/api-error";
 import {
   getAccessTokenFromLocalStorage,
   normalizePath,
@@ -41,7 +42,7 @@ export class HttpError extends Error {
   }) {
     // Đảm bảo luôn có message
 
-    super(message);
+    super(getErrorMessage(message ?? payload));
 
     // Lưu các thông tin lỗi
     this.status = status;
@@ -66,7 +67,6 @@ export class EntityError extends HttpError {
     super({ status, payload });
     this.status = status;
     this.payload = payload;
-    this.message = message;
   }
 }
 
@@ -125,18 +125,13 @@ const request = async <Response>(
   // Interceptor là nời chúng ta xử lý request và response trước khi trả về cho phía component
   if (!res.ok) {
     if (res.status === ENTITY_ERROR_STATUS) {
-      console.log(data);
       throw new EntityError({
-        message: (data.payload as any).message,
-        payload: data.payload,
-        status: data.status,
-      } as {
-        status: 422;
-        payload: EntityErrorPayload;
-        message: string;
+        message: getErrorMessage(data.payload),
+        payload: data.payload as EntityErrorPayload,
+        status: ENTITY_ERROR_STATUS,
       });
     } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
-      if (isClient) {
+      if (isClient && !/^(api\/)?auth\//.test(normalizePath(url))) {
         if (!clientLogoutRequest) {
           clientLogoutRequest = fetch("/api/auth/logout", {
             method: "POST",
@@ -158,14 +153,8 @@ const request = async <Response>(
             location.href = `/login`;
           }
         }
-      } else {
-        // Đây là trường hợp khi mà chúng ta vẫn còn access token (còn hạn)
-        // Và chúng ta gọi API ở Next.js Server (Route Handler , Server Component) đến Server Backend
-        throw new HttpError({
-          ...data,
-          message: "Phiên đăng nhập không hợp lệ",
-        });
       }
+      throw new HttpError(data);
     } else {
       throw new HttpError(data);
     }

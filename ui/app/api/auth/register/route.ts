@@ -3,7 +3,15 @@ import { HttpError } from "@/libs/http";
 import { RegisterBodyType } from "@/schemas/auth.schema";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as RegisterBodyType;
+  let body: RegisterBodyType;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json(
+      { message: "Body JSON không hợp lệ" },
+      { status: 400 },
+    );
+  }
   try {
     const { payload } = await authApiRequest.sRegister(body);
     return Response.json(payload);

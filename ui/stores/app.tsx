@@ -34,6 +34,7 @@ export const useAppStore = create<AppStoreType>()(
         set({ role, isAuth: Boolean(role) });
         if (!role) {
           removeTokensFromLocalStorage();
+          set({ account: undefined });
         }
       },
       account: undefined,

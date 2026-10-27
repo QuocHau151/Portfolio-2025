@@ -5,12 +5,16 @@ import { decodeToken } from "./libs/utils";
 export default async function proxy(req: NextRequest) {
   const accessToken = req.cookies.get("accessToken")?.value;
   let role = null;
+  let hasValidToken = false;
 
   // Chỉ decode token khi token tồn tại
   if (accessToken) {
     try {
       const decodedToken = decodeToken(accessToken);
-      role = decodedToken?.roleName;
+      hasValidToken =
+        Number.isFinite(decodedToken.exp) &&
+        decodedToken.exp > Date.now() / 1000;
+      if (hasValidToken) role = decodedToken.roleName;
     } catch (error) {
       // Token không hợp lệ, xử lý như chưa đăng nhập
       console.error("Invalid token:", error);
@@ -26,7 +30,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   // Nếu cố truy cập trang đăng nhập/đăng ký mà đã đăng nhập
-  if (isAuthRoute && accessToken) {
+  if (isAuthRoute && hasValidToken) {
     return NextResponse.redirect(new URL("/", req.nextUrl.origin));
   }
 

@@ -38,8 +38,9 @@ export default function SignUpForm() {
   const { setRegisterForm } = useAppStore();
   const checkEmailExitsMutation = useCheckEmailExits();
   const getGoogleLoginUrl = useGetGoogleLoginUrl();
-  const GoogleLoginUrl = (getGoogleLoginUrl.data?.payload as any)?.data
-    .url as string;
+  const GoogleLoginUrl = (
+    getGoogleLoginUrl.data?.payload as { data?: { url?: string } } | undefined
+  )?.data?.url;
   const sendOTP = useSendOTP();
   const form = useForm<RegisterBodyStepBeforeType>({
     resolver: zodResolver(RegisterBodyStepBefore),
@@ -55,7 +56,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: RegisterBodyStepBeforeType) => {
     try {
-      if (checkEmailExitsMutation.isPending) return;
+      if (checkEmailExitsMutation.isPending || sendOTP.isPending) return;
       const result = await checkEmailExitsMutation.mutateAsync({
         email: data.email,
       });

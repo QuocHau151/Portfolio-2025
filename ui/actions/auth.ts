@@ -24,14 +24,16 @@ const authApiRequest = {
     }),
   login: (body: LoginBodyType) => {
     return http.post<LoginResType>("/api/auth/login", body, {
-      baseUrl: process.env.NEXT_PUBLIC_URL,
+      baseUrl: "",
     });
   },
   sRegister: (body: RegisterBodyType) =>
-    http.post<RegisterResType>("/auth/register", body),
+    http.post<RegisterResType>("/auth/register", body, {
+      baseUrl: process.env.API_ENDPOINT,
+    }),
   register: (body: RegisterBodyType) => {
     return http.post<RegisterResType>("/api/auth/register", body, {
-      baseUrl: process.env.NEXT_PUBLIC_URL,
+      baseUrl: "",
     });
   },
   sLogout: (
@@ -45,6 +47,7 @@ const authApiRequest = {
         refreshToken: body.refreshToken,
       },
       {
+        baseUrl: process.env.API_ENDPOINT,
         headers: {
           Authorization: `Bearer ${body.accessToken}`,
         },
@@ -52,10 +55,12 @@ const authApiRequest = {
     ),
   logout: () =>
     http.post("/api/auth/logout", null, {
-      baseUrl: process.env.NEXT_PUBLIC_URL,
+      baseUrl: "",
     }), // client gọi đến route handler, không cần truyền AT và RT vào body vì AT và RT tự  động gửi thông qua cookie rồi
   sRefreshToken: (body: RefreshTokenBodyType) =>
-    http.post<RefreshTokenResType>("/auth/refresh-token", body),
+    http.post<RefreshTokenResType>("/auth/refresh-token", body, {
+      baseUrl: process.env.API_ENDPOINT,
+    }),
   async refreshToken() {
     if (this.refreshTokenRequest) {
       return this.refreshTokenRequest;
@@ -67,13 +72,15 @@ const authApiRequest = {
         baseUrl: "",
       },
     );
-    const result = await this.refreshTokenRequest;
-    this.refreshTokenRequest = null;
-    return result;
+    try {
+      return await this.refreshTokenRequest;
+    } finally {
+      this.refreshTokenRequest = null;
+    }
   },
   setTokenToCookie: (body: { accessToken: string; refreshToken: string }) =>
     http.post("/api/auth/token", body, {
-      baseUrl: process.env.NEXT_PUBLIC_URL,
+      baseUrl: "",
     }),
   checkEmailExits: (body: { email: string }) => {
     return http.post("/auth/checkemailexits", body);

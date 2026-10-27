@@ -19,12 +19,20 @@ export default function RefreshToken() {
       refreshTokenFromUrl === getRefreshTokenFromLocalStorage()
     ) {
       checkAndRefreshToken({
+        force: true,
+        onError: () => router.replace("/login"),
         onSuccess: () => {
-          router.push(redirectPathname || "/");
+          const target =
+            redirectPathname?.startsWith("/") &&
+            !redirectPathname.startsWith("//") &&
+            !redirectPathname.includes("\\")
+              ? redirectPathname
+              : "/";
+          router.replace(target);
         },
       });
     } else {
-      router.push("/");
+      router.replace("/login");
     }
   }, [router, refreshTokenFromUrl, redirectPathname]);
   return <div>Refresh token....</div>;

@@ -77,11 +77,11 @@ export class AuthRepository {
     return this.prismaService.verificationCode.upsert({
       where: {
         email: payload.email,
-        type: payload.type,
       },
       create: payload,
       update: {
         code: payload.code,
+        type: payload.type,
         expiresAt: payload.expiresAt,
       },
     });

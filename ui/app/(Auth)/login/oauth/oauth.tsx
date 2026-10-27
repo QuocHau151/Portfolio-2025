@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/libs/api-error";
 import { generateSocketInstace } from "@/libs/socket";
 import {
   setAccessTokenToLocalStorage,
@@ -31,32 +32,45 @@ export default function Oauth() {
   const accessToken = searchParams.get("accessToken");
   const refreshToken = searchParams.get("refreshToken");
   const getAccount = searchParams.get("account");
-  const account = getAccount ? JSON.parse(getAccount) : null;
+  const errorMessage = searchParams.get("errorMessage");
   useEffect(() => {
-    if (accessToken && refreshToken) {
-      if (count.current === 0) {
-        mutateAsync({ accessToken, refreshToken })
-          .then(() => {
-            setRole(account.role);
-            setAccount(account);
-            setSocket(generateSocketInstace(accessToken));
-            setAccessTokenToLocalStorage(accessToken);
-            setRefreshTokenToLocalStorage(refreshToken);
-            router.push("/");
-          })
-          .catch(() => {
-            toast("Có lỗi xảy ra");
-          });
-        count.current++;
+    if (count.current > 0) return;
+    count.current++;
+    const completeLogin = async () => {
+      try {
+        if (errorMessage) throw new Error(errorMessage);
+        if (!accessToken || !refreshToken || !getAccount)
+          throw new Error("Thiếu thông tin đăng nhập Google");
+        const account = JSON.parse(getAccount);
+        if (
+          !account ||
+          typeof account.id !== "number" ||
+          typeof account.role !== "string"
+        )
+          throw new Error("Thông tin tài khoản không hợp lệ");
+        await mutateAsync({ accessToken, refreshToken });
+        setRole(account.role);
+        setAccount(account);
+        setSocket(generateSocketInstace(accessToken));
+        setAccessTokenToLocalStorage(accessToken);
+        setRefreshTokenToLocalStorage(refreshToken);
+        router.replace("/");
+      } catch (error) {
+        toast.error(getErrorMessage(error));
+        router.replace("/login");
       }
-    } else {
-      if (count.current === 0) {
-        setTimeout(() => {
-          toast("Có lỗi xảy ra");
-        });
-        count.current++;
-      }
-    }
-  }, [accessToken, refreshToken, setRole, router, setSocket, mutateAsync]);
+    };
+    void completeLogin();
+  }, [
+    accessToken,
+    refreshToken,
+    getAccount,
+    errorMessage,
+    setRole,
+    setAccount,
+    router,
+    setSocket,
+    mutateAsync,
+  ]);
   return null;
 }

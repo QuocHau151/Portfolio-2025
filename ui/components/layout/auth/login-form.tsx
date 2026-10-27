@@ -17,6 +17,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { handleErrorApi } from "@/libs/utils";
+import { getValidationErrors } from "@/libs/api-error";
 import { generateSocketInstace } from "@/libs/socket";
 import { useGetGoogleLoginUrl, useLoginMutation } from "@/queries/useAuth";
 import { LoginBody, LoginBodyType } from "@/schemas/auth.schema";
@@ -27,12 +29,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function SignInForm() {
+  const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { searchParams } = useSearchParamsLoader();
   const loginMutation = useLoginMutation();
   const getGoogleLoginUrl = useGetGoogleLoginUrl();
-  const GoogleLoginUrl = (getGoogleLoginUrl.data?.payload as any)?.data
-    .url as string;
+  const GoogleLoginUrl = (
+    getGoogleLoginUrl.data?.payload as { data?: { url?: string } } | undefined
+  )?.data?.url;
   const clearTokens = searchParams?.get("clearTokens");
 
   const { setRole, setAccount, setSocket } = useAppStore();
@@ -53,16 +57,23 @@ export default function SignInForm() {
     // Khi nhấn submit thì React hook form sẽ validate cái form bằng zod schema ở client trước
     // Nếu không pass qua vòng này thì sẽ không gọi api
     if (loginMutation.isPending) return;
+    form.clearErrors();
     try {
       const result = await loginMutation.mutateAsync(data);
       toast("Đăng nhập thành công");
       setRole(result.payload.data.account.role);
       setAccount(result.payload.data.account);
       setSocket(generateSocketInstace(result.payload.data.accessToken));
-      
+
       router.push("/");
-    } catch (error: any) {
-      toast(error.message);
+    } catch (error) {
+      if (
+        getValidationErrors((error as { payload?: unknown }).payload).some(
+          (item) => ["totpCode", "code"].includes(item.path),
+        )
+      )
+        setNeedsTwoFactor(true);
+      handleErrorApi({ error, setError: form.setError });
     }
   };
 
@@ -83,16 +94,18 @@ export default function SignInForm() {
             name="email"
             render={({ field, formState: { errors } }) => (
               <FormItem>
-                <Label htmlFor="identifier" className="text-zinc-300">
-                  Email hoặc số điện thoại
+                <Label htmlFor="email" className="text-zinc-300">
+                  Email
                 </Label>
                 <div className="relative mt-2">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Mail className="h-5 w-5 text-zinc-500" />
                   </div>
                   <Input
-                    type="text"
-                    placeholder="Email hoặc số điện thoại"
+                    id="email"
+                    type="email"
+                    autoComplete="username"
+                    placeholder="Email"
                     className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
                     {...field}
                     required
@@ -127,6 +140,8 @@ export default function SignInForm() {
                     <Lock className="h-5 w-5 text-zinc-500" />
                   </div>
                   <Input
+                    id="password"
+                    autoComplete="current-password"
                     type="password"
                     placeholder="Mật khẩu"
                     className="border-zinc-700 bg-zinc-800 pl-10 text-white placeholder:text-zinc-500"
@@ -158,7 +173,34 @@ export default function SignInForm() {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full">
+          {needsTwoFactor && (
+            <FormField
+              control={form.control}
+              name="totpCode"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <Label htmlFor="totpCode">Mã xác thực hai bước</Label>
+                  <Input
+                    {...field}
+                    value={field.value ?? ""}
+                    id="totpCode"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    placeholder="Mã từ ứng dụng xác thực"
+                  />
+                  <div className="text-sm text-red-500">
+                    {fieldState.error?.message}
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loginMutation.isPending}
+          >
             {loginMutation.isPending && (
               <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />
             )}
@@ -175,9 +217,16 @@ export default function SignInForm() {
               </span>
             </div>
           </div>
-          <Link href={GoogleLoginUrl ? GoogleLoginUrl : ""}>
+          <Link
+            href={GoogleLoginUrl || "#"}
+            aria-disabled={!GoogleLoginUrl}
+            onClick={(event) => {
+              if (!GoogleLoginUrl) event.preventDefault();
+            }}
+          >
             <Button
               type="button"
+              disabled={!GoogleLoginUrl}
               variant="outline"
               className="w-full border-zinc-700 text-white hover:bg-zinc-800 hover:text-white"
             >

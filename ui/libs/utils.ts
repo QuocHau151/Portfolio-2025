@@ -1,6 +1,7 @@
+import { getErrorMessage, getValidationErrors } from "@/libs/api-error";
+import { toast } from "sonner";
 import authApiRequest from "@/actions/auth";
-import clientApiRequest from "@/actions/clientAuth";
-import { RentalPeriodToMonth, Role } from "@/constants/type";
+import { RentalPeriodToMonth } from "@/constants/type";
 import { EntityError } from "@/libs/http";
 import { TokenPayload } from "@/types/jwt.types";
 import { type ClassValue, clsx } from "clsx";
@@ -35,21 +36,13 @@ export const handleErrorApi = ({
   duration?: number;
 }) => {
   if (error instanceof EntityError && setError) {
-    console.log(error);
-    // error.payload.errors.forEach((item) => {
-    //   setError(item.field, {
-    //     type: "server",
-    //     message: item.message,
-    //   });
-    // });
-  } else {
-    // toast({
-    //   title: "Lỗi",
-    //   description: error?.payload?.message ?? "Lỗi không xác định",
-    //   variant: "destructive",
-    //   duration: duration ?? 5000,
-    // });
+    for (const item of getValidationErrors(error.payload)) {
+      if (item.path) {
+        setError(item.path, { type: "server", message: item.message });
+      }
+    }
   }
+  toast.error(getErrorMessage(error), { duration: duration ?? 5000 });
 };
 
 const isBrowser = typeof window !== "undefined";
@@ -80,39 +73,37 @@ export const checkAndRefreshToken = async (param?: {
   const accessToken = getAccessTokenFromLocalStorage();
   const refreshToken = getRefreshTokenFromLocalStorage();
   // Chưa đăng nhập thì cũng không cho chạy
-  if (!accessToken || !refreshToken) return;
-  const decodedAccessToken = decodeToken(accessToken);
-  const decodedRefreshToken = decodeToken(refreshToken);
-  // Thời điểm hết hạn của token là tính theo epoch time (s)
-  // Còn khi các bạn dùng cú pháp new Date().getTime() thì nó sẽ trả về epoch time (ms)
-  const now = Math.round(new Date().getTime() / 1000);
-  // trường hợp refresh token hết hạn thì cho logout
-  if (decodedRefreshToken.exp <= now) {
-    removeTokensFromLocalStorage();
-    return param?.onError && param.onError();
+  if (!accessToken || !refreshToken) {
+    if (accessToken || refreshToken || param?.force) {
+      removeTokensFromLocalStorage();
+      param?.onError?.();
+    }
+    return;
   }
-  // Ví dụ access token của chúng ta có thời gian hết hạn là 10s
-  // thì mình sẽ kiểm tra còn 1/3 thời gian (3s) thì mình sẽ cho refresh token lại
-  // Thời gian còn lại sẽ tính dựa trên công thức: decodedAccessToken.exp - now
-  // Thời gian hết hạn của access token dựa trên công thức: decodedAccessToken.exp - decodedAccessToken.iat
-  if (
-    param?.force ||
-    decodedAccessToken.exp - now <
-      (decodedAccessToken.exp - decodedAccessToken.iat) / 3
-  ) {
-    // Gọi API refresh token
-    try {
-      const role = decodedRefreshToken.role;
-      const res =
-        role === Role.Client
-          ? await clientApiRequest.refreshToken()
-          : await authApiRequest.refreshToken();
+  try {
+    const decodedAccessToken = decodeToken(accessToken);
+    const decodedRefreshToken = decodeToken(refreshToken);
+    const now = Date.now() / 1000;
+    if (
+      !Number.isFinite(decodedAccessToken.exp) ||
+      !Number.isFinite(decodedRefreshToken.exp) ||
+      decodedRefreshToken.exp <= now
+    ) {
+      throw new Error("Phiên đăng nhập đã hết hạn");
+    }
+    if (
+      param?.force ||
+      decodedAccessToken.exp - now <
+        (decodedAccessToken.exp - decodedAccessToken.iat) / 3
+    ) {
+      const res = await authApiRequest.refreshToken();
       setAccessTokenToLocalStorage(res.payload.data.accessToken);
       setRefreshTokenToLocalStorage(res.payload.data.refreshToken);
-      param?.onSuccess && param.onSuccess();
-    } catch (error) {
-      param?.onError && param.onError();
     }
+    param?.onSuccess?.();
+  } catch {
+    removeTokensFromLocalStorage();
+    param?.onError?.();
   }
 };
 

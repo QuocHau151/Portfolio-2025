@@ -111,7 +111,7 @@ export class AuthController {
           ? error.message
           : 'Đã xảy ra lỗi khi đăng nhập bằng Google, vui lòng thử lại bằng cách khác';
       return res.redirect(
-        `${process.env.GOOGLE_CLIENT_REDIRECT_URI}?errorMessage=${message}`,
+        `${process.env.GOOGLE_CLIENT_REDIRECT_URI}?errorMessage=${encodeURIComponent(message)}`,
       );
     }
   }

@@ -11,12 +11,18 @@ const UNAUTHENTICATED_PATH = [
   "/login",
   "/logout",
   "/refresh-token",
-  "verify-account",
+  "/verify-account",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/login/oauth",
 ];
 export default function RefreshToken() {
   const pathname = usePathname();
   const router = useRouter();
   const socket = useAppStore((state) => state.socket);
+  const setRole = useAppStore((state) => state.setRole);
+  const setAccount = useAppStore((state) => state.setAccount);
   const disconnectSocket = useAppStore((state) => state.disconnectSocket);
   useEffect(() => {
     if (UNAUTHENTICATED_PATH.includes(pathname)) return;
@@ -27,6 +33,8 @@ export default function RefreshToken() {
         onError: () => {
           clearInterval(interval);
           disconnectSocket();
+          setRole();
+          setAccount();
           router.push("/login");
         },
         force,
@@ -69,6 +77,6 @@ export default function RefreshToken() {
       socket?.off("disconnect", onDisconnect);
       socket?.off("refresh-token", onRefreshTokenSocket);
     };
-  }, [pathname, router, socket, disconnectSocket]);
+  }, [pathname, router, socket, disconnectSocket, setRole, setAccount]);
   return null;
 }

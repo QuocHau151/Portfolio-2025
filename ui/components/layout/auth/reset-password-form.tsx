@@ -25,27 +25,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useForgotPassword, useLoginMutation } from "@/queries/useAuth";
+import { useForgotPassword } from "@/queries/useAuth";
 import { resetPasswordSchema } from "@/schemas/auth.schema";
 import { useAppStore } from "@/stores/app";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { generateSocketInstace } from "@/libs/socket";
+import { handleErrorApi } from "@/libs/utils";
 
 export function ResetPasswordForm() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const {
-    forgotPasswordForm,
-    verifyCode,
-    setForgotPasswordForm,
-    setCode,
-    setRole,
-    setAccount,
-    setSocket,
-  } = useAppStore();
+  const { forgotPasswordForm, verifyCode, setForgotPasswordForm, setCode } =
+    useAppStore();
   const forgotPassword = useForgotPassword();
-  const loginMutation = useLoginMutation();
   const router = useRouter();
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -56,29 +48,27 @@ export function ResetPasswordForm() {
   });
 
   async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
-    const formData = {
-      ...data,
-      email: forgotPasswordForm?.email as string,
-      code: verifyCode?.code as string,
-    };
+    if (forgotPassword.isPending) return;
+    if (!forgotPasswordForm?.email || !verifyCode?.code) {
+      toast.error("Vui lòng xác thực email trước khi đổi mật khẩu");
+      router.replace("/forgot-password");
+      return;
+    }
     try {
-      if (forgotPassword.isPending) return;
-      const result = await forgotPassword.mutateAsync(formData);
-      toast("Đổi Mật Khẩu Thành Công");
-      if (result) {
-        const login = await loginMutation.mutateAsync({
-          email: forgotPasswordForm?.email as string,
-          password: data.newPassword as string,
-        });
-        toast("Đăng nhập thành công");
-        setRole(login.payload.data.account.role);
-        setAccount(login.payload.data.account);
-        setSocket(generateSocketInstace(login.payload.data.accessToken));
-        setForgotPasswordForm();
-        setCode();
-        router.push("/");
-      }
-    } catch (error) {}
+      await forgotPassword.mutateAsync({
+        ...data,
+        email: forgotPasswordForm.email,
+        code: verifyCode.code,
+      });
+      setForgotPasswordForm();
+      setCode();
+      toast.success(
+        "Đổi mật khẩu thành công. Vui lòng đăng nhập bằng mật khẩu mới",
+      );
+      router.replace("/login");
+    } catch (error) {
+      handleErrorApi({ error, setError: form.setError });
+    }
   }
 
   return (
