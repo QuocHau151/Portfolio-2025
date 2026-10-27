@@ -21,6 +21,7 @@ import { CategoryModule } from './routes/category/category.module';
 import { ComponentModule } from './routes/component/component.module';
 import { RemoveRefreshTokenCronjob } from './routes/cron/remove-refresh-token';
 import { LoggerModule } from './routes/logger/logger.module';
+import { HealthModule } from './routes/health/health.module';
 import { MediaModule } from './routes/media/media.module';
 import { OrderModule } from './routes/order/order.module';
 import { PaymentModule } from './routes/payment/payment.module';
@@ -40,6 +41,7 @@ import { WebsocketModule } from './routes/websocket/websocket.module';
   imports: [
     LoggerModule,
     CommonModule,
+    HealthModule,
     AuthModule,
     PermissionModule,
     RoleModule,
