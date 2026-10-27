@@ -18,7 +18,10 @@ const authApiRequest = {
     status: number;
     payload: RefreshTokenResType;
   }> | null,
-  sLogin: (body: LoginBodyType) => http.post<LoginResType>("/auth/login", body),
+  sLogin: (body: LoginBodyType) =>
+    http.post<LoginResType>("/auth/login", body, {
+      baseUrl: process.env.API_ENDPOINT,
+    }),
   login: (body: LoginBodyType) => {
     return http.post<LoginResType>("/api/auth/login", body, {
       baseUrl: process.env.NEXT_PUBLIC_URL,

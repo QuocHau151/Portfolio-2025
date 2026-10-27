@@ -161,9 +161,10 @@ const request = async <Response>(
       } else {
         // Đây là trường hợp khi mà chúng ta vẫn còn access token (còn hạn)
         // Và chúng ta gọi API ở Next.js Server (Route Handler , Server Component) đến Server Backend
-        const accessToken = (options?.headers as any)?.Authorization.split(
-          "Bearer ",
-        )[1];
+        throw new HttpError({
+          ...data,
+          message: "Phiên đăng nhập không hợp lệ",
+        });
       }
     } else {
       throw new HttpError(data);
