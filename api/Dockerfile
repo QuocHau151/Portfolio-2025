@@ -31,6 +31,8 @@ WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=deps /app/node_modules ./node_modules
+# node_modules/buffer-equal-constant-time là symlink tới ../vendor (shim cho Node 26)
+COPY --from=deps /app/vendor ./vendor
 
 USER root
 

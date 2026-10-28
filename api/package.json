@@ -40,6 +40,7 @@
     "@types/ms": "^2.1.0",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
+    "buffer-equal-constant-time": "file:./vendor/buffer-equal-constant-time",
     "bullmq": "^5.53.0",
     "cache-manager": "^7.0.0",
     "date-fns": "^4.1.0",
@@ -115,7 +116,7 @@
     "node": ">=26"
   },
   "overrides": {
-    "buffer-equal-constant-time": "file:./vendor/buffer-equal-constant-time"
+    "buffer-equal-constant-time": "$buffer-equal-constant-time"
   },
   "allowScripts": {
     "bcrypt@5.1.1": true,
