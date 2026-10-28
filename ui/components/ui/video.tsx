@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react"; // Import icon từ lucide-react
+import { reportClientError } from "@/libs/client-log";
 
 export function Video({
   src,
@@ -33,16 +34,19 @@ export function Video({
               () => {
                 videoRef.current
                   ?.play()
-                  .catch((err) =>
-                    console.log("Không thể phát video tự động:", err)
-                  );
+                  .catch((err) => {
+                    // Trình duyệt chặn autoplay là bình thường: chờ người dùng tương tác
+                    if (err?.name !== "NotAllowedError")
+                      reportClientError("Play video failed", err);
+                  });
               },
               { once: true }
             );
           }
         }
       } catch (error) {
-        console.log("Lỗi phát video:", error);
+        if ((error as Error)?.name !== "NotAllowedError")
+          reportClientError("Play video failed", error);
       }
     };
 

@@ -442,7 +442,6 @@ export const Header = () => {
                                     selectedItems.length > 0
                                       ? selectedTotal
                                       : cart.reduce((total, item) => {
-                                          console.log(total);
                                         }, 0),
                                   )
                                 : "0"}

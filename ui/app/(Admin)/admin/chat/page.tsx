@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { reportClientError } from "@/libs/client-log";
 interface Message {
   id: string;
   userId: number;
@@ -80,7 +81,6 @@ export default function ChatDashboard() {
     };
 
     if (room) {
-      console.log(`message-${room.name}`);
       socket.on(`message-${room.name}`, handleMessage);
       return () => {
         socket.off(`message-${room.name}`, handleMessage);
@@ -138,7 +138,7 @@ export default function ChatDashboard() {
         });
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      reportClientError("Send chat message failed", error);
     } finally {
       setIsLoading(false);
       setTimeout(() => {

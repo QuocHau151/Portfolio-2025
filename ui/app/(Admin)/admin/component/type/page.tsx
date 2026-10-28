@@ -47,6 +47,7 @@ import {
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 const columns: ColumnDef<GetListTypeComponentResType>[] = [
   {
@@ -120,7 +121,7 @@ const columns: ColumnDef<GetListTypeComponentResType>[] = [
           await mutateAsync(component.id);
           toast.success("Xóa danh mục thành công");
         } catch (error) {
-          console.log(error);
+          reportClientError("Delete component type failed", error);
           toast.error("Xóa danh mục thất bại");
         }
       };

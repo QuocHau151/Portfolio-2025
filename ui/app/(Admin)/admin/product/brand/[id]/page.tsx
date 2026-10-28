@@ -33,6 +33,7 @@ import { useDeleteImage, useUploadImage } from "@/queries/useMedia";
 import { UpdateBrandSchema, UpdateBrandType } from "@/schemas/brand.schema";
 import Image from "next/image";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function EditBrand({
   params,
@@ -121,7 +122,7 @@ export default function EditBrand({
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Update brand failed", error);
     } finally {
       setIsUploading(false);
     }

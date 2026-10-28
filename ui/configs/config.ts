@@ -16,8 +16,11 @@ const configProject = configSchema.safeParse({
 });
 
 if (!configProject.success) {
-  console.error(configProject.error.errors);
-  throw new Error("Các khai báo biến môi trường không hợp lệ");
+  // File này dùng được cả ở trình duyệt nên không import logger server; đưa tên biến lỗi vào message
+  const invalidKeys = configProject.error.errors
+    .map((issue) => issue.path.join("."))
+    .join(", ");
+  throw new Error(`Các khai báo biến môi trường không hợp lệ: ${invalidKeys}`);
 }
 
 const envConfig = configProject.data;

@@ -1,6 +1,8 @@
 import { RoleName } from 'src/common/constants/role.constant';
 import { HashingService } from 'src/common/services/hasing.service';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { rootLogger } from 'src/routes/logger/logger';
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaService();
 const hashingService = new HashingService();
@@ -49,9 +51,21 @@ const main = async () => {
   };
 };
 
+const log = rootLogger.child({ job: 'init-seed-data', jobId: randomUUID() });
+const started = Date.now();
+log.info('Job started');
 main()
   .then(({ adminUser, createdRoleCount }) => {
-    console.log(`Created ${createdRoleCount} roles`);
-    console.log(`Created admin user: ${adminUser.email}`);
+    log.info(
+      {
+        createdRoles: createdRoleCount,
+        adminUserId: String(adminUser.id),
+        durationMs: Date.now() - started,
+      },
+      'Job finished',
+    );
   })
-  .catch(console.error);
+  .catch((err) => {
+    log.error({ err, durationMs: Date.now() - started }, 'Job failed');
+    process.exitCode = 1;
+  });

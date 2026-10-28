@@ -1,10 +1,11 @@
 import {
+  HttpException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as Minio from 'minio';
+import { PinoLogger } from 'nestjs-pino';
 import * as path from 'path';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,9 +13,12 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class MediaService {
   private minioClient: Minio.Client;
-  private readonly logger = new Logger(MediaService.name);
 
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(MediaService.name);
     this.minioClient = new Minio.Client({
       endPoint: process.env.MINIO_ENDPOINT as string,
       useSSL: true,
@@ -49,9 +53,9 @@ export class MediaService {
               ],
             }),
           );
-          this.logger.log(`Bucket ${bucketName} created successfully`);
+          this.logger.info({ bucketName }, 'Bucket created');
         } catch (error) {
-          this.logger.error(`Failed to create bucket: ${error.message}`);
+          this.logger.error({ err: error, bucketName }, 'Create bucket failed');
           throw new UnauthorizedException('Invalid MinIO credentials');
         }
       }
@@ -71,7 +75,10 @@ export class MediaService {
         url: fileUrl,
       };
     } catch (error) {
-      this.logger.error(`Failed to upload file: ${error.message}`);
+      // Lỗi tạo bucket đã được ghi ở trên
+      if (!(error instanceof HttpException)) {
+        this.logger.error({ err: error, bucketName }, 'Upload file failed');
+      }
       throw new UnauthorizedException('Đã Xảy Ra Lỗi');
     }
   }
@@ -95,11 +102,15 @@ export class MediaService {
 
       // Delete the object
       await this.minioClient.removeObject(bucketName, filename);
-      this.logger.log(
-        `File ${filename} deleted successfully from bucket ${bucketName}`,
-      );
+      this.logger.info({ bucketName, filename }, 'File deleted');
     } catch (error) {
-      this.logger.error(`Failed to delete file: ${error.message}`);
+      // 404 (bucket / file không tồn tại) là lỗi của người gọi, access log đã ghi WARN
+      if (!(error instanceof HttpException)) {
+        this.logger.error(
+          { err: error, bucketName, filename },
+          'Delete file failed',
+        );
+      }
       throw error;
     }
   }

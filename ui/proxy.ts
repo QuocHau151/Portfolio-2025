@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authRoutes } from "./constants/authRoute";
+import { logger } from "./libs/logger";
 import { decodeToken } from "./libs/utils";
 
 export default async function proxy(req: NextRequest) {
@@ -16,8 +17,18 @@ export default async function proxy(req: NextRequest) {
         decodedToken.exp > Date.now() / 1000;
       if (hasValidToken) role = decodedToken.roleName;
     } catch (error) {
-      // Token không hợp lệ, xử lý như chưa đăng nhập
-      console.error("Invalid token:", error);
+      // Token không hợp lệ là lỗi phía người gọi (WARN), xử lý như chưa đăng nhập.
+      // Không ghi token, chỉ ghi loại lỗi.
+      logger.warn(
+        {
+          err: {
+            type: error instanceof Error ? error.name : "UnknownError",
+            message: error instanceof Error ? error.message : String(error),
+          },
+          path: req.nextUrl.pathname,
+        },
+        "Invalid access token cookie",
+      );
     }
   }
 

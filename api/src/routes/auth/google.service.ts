@@ -62,7 +62,8 @@ export class GoogleService {
           ip = clientInfo.ip;
         }
       } catch (error) {
-        this.logger.error({ err: error }, 'Error parsing state');
+        // State do client gửi lên; sai định dạng thì bỏ qua và đăng nhập tiếp
+        this.logger.warn({ err: error }, 'Invalid Google OAuth state');
       }
       // 2. Dùng code để lấy token
       const { tokens } = await this.oauth2Client.getToken(code);
@@ -120,7 +121,13 @@ export class GoogleService {
         },
       };
     } catch (error) {
-      this.logger.error({ err: error }, 'Error in googleCallback');
+      // Mã code sai / hết hạn (Google trả 4xx) là lỗi phía người dùng: WARN
+      const status = error?.status ?? error?.response?.status;
+      if (typeof status === 'number' && status >= 400 && status < 500) {
+        this.logger.warn({ err: error }, 'Google login rejected');
+      } else {
+        this.logger.error({ err: error }, 'Google login failed');
+      }
       throw error;
     }
   }

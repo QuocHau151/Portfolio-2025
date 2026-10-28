@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import AppProvider from "@/components/feature/app-provider";
+import ClientErrorReporter from "@/components/feature/client-error-reporter";
 import Particles from "@/components/feature/Particles";
 import Preloader from "@/components/layout/preloader";
 import { Toaster } from "@/components/ui/sonner";
@@ -31,6 +32,7 @@ export default function RootLayout({
     <AppProvider>
       <html lang="vi" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+          <ClientErrorReporter />
           <Particles
             className="animate-fade-in fixed inset-0 -z-10"
             quantity={100}

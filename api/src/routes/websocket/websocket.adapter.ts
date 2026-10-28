@@ -1,4 +1,4 @@
-import { INestApplicationContext, Logger } from '@nestjs/common';
+import { INestApplicationContext } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
@@ -6,12 +6,13 @@ import { Server, ServerOptions, Socket } from 'socket.io';
 import { generateRoomUserId } from 'src/common/helpers';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { TokenService } from 'src/common/services/token.service';
+import { rootLogger } from 'src/routes/logger/logger';
 
 export class WebsocketAdapter extends IoAdapter {
   private readonly tokenService: TokenService;
   private adapterConstructor: ReturnType<typeof createAdapter>;
   private readonly prismaService: PrismaService;
-  private readonly logger: Logger;
+  private readonly logger = rootLogger.child({ context: 'WebsocketAdapter' });
   app: INestApplicationContext;
   constructor(app: INestApplicationContext) {
     super(app);
@@ -34,17 +35,24 @@ export class WebsocketAdapter extends IoAdapter {
     try {
       await Promise.all([pubClient.connect(), subClient.connect()]);
     } catch (error) {
-      this.logger.error('Redis connection failed', error);
+      this.logger.error({ err: error }, 'Redis connection failed');
       throw new Error('Failed to connect to Redis');
     }
 
     // Add error handling
+    // Client tự kết nối lại theo reconnectStrategy, nên đây là WARN
     pubClient.on('error', (error) => {
-      this.logger.error('Redis pub client error', error);
+      this.logger.warn(
+        { err: error, client: 'pub' },
+        'Redis client error, reconnecting',
+      );
     });
 
     subClient.on('error', (error) => {
-      this.logger.error('Redis sub client error', error);
+      this.logger.warn(
+        { err: error, client: 'sub' },
+        'Redis client error, reconnecting',
+      );
     });
 
     this.adapterConstructor = createAdapter(pubClient, subClient);
@@ -61,12 +69,16 @@ export class WebsocketAdapter extends IoAdapter {
     server.use((socket, next) => {
       this.authMiddleware(socket, next)
         .then(() => {})
-        .catch(() => {});
+        .catch((err) => {
+          this.logger.warn({ err }, 'Socket auth middleware failed');
+        });
     });
     server.of(/.*/).use((socket, next) => {
       this.authMiddleware(socket, next)
         .then(() => {})
-        .catch(() => {});
+        .catch((err) => {
+          this.logger.warn({ err }, 'Socket auth middleware failed');
+        });
     });
 
     return server;

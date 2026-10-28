@@ -20,6 +20,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
+import { reportClientError } from "@/libs/client-log";
 
 interface Message {
   id: string;
@@ -84,7 +85,6 @@ export default function ChatWidget() {
     };
 
     if (room) {
-      console.log(`message-${room.name}`);
       socket.on(`message-${room.name}`, handleMessage);
       return () => {
         socket.off(`message-${room.name}`, handleMessage);
@@ -143,7 +143,7 @@ export default function ChatWidget() {
         });
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      reportClientError("Send chat message failed", error);
     } finally {
       setIsLoading(false);
       setTimeout(() => {

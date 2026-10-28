@@ -44,6 +44,7 @@ import { useDeleteImage, useUploadImage } from "@/queries/useMedia";
 import { BlogBodySchema, BlogBodyType } from "@/schemas/blog.schema";
 import Image from "next/image";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 // Mock category options
 
@@ -157,7 +158,7 @@ export default function EditBlog({
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Update blog failed", error);
     } finally {
       setIsUploading(false);
     }

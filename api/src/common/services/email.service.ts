@@ -1,19 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import React from 'react';
 import { Resend } from 'resend';
 import OTPEmail from 'src/email/otp';
 @Injectable()
 export class EmailService {
   private resend: Resend;
-  private readonly logger = new Logger(EmailService.name);
 
-  constructor() {
+  constructor(private readonly logger: PinoLogger) {
+    this.logger.setContext(EmailService.name);
     const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
-      this.logger.error(
-        'RESEND_API_KEY không được tìm thấy trong biến môi trường',
-      );
+      this.logger.error('Missing RESEND_API_KEY');
       // Sử dụng một giá trị mặc định hoặc throw error tùy vào yêu cầu
       // Ví dụ: throw new Error('RESEND_API_KEY is required');
     }

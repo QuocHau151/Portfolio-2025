@@ -40,6 +40,7 @@ import { Clock, Key, Mail, Phone, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 // Mock user data from the provided JSON
 
@@ -49,7 +50,6 @@ export default function SettingsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const profile = useGetProfileById(account?.id as number);
   const user = (profile.data as any)?.payload?.data;
-  console.log(user);
   const uploadImage = useUploadImage();
   const updateProfile = useUpdateProfile();
   const updatePassword = useUpdatePassword();
@@ -127,7 +127,7 @@ export default function SettingsPage() {
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Update profile failed", error);
     } finally {
       setIsUploading(false);
     }

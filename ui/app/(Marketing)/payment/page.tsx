@@ -32,6 +32,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function QrCodePayment() {
   const searchParams = useSearchParams();
@@ -72,7 +73,7 @@ export default function QrCodePayment() {
       await cancelOrder.mutateAsync(Number(orderId));
       toast("Đơn hàng đã được hủy");
     } catch (error) {
-      console.log(error);
+      reportClientError("Cancel order failed", error);
       toast("Hủy đơn hàng thất bại");
     }
   };

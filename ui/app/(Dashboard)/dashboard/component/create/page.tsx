@@ -42,6 +42,7 @@ import {
   CreateComponentBodyType,
 } from "@/schemas/component.schema";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function CreateComponent() {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
@@ -69,7 +70,6 @@ export default function CreateComponent() {
     },
   });
   async function onSubmit(values: CreateComponentBodyType) {
-    console.log(values);
     try {
       setIsUploading(true);
 
@@ -104,7 +104,7 @@ export default function CreateComponent() {
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Create component failed", error);
     } finally {
       setIsUploading(false);
     }

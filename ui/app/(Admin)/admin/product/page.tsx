@@ -51,6 +51,7 @@ import {
 import { Product } from "@/types/product.type";
 import Link from "next/link";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 // Table columns definition
 const columns: ColumnDef<Product>[] = [
@@ -224,7 +225,7 @@ const columns: ColumnDef<Product>[] = [
           await deleteProduct.mutateAsync(Number(product.id));
           toast.success("Xoá Sản Phẩm Thành Công");
         } catch (error) {
-          console.log(error);
+          reportClientError("Delete product failed", error);
           toast.error("Đã có lỗi xảy ra");
         }
       };

@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { ZodSerializationException } from 'nestjs-zod';
 
 @Catch()
 export class CatchEverythingFilter implements ExceptionFilter {
@@ -23,6 +24,15 @@ export class CatchEverythingFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal Server Error';
+
+    // Lỗi server: gắn exception vào response để access log (pino-http) ghi ERROR kèm err.
+    // Lỗi 4xx đã được access log ghi ở WARN, không cần thêm dòng nào.
+    if (httpStatus >= 500) {
+      ctx.getResponse().err =
+        exception instanceof ZodSerializationException
+          ? exception.getZodError()
+          : exception;
+    }
 
     const responseBody = {
       statusCode: httpStatus,

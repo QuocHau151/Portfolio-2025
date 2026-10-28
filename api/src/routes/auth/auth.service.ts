@@ -149,7 +149,10 @@ export class AuthService {
       code,
     });
     if (error) {
-      this.logger.error({ err: error }, 'Gửi mã OTP thất bại');
+      this.logger.error(
+        { err: { type: error.name, message: error.message } },
+        'Send OTP email failed',
+      );
       throw new UnprocessableEntityException({
         message: 'Gửi mã OTP thất bại',
         path: 'code',

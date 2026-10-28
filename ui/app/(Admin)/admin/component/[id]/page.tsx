@@ -46,6 +46,7 @@ import {
 } from "@/schemas/component.schema";
 import Image from "next/image";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function EditComponent({
   params,
@@ -110,7 +111,6 @@ export default function EditComponent({
   }, [component]);
 
   async function onSubmit(values: UpdateComponentBodyType) {
-    console.log(values);
     try {
       setIsUploading(true);
 
@@ -150,7 +150,7 @@ export default function EditComponent({
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Update component failed", error);
     } finally {
       setIsUploading(false);
     }

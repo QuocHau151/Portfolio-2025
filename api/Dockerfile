@@ -1,5 +1,5 @@
 # Base image
-FROM node:22-alpine AS base
+FROM node:26-alpine AS base
 
 # Stage: deps
 FROM base AS deps
@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma
+COPY vendor ./vendor
 
 RUN npm install
 

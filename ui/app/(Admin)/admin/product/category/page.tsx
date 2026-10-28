@@ -51,6 +51,7 @@ import { BrandType } from "@/schemas/brand.schema";
 import { CategoryType } from "@/schemas/category.schema";
 import Link from "next/link";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 // Table columns definition
 const columns: ColumnDef<CategoryType>[] = [
@@ -157,7 +158,7 @@ const columns: ColumnDef<CategoryType>[] = [
           await deleteCategory.mutateAsync(Number(category.id));
           toast.success("Xoá Thương Hiệu Thành Công");
         } catch (error) {
-          console.log(error);
+          reportClientError("Delete category failed", error);
           toast.error("Đã có lỗi xảy ra");
         }
       };

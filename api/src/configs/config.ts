@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import z from 'zod';
+import { rootLogger } from 'src/routes/logger/logger';
 
 // config({
 //   path: '.env',
@@ -48,8 +49,15 @@ const configSchema = z.object({
 const configServer = configSchema.safeParse(process.env);
 
 if (!configServer.success) {
-  console.log('Các giá trị khai báo trong file .env không hợp lệ');
-  console.error(configServer.error);
+  rootLogger.fatal(
+    {
+      issues: configServer.error.issues.map((issue) => ({
+        path: issue.path.join('.'),
+        message: issue.message,
+      })),
+    },
+    'Invalid environment variables, exiting',
+  );
   process.exit(1);
 }
 

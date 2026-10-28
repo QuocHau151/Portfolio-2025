@@ -34,6 +34,7 @@ import { useUploadImage } from "@/queries/useMedia";
 import { useCreateProductMutation } from "@/queries/useProduct";
 import { ProductFormData, SKUType } from "@/types/product.type";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function ProductForm() {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
@@ -294,7 +295,7 @@ export default function ProductForm() {
 
       toast.success((result.payload as any).data.message);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      reportClientError("Create product failed", error);
       toast.error("Có lỗi xảy ra khi tạo sản phẩm!");
     } finally {
       setIsUploading(false);

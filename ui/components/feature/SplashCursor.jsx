@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { reportClientError } from "@/libs/client-log";
 
 function SplashCursor({
   // Add whatever props you like for customization
@@ -218,7 +219,7 @@ function SplashCursor({
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS))
-        console.trace(gl.getProgramInfoLog(program));
+        reportClientError("WebGL program link failed", new Error(gl.getProgramInfoLog(program) ?? ""));
       return program;
     }
 
@@ -238,7 +239,7 @@ function SplashCursor({
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-        console.trace(gl.getShaderInfoLog(shader));
+        reportClientError("WebGL shader compile failed", new Error(gl.getShaderInfoLog(shader) ?? ""));
       return shader;
     }
 

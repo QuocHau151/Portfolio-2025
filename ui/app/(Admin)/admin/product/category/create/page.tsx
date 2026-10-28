@@ -22,6 +22,7 @@ import {
   CreateCategoryType,
 } from "@/schemas/category.schema";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function CreateCategory() {
   const [isUploading, setIsUploading] = useState(false);
@@ -41,7 +42,7 @@ export default function CreateCategory() {
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Create category failed", error);
     } finally {
       setIsUploading(false);
     }

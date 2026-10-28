@@ -64,7 +64,6 @@ export function AboutPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       toast.success("Message sent! I will get back to you soon.");
-      console.log(values);
       form.reset();
     } catch (error) {
       toast.error("Unable to send the message. Please try again.");

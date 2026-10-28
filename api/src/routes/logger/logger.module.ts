@@ -1,24 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
+import { httpLoggerOptions } from './logger';
 
 @Global()
 @Module({
-  imports: [
-    PinoLoggerModule.forRoot({
-      pinoHttp:
-        process.env.NODE_ENV === 'production'
-          ? {
-              level: 'info',
-              autoLogging: false,
-              formatters: {
-                level: (label: string) => ({ level: label }),
-              },
-              base: { pid: process.pid },
-            }
-          : {
-              level: 'silent',
-            },
-    }),
-  ],
+  imports: [PinoLoggerModule.forRoot({ pinoHttp: httpLoggerOptions })],
 })
 export class LoggerModule {}

@@ -18,6 +18,7 @@ import { twMerge } from "tailwind-merge";
 
 import imageCompression from "browser-image-compression";
 import Image from "next/image";
+import { reportClientError } from "@/libs/client-log";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -114,13 +115,9 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             acceptedFiles.map(async (file) => {
               if (isImageFile(file)) {
                 try {
-                  console.log(`Optimizing image: ${file.name}`);
                   const compressedBlob = await imageCompression(
                     file,
                     imageCompressionOptions,
-                  );
-                  console.log(
-                    `Original size: ${formatFileSize(file.size)}, Compressed: ${formatFileSize(compressedBlob.size)}`,
                   );
 
                   // Tạo File mới từ Blob, giữ nguyên tên gốc
@@ -128,16 +125,13 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
                     type: compressedBlob.type || "image/jpeg",
                   });
 
-                  console.log("Compressed file:", compressedFile);
-                  console.log("Compressed file name:", compressedFile.name);
-
                   return {
                     file: compressedFile,
                     key: Math.random().toString(36).slice(2),
                     progress: "PENDING" as const,
                   };
                 } catch (error) {
-                  console.error("Lỗi khi nén ảnh:", error);
+                  reportClientError("Compress image failed", error);
                   // Trả về file gốc nếu không nén được
                   return {
                     file,
@@ -155,11 +149,10 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
               };
             }),
           );
-          console.log("Processed files:", processedFiles);
           void onFilesAdded?.(processedFiles);
           void onChange?.([...(value ?? []), ...processedFiles]);
         } catch (error) {
-          console.error("Lỗi xử lý file:", error);
+          reportClientError("Process upload files failed", error);
           setCustomError("Có lỗi xảy ra khi xử lý file. Vui lòng thử lại.");
         } finally {
           setIsProcessing(false);

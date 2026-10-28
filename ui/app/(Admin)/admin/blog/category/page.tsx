@@ -42,6 +42,7 @@ import { GetListCategoryType } from "@/schemas/blog.schema";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 const columns: ColumnDef<GetListCategoryType>[] = [
   {
@@ -111,7 +112,7 @@ const columns: ColumnDef<GetListCategoryType>[] = [
           await mutateAsync();
           toast.success("Xóa danh mục thành công");
         } catch (error) {
-          console.log(error);
+          reportClientError("Delete blog category failed", error);
           toast.error("Xóa danh mục thất bại");
         }
       };

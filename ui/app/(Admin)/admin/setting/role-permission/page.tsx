@@ -51,6 +51,7 @@ import { Pencil, Plus, Save, Search, Shield, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function RolePermissionPage() {
   const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
@@ -134,7 +135,7 @@ export default function RolePermissionPage() {
         rolesQuery.refetch();
       } catch (error) {
         toast.error("Failed to delete role");
-        console.error(error);
+        reportClientError("Delete role failed", error);
       }
     }
   }
@@ -165,7 +166,7 @@ export default function RolePermissionPage() {
       rolesQuery.refetch();
     } catch (error) {
       toast.error((error as any).payload.message);
-      console.error(error);
+      reportClientError("Save role failed", error);
     }
   }
   async function UpdateRoleSubmit(values: UpdateRoleBodyType) {
@@ -189,7 +190,7 @@ export default function RolePermissionPage() {
       rolesQuery.refetch();
     } catch (error) {
       toast.error((error as any).payload.message);
-      console.error(error);
+      reportClientError("Update role permissions failed", error);
     }
   }
 

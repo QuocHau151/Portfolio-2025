@@ -48,6 +48,7 @@ import {
 import { ProductUpdateFormData, SKUType } from "@/types/product.type";
 import Image from "next/image";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function ProductForm({
   params,
@@ -329,7 +330,7 @@ export default function ProductForm({
 
       toast.success("Xóa ảnh thành công");
     } catch (error) {
-      console.error("Error deleting image:", error);
+      reportClientError("Delete product image failed", error);
       toast.error("Có lỗi xảy ra khi xóa ảnh!");
     }
   };
@@ -406,7 +407,7 @@ export default function ProductForm({
 
       toast.success((result.payload as any).data.message);
     } catch (error) {
-      console.error("Error updating product:", error);
+      reportClientError("Update product failed", error);
       toast.error("Có lỗi xảy ra khi cập nhật sản phẩm!");
     } finally {
       setIsUploading(false);

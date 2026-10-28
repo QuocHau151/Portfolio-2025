@@ -53,7 +53,6 @@ export function ConfigForm({ vps, open, onClose }: ConfigFormProps) {
   });
 
   const handleSave = () => {
-    console.log("Saving configuration:", config);
     // Here you would typically send the config to your API
     onClose();
   };

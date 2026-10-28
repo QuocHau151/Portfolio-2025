@@ -4,15 +4,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
+import { rootLogger } from './routes/logger/logger';
 import { WebsocketAdapter } from './routes/websocket/websocket.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
-  if (process.env.NODE_ENV === 'production') {
-    app.useLogger(app.get(Logger));
-  }
+  app.useLogger(app.get(Logger));
   app.enableCors();
   app.use(helmet());
 
@@ -30,5 +29,9 @@ async function bootstrap() {
   SwaggerModule.setup('', app, documentFactory);
 
   await app.listen(process.env.PORT as string);
+  rootLogger.info({ port: Number(process.env.PORT) }, 'Server started');
 }
-bootstrap();
+bootstrap().catch((err) => {
+  rootLogger.fatal({ err }, 'Server failed to start, exiting');
+  process.exit(1);
+});

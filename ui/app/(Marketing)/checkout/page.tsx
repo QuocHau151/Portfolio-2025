@@ -21,6 +21,7 @@ import { useCreateOrderMutation } from "@/queries/useOrder";
 import { useAppStore } from "@/stores/app";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"online" | "transfer">(
@@ -85,7 +86,7 @@ export default function CheckoutPage() {
       );
       toast.success("Đặt hàng thành công");
     } catch (error) {
-      console.error("Failed to create order:", error);
+      reportClientError("Create order failed", error);
       toast.error("Đặt hàng thất bại");
     }
   };

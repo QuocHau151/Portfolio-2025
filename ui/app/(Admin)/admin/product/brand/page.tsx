@@ -47,6 +47,7 @@ import { BrandType } from "@/schemas/brand.schema";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 const columns: ColumnDef<BrandType>[] = [
   {
@@ -171,7 +172,7 @@ const columns: ColumnDef<BrandType>[] = [
           await deleteBrand.mutateAsync(Number(brand.id));
           toast.success("Xoá Thương Hiệu Thành Công");
         } catch (error) {
-          console.log(error);
+          reportClientError("Delete brand failed", error);
           toast.error("Đã có lỗi xảy ra");
         }
       };

@@ -29,6 +29,7 @@ import { useUploadImage } from "@/queries/useMedia";
 import { useCreateBrandMutation } from "@/queries/useBrand";
 import { CreateBrandSchema, CreateBrandType } from "@/schemas/brand.schema";
 import { toast } from "sonner";
+import { reportClientError } from "@/libs/client-log";
 
 export default function CreateBrand() {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
@@ -45,7 +46,6 @@ export default function CreateBrand() {
     },
   });
   async function onSubmit(values: CreateBrandType) {
-    console.log(values);
     try {
       setIsUploading(true);
 
@@ -79,7 +79,7 @@ export default function CreateBrand() {
       window.location.reload();
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi sửa bài viết.");
-      console.error(error); // Thiếu log lỗi để debug
+      reportClientError("Create brand failed", error);
     } finally {
       setIsUploading(false);
     }

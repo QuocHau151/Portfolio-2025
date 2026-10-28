@@ -117,20 +117,16 @@ export default function Dashboard() {
 
     switch (action) {
       case "start":
-        console.log(`Starting VPS ${id}`);
         break;
       case "stop":
-        console.log(`Stopping VPS ${id}`);
         break;
       case "restart":
-        console.log(`Restarting VPS ${id}`);
         break;
       case "config":
         setSelectedVPS(vps);
         setShowConfigForm(true);
         break;
       case "view":
-        console.log(`Viewing details for ${id}`);
         break;
     }
   };

@@ -10,7 +10,6 @@ import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { CommonModule } from './common/common.module';
 import { CatchEverythingFilter } from './common/filters/catch-everything.filter';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
-import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import CustomZodValidationPipe from './common/pipes/custom-zod-validation.pipe';
 import { AuthModule } from './routes/auth/auth.module';
@@ -98,7 +97,6 @@ import { WebsocketModule } from './routes/websocket/websocket.module';
     },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
     { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: ErrorInterceptor },
     {
       provide: APP_FILTER,
       useClass: CatchEverythingFilter,

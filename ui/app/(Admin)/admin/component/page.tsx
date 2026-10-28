@@ -172,7 +172,6 @@ export default function Blog() {
   const getComponents = useComponentQuery();
 
   const [data, setData] = React.useState<GetListComponentsResType[]>([]);
-  console.log(data);
   useEffect(() => {
     if (getComponents.isSuccess) {
       setData(

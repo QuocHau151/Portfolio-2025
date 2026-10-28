@@ -25,6 +25,7 @@ import {
   RiItalic,
   RiListOrdered2,
 } from "react-icons/ri";
+import { reportClientError } from "@/libs/client-log";
 
 const ButtonMenu = ({
   onClick,
@@ -106,7 +107,7 @@ export default function TextEditorMenuBar({
         editor.chain().focus().setFontSize(`${size}px`).run();
         setInputValue(newSize);
       } catch (error) {
-        console.error("Error updating font size:", error);
+        reportClientError("Update editor font size failed", error);
       }
     }
   };

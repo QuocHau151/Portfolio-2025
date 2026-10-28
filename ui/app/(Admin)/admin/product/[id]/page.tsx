@@ -40,7 +40,6 @@ export default function ProductDetailPage({
   const product = (getProduct.data?.payload as any)?.data;
   const getBrandId = useGetBrandByIdQuery(product?.brandId);
   const brand = (getBrandId.data?.payload as any)?.data.name;
-  console.log(brand);
   // Calculate total stock
   const totalStock =
     product?.skus.reduce((sum: any, sku: any) => sum + sku.stock, 0) || 0;

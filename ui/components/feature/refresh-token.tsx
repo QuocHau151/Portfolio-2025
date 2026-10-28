@@ -5,6 +5,7 @@ import { useAppStore } from "@/stores/app";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useEffect } from "react";
+import { reportClientError } from "@/libs/client-log";
 
 // Những page sau sẽ không check refesh token
 const UNAUTHENTICATED_PATH = [
@@ -51,13 +52,9 @@ export default function RefreshToken() {
       onConnect();
     }
 
-    function onConnect() {
-      console.log("connected", socket?.connected);
-    }
+    function onConnect() {}
 
-    function onDisconnect() {
-      console.log("disconnect");
-    }
+    function onDisconnect() {}
 
     function onRefreshTokenSocket() {
       onRefreshToken(true);
@@ -65,7 +62,7 @@ export default function RefreshToken() {
 
     socket?.on("connect", () => onConnect());
     socket?.on("connect_error", (error) => {
-      console.error("Socket connection error:", error);
+      reportClientError("Socket connection failed", error);
     });
 
     socket?.on("disconnect", onDisconnect);
